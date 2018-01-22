@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="学习Neural Networks，帮助自己理解"/>
+
+
+
+
+  <meta name="keywords" content="Neural Networks,Deep Learning," />
+
+
+
+
+  <link rel="alternate" href="/default" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2017/06/07/neuralnets1/"/>
+
+
+<meta name="description" content="学习Neural Networks，帮助自己理解">
+<meta name="keywords" content="Neural Networks,Deep Learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Neural Networks and Deep Learning 学习笔记一：开始和感知机（Perceptrons）">
+<meta property="og:url" content="http://sikasjc.github.io/2017/06/07/neuralnets1/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="学习Neural Networks，帮助自己理解">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="http://neuralnetworksanddeeplearning.com/images/tikz0.png">
+<meta property="og:image" content="http://neuralnetworksanddeeplearning.com/images/tikz1.png">
+<meta property="og:image" content="http://neuralnetworksanddeeplearning.com/images/tikz2.png">
+<meta property="og:image" content="http://neuralnetworksanddeeplearning.com/images/tikz3.png">
+<meta property="og:image" content="http://neuralnetworksanddeeplearning.com/images/tikz4.png">
+<meta property="og:updated_time" content="2017-09-17T13:36:07.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Neural Networks and Deep Learning 学习笔记一：开始和感知机（Perceptrons）">
+<meta name="twitter:description" content="学习Neural Networks，帮助自己理解">
+<meta name="twitter:image" content="http://neuralnetworksanddeeplearning.com/images/tikz0.png">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> Neural Networks and Deep Learning 学习笔记一：开始和感知机（Perceptrons） · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Neural Networks and Deep Learning 学习笔记一：开始和感知机（Perceptrons）
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017年6月7日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/Neural-Networks/">Neural Networks</a>
+            
+              <a href="/tags/Deep-Learning/">Deep Learning</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#开始"><span class="toc-number">1.</span> <span class="toc-text">开始</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Neural-Networks-amp-Deep-Learning"><span class="toc-number">1.1.</span> <span class="toc-text">Neural Networks &amp; Deep Learning</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么要使用神经网络？"><span class="toc-number">1.2.</span> <span class="toc-text">为什么要使用神经网络？</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Perceptrons"><span class="toc-number">2.</span> <span class="toc-text">Perceptrons</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h1 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h1><h2 id="Neural-Networks-amp-Deep-Learning"><a href="#Neural-Networks-amp-Deep-Learning" class="headerlink" title="Neural Networks &amp; Deep Learning"></a>Neural Networks &amp; Deep Learning</h2><p><em>Neural Networks, a beautiful biologically-inspired programming paradigm which enables a computer to learn from observational data.</em></p>
+<p><em>Deep learning, a powerful set of techniques for learning in neural networks</em></p>
+<p>摘自<a href="http://neuralnetworksanddeeplearning.com/index.html" target="_blank" rel="noopener">Neural Networks and Deep Learning</a></p>
+<h2 id="为什么要使用神经网络？"><a href="#为什么要使用神经网络？" class="headerlink" title="为什么要使用神经网络？"></a>为什么要使用神经网络？</h2><p>因为目前，神经网络和深度学习为图像识别，语音识别和自然语言处理中的许多问题提供了最佳的解决方案。</p>
+<p>经过数百万年乃至数千万年（数字不怎么准确反正很长就是了。。。）的进化，图像识别，语音识别和自然语言处理等领域的问题，在大多数人眼里都是不是一件困难的事（当然听外语。。。）。人类在处理视觉问题时的优势是传统编程方法所无法比拟的，所以自然而然的，人们开始对人类、动物的中枢神经系统进行观察，从中产生了神经网络的这个概念，高中生物中就介绍了许多关于神经网络的基本知识，仿照神经网络就有了现在的<a href="https://zh.wikipedia.org/wiki/%E4%BA%BA%E5%B7%A5%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C" target="_blank" rel="noopener">人工神经网络</a>。</p>
+<p>现在的神经网络经过了许多年的发展，与其说是一个类生物模型，不如说是基于统计学和信号处理的一个数学模型或者计算模型。</p>
+<h1 id="Perceptrons"><a href="#Perceptrons" class="headerlink" title="Perceptrons"></a>Perceptrons</h1><p>说到神经网络，自然离不开Perceptrons（<a href="https://zh.wikipedia.org/wiki/%E6%84%9F%E7%9F%A5%E5%99%A8" target="_blank" rel="noopener">感知机</a>）,它是一个简单的neuron。</p>
+<p>感知机现在已经不在使用了，更常见的事使用其他模型的神经网络，例如Sigmoid neurons。但是要了解为什么这样定义Sigmoid neurons，是值得花时间先了解感知器的。</p>
+<p>So how do perceptrons work？简单来说，感知器得到几个二进制输入x1，x2，…，并输出单个二进制结果：</p>
+<p><img src="http://neuralnetworksanddeeplearning.com/images/tikz0.png" alt="感知机"></p>
+<p>通过引入权重W1，W2，…（表示各个输入x1, x2, …,重要性的实数）和阈值（像权重一样，是一个实数，是神经元的一个参数），以及输入，感知机计算出输出。由输入与权重的加权和小于或大于某个阈值，来确定neuron的输出是0或1。</p>
+<script type="math/tex; mode=display">output = \begin{cases} 0, & \text {if $\sum_i w_ix_i$ $\leq$ 阈值} \\ 1, & \text{if $\sum_i w_ix_i$ > 阈值} \end{cases}</script><p>这就是（Perceptrons）感知机，一个基本的数学模型。你可以认为感知器是一个通过对不同的因素加重来做出决定的一种模型。举个例子，帮助理解，虽然可能并没有什么用，假设你有一份offer，有三个因素决定你是否选择这家公司：</p>
+<ol>
+<li>你对薪水是否满意</li>
+<li>从你住的地方到公司的时间短吗</li>
+<li>公司的福利你满意吗</li>
+</ol>
+<p>对于第一种和第三种因素，满意则是1，不满意则为0，同理到达公司的时间短为1，时间长为0。这时就需要权重w1、w2、w3帮我们表示这三种因素的重要程度，假设对你来说，薪水的重要程度为第一位的，薪水的重要程度可以让你忽略别的因素，则可以考虑将第一种因素的权重w1置为10，其他两种因素权重置为3、5，阈值设为9，这样只有当你对薪水满意，这样的output才会为1。同理，也可以考虑下其他情况。假设w1为7,w2为4，w3为5，阈值为8，这样只有三个因素中的两个因素满足时output为1。这样通过设置不同的权重和阈值，就可以产生不同的决策模型。</p>
+<p>显然，感知器是一个非常简单的模型。 但是，这个例子说明了感知器如何衡量不同类型的因素来做出决定。这样我们就可以看到，一个复杂的感知器网络可能会做出一些相当微妙的决定：</p>
+<p><img src="http://neuralnetworksanddeeplearning.com/images/tikz1.png" alt="多层感知机"></p>
+<p>在这个网络中，感知器的第一列，即为感知器的第一层，通过权衡输入来得到三个非常简单的输出。 第二层感知器中的每一个都通过权衡第一层决策的结果来作出决定。 以这种方式，第二层中的感知器可以在比第一层中的感知器更复杂和更抽象的水平上做出决定。 更复杂的决定可以由感知器在第三层完成。以这种方式，感知器的多层网络可以进行复杂的决策。</p>
+<p>重写一下感知机计算公式，使之更加简洁：</p>
+<script type="math/tex; mode=display">output = \begin{cases} 0, & \text {if $W·X + b $ $\leq$ 0} \\ 1, & \text{if $ W·X+ b$ > 0} \end{cases}</script><p>其中</p>
+<script type="math/tex; mode=display">W = [w1, w2, w3]</script><script type="math/tex; mode=display">X = [x1, x2, x3]^T</script><script type="math/tex; mode=display">b(bias) = -阈值</script><p>感知器可以使用的另一种方法是计算我们通常认为是底层计算的基本逻辑函数，诸如AND，OR和NAND的函数。 例如，假设我们有一个感知器有两个输入，每个输入的权重为-2，总体偏差为3。如下所示：</p>
+<p><img src="http://neuralnetworksanddeeplearning.com/images/tikz2.png" alt="NAND"></p>
+<p>这就是一共NAND门，数字电路里面我们知道与非门是逻辑完备的，任何布尔函数都能用与非门来实现。</p>
+<p><img src="http://neuralnetworksanddeeplearning.com/images/tikz3.png" alt="全加器电路"></p>
+<p>这是一个一位全加器<br>我们可以将与非门换成之前的与非门感知机，来的到一个全加器的感知机网络。</p>
+<p><img src="http://neuralnetworksanddeeplearning.com/images/tikz4.png" alt="全加器网络"></p>
+<p>尽管结构简单，感知机能够学习并解决相当复杂的问题，但是感知机主要的缺陷是它不能处理线性不可分问题。</p>
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2017/06/07/neuralnets1/">http://sikasjc.github.io/2017/06/07/neuralnets1/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/Neural-Networks/">Neural Networks</a>
+            
+              <a href="/tags/Deep-Learning/">Deep Learning</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/06/12/neuralnets2/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Neural Networks and Deep Learning 学习笔记二：</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/06/01/bored/">
+        <span class="next-text nav-default">无所事事的感觉真不好</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/u/5605720030" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/si-qia-sika" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  
+  
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+
+    
+  </body>
+</html>

@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="学习Neural Networks，帮助自己理解"/>
+
+
+
+
+  <meta name="keywords" content="Neural Networks,Deep Learning," />
+
+
+
+
+  <link rel="alternate" href="/default" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2017/06/12/neuralnets2/"/>
+
+
+<meta name="description" content="学习Neural Networks，帮助自己理解">
+<meta name="keywords" content="Neural Networks,Deep Learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Neural Networks and Deep Learning 学习笔记二：">
+<meta property="og:url" content="http://sikasjc.github.io/2017/06/12/neuralnets2/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="学习Neural Networks，帮助自己理解">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="http://neuralnetworksanddeeplearning.com/images/tikz8.png">
+<meta property="og:image" content="http://neuralnetworksanddeeplearning.com/images/tikz9.png">
+<meta property="og:image" content="https://ooo.0o0.ooo/2017/06/16/594358b50b354.png">
+<meta property="og:image" content="https://ooo.0o0.ooo/2017/06/16/594358b50ffad.png">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/17-7-4/30232175.jpg">
+<meta property="og:updated_time" content="2017-09-17T13:36:07.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Neural Networks and Deep Learning 学习笔记二：">
+<meta name="twitter:description" content="学习Neural Networks，帮助自己理解">
+<meta name="twitter:image" content="http://neuralnetworksanddeeplearning.com/images/tikz8.png">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> Neural Networks and Deep Learning 学习笔记二： · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Neural Networks and Deep Learning 学习笔记二：
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017年6月12日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/Neural-Networks/">Neural Networks</a>
+            
+              <a href="/tags/Deep-Learning/">Deep Learning</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#学习"><span class="toc-number">1.</span> <span class="toc-text">学习</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Sigmoid-neurons"><span class="toc-number">2.</span> <span class="toc-text">Sigmoid neurons</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#神经网络的结构"><span class="toc-number">3.</span> <span class="toc-text">神经网络的结构</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h2 id="学习"><a href="#学习" class="headerlink" title="学习"></a>学习</h2><p>Deep Learning重点自然在于学习，通过让神经网络学习，来达到我们想要的功能。</p>
+<p>学习算法听起来很棒。 我们如何为神经网络设计这样的算法？ </p>
+<p>假设我们有一个感知器网络，我们想用来学习来使感知机网络可以解决一些问题。 例如，网络的输入可能是来自数字扫描的手写图像的原始像素数据。 我们希望感知机网络学习权重和偏差，以便网络的输出正确地对数字进行分类。 </p>
+<p>假设我们在网络中的一些权重（或偏差）中做了一个小的改变。 我们想要的是这个小的权重变化只会导致网络输出的相对较小的变化。 我们稍后会看到，这个属性将使学习成为可能。 理论上，这就是我们想要的（当然这个网络太简单了，无法做手写识别！）：</p>
+<p><img src="http://neuralnetworksanddeeplearning.com/images/tikz8.png" alt="学习"></p>
+<p>如果权重（或偏差）的微小变化只会导致输出的微小变化，那么我们可以使用这个前提来修改权重和偏差，以使我们的网络可以达到我们要想到功能。 例如，假设网络错误地将图像“9”分类为“8”。 我们可以在权重和偏差上做一个小的改变，这样网络可以更接近地将图像分类为“9”。 改变权重和偏差，以产生更好的输出， 这就是网络在学习。</p>
+<p>事实上，网络中任何单个感知器的权重或偏差的小小变化有时可能导致该感知器的输出完全翻转，例如从0到1。然后，这种翻转可能导致网络其余部分会以一些非常复杂的方式完全改变，这样得到我们想要的输出会非常的困难。</p>
+<h2 id="Sigmoid-neurons"><a href="#Sigmoid-neurons" class="headerlink" title="Sigmoid neurons"></a>Sigmoid neurons</h2><p>我们可以通过引入Sigmoid neurons来解决这个问题。Sigmoid neurons与感知器类似，但是其权量和偏差的微小变化只会导致其输出的微小变化。 这就是Sigmoid neurons能够学习的关键所在。</p>
+<p><img src="http://neuralnetworksanddeeplearning.com/images/tikz9.png" alt="Sigmoid neurons"></p>
+<p>像感知器一样，Sigmoid neurons有输入，x1，x2，… 但是，不是仅仅是0或1，这些输入可以在0和1之间取任何值，例如，0.638 …。 和感知器一样，Sigmoid neurons对于每个输入有权重w1，w2，… 和偏差b，但输出不是0或1，而是$ σ（w·x + b）$，其中$ σ $称为Sigmoid函数：</p>
+<script type="math/tex; mode=display">\begin{eqnarray} 
+  \sigma(z) \equiv \frac{1}{1+e^{-z}}.
+\tag{1}\end{eqnarray}</script><p>更明确地说，输入x1，x2，…，权重w1，w2，…和偏差b的Sigmoid neurons的输出是：</p>
+<script type="math/tex; mode=display">\begin{eqnarray} 
+  \frac{1}{1+\exp(-\sum_j w_j x_j-b)}.
+\tag{2}\end{eqnarray}</script><p>看起来Sigmoid neurons和感知机有很大区别，实际上它们是非常相似的。首先，我们先看下Sigmoid函数$ σ() $的图像:</p>
+<p><img src="https://ooo.0o0.ooo/2017/06/16/594358b50b354.png" alt="Sigmoid function"></p>
+<p>假设$ z≡w⋅x+b $是一个非常大的正数，那么$ e^{-z} \approx 0 $并且$ σ(z)≈1 $。换句话说，当$ z=w⋅x+b $非常大并且为正数，sigmoid neurons的输出结果接近于1, 就像感知器一样。 假设$ z=w⋅x+b $是非常大的负数，则有$ e^{-z} \rightarrow \infty $, 并且$ σ(z)≈0 $。即当$ z=w⋅x+b $非常大并且为负数，就像感知器一样，sigmoid neurons的输出结果接近于0。只有当$ w⋅x+b $具有适度的大小时，才有与感知器模型有很大的偏差。</p>
+<p>这种形状可以认为是阶梯函数的平滑版本：</p>
+<p><img src="https://ooo.0o0.ooo/2017/06/16/594358b50ffad.png" alt="step function"></p>
+<p>如果<script type="math/tex">σ</script>是一个阶梯函数，那么Sigmoid neurons将成为感知器，因为输出为1或0，取决于$ w·x + b $是正还是负。</p>
+<pre><code>但是实际上，当w⋅x+ b = 0时，感知器输出0，而step函数输出1。所以严格来说，它们还是有一点区别的
+</code></pre><hr>
+<p>Sigmoid neurons 可以像感知机一样，根据 w (weight权重) 和 b (bias偏差)来引起输出的微小变化，这样Sigmoid neurons才能够完成学习，如下所示：</p>
+<script type="math/tex; mode=display">\begin{eqnarray} 
+  \Delta \mbox{output} \approx \sum_j \frac{\partial \, \mbox{output}}{\partial w_j}
+  \Delta w_j + \frac{\partial \, \mbox{output}}{\partial b} \Delta b
+\tag{3}\end{eqnarray}</script><p>Sigmoid neurons的输出$ σ（w·x + b）$可能会是0.731，0.293等等，我们可以通过判断输出是否大于某个特定的值，例如0.5，将输出分为1或者0，完成分类。</p>
+<script type="math/tex; mode=display">\begin{eqnarray}
+  \mbox{output} = \left\{ 
+    \begin{array}{ll} 
+      0 & \mbox{if } \sigma(w \cdot x+b)\leq 0.5 \\
+      1 & \mbox{if } \sigma(w \cdot x+b) > 0.5
+    \end{array}
+  \right.
+\tag{4}\end{eqnarray}</script><p>之后，会有如何根据输出的结果与预期的结果，用一些算法，例如后向传播算法，来调整$ w $ (weight)和$ b $ (bias)，让我们的网络可以完成我们想要的功能。</p>
+<h2 id="神经网络的结构"><a href="#神经网络的结构" class="headerlink" title="神经网络的结构"></a>神经网络的结构</h2><p><img src="http://ormnbkvfv.bkt.clouddn.com/17-7-4/30232175.jpg" alt="The architecture of neural networks"></p>
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2017/06/12/neuralnets2/">http://sikasjc.github.io/2017/06/12/neuralnets2/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/Neural-Networks/">Neural Networks</a>
+            
+              <a href="/tags/Deep-Learning/">Deep Learning</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/07/01/neuralnets3/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Neural Networks and Deep Learning 学习笔记三：</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/06/07/neuralnets1/">
+        <span class="next-text nav-default">Neural Networks and Deep Learning 学习笔记一：开始和感知机（Perceptrons）</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/u/5605720030" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/si-qia-sika" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  
+  
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+
+    
+  </body>
+</html>

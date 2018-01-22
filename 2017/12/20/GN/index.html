@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="一般意义上讲，一个社区也可以被称为群、聚类或模块，是网络中一群阶段或边的集合，其内部的节点间连接较为紧密，而社区间的连接却相对稀疏。那么，社区发现就是在复杂网络中发现这些连接紧密的社区结构。社区发现可以理解为网络中的结点聚类..."/>
+
+
+
+
+  <meta name="keywords" content="复杂网络 社区发现 算法 python," />
+
+
+
+
+  <link rel="alternate" href="/default" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2017/12/20/GN/"/>
+
+
+<meta name="description" content="一般意义上讲，一个社区也可以被称为群、聚类或模块，是网络中一群阶段或边的集合，其内部的节点间连接较为紧密，而社区间的连接却相对稀疏。那么，社区发现就是在复杂网络中发现这些连接紧密的社区结构。社区发现可以理解为网络中的结点聚类...">
+<meta name="keywords" content="复杂网络 社区发现 算法 python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GN算法--复杂网络中社区发现与Python实现">
+<meta property="og:url" content="http://sikasjc.github.io/2017/12/20/GN/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="一般意义上讲，一个社区也可以被称为群、聚类或模块，是网络中一群阶段或边的集合，其内部的节点间连接较为紧密，而社区间的连接却相对稀疏。那么，社区发现就是在复杂网络中发现这些连接紧密的社区结构。社区发现可以理解为网络中的结点聚类...">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-1-21/26762790.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-1-21/23305862.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-1-21/48488885.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-1-21/79561109.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-1-21/21607724.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-1-21/17264809.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-1-21/24362381.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-1-21/55901962.jpg">
+<meta property="og:updated_time" content="2018-01-21T15:14:35.042Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GN算法--复杂网络中社区发现与Python实现">
+<meta name="twitter:description" content="一般意义上讲，一个社区也可以被称为群、聚类或模块，是网络中一群阶段或边的集合，其内部的节点间连接较为紧密，而社区间的连接却相对稀疏。那么，社区发现就是在复杂网络中发现这些连接紧密的社区结构。社区发现可以理解为网络中的结点聚类...">
+<meta name="twitter:image" content="http://ormnbkvfv.bkt.clouddn.com/18-1-21/26762790.jpg">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> GN算法--复杂网络中社区发现与Python实现 · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          GN算法--复杂网络中社区发现与Python实现
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017年12月20日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/复杂网络-社区发现-算法-python/">复杂网络 社区发现 算法 python</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#简介"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#复杂网络"><span class="toc-number">1.1.</span> <span class="toc-text">复杂网络</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#社区发现"><span class="toc-number">1.2.</span> <span class="toc-text">社区发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#介数和边介数"><span class="toc-number">1.3.</span> <span class="toc-text">介数和边介数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#社区发现的衡量标准——模块度函数Q"><span class="toc-number">1.4.</span> <span class="toc-text">社区发现的衡量标准——模块度函数Q</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#基于介数的社区发现的经典算法——Girvan-Newman算法"><span class="toc-number">2.</span> <span class="toc-text">基于介数的社区发现的经典算法——Girvan-Newman算法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#基于边介数的社区发现算法"><span class="toc-number">2.1.</span> <span class="toc-text">基于边介数的社区发现算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Girvan-Newman算法"><span class="toc-number">2.2.</span> <span class="toc-text">Girvan-Newman算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Python实现"><span class="toc-number">2.3.</span> <span class="toc-text">Python实现</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考文献"><span class="toc-number">3.</span> <span class="toc-text">参考文献</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><h2 id="复杂网络"><a href="#复杂网络" class="headerlink" title="复杂网络"></a>复杂网络</h2><p>　　在网络理论的研究中，复杂网络是由数量巨大的节点和节点之间错综复杂的关系共同构成的网络结构。用数学的语言来说，就是一个有着足够复杂的拓扑结构特征的图。复杂网络具有简单网络，如规则网络、随机图等结构所不具备的特性，而这些特性往往出现在真实世界的网络结构中。</p>
+<p>　　在自然界和人类社会中，复杂网络无处不在，如自然界中的生态网络、新陈代谢网络、蛋白质网络等；人类社会中的社交网络、交通网络、电子邮件网络、科学家合作网、电子电路网络等，这些复杂系统都可以用复杂网络的相关特性进行描述和分析，网络中的结点表示系统个体，边表示个体之间的关系。如今，复杂网络的研究是现今科学研究中的一个热点，它已渗透到各个领域，并成为这些领域的重要研究方向。</p>
+<h2 id="社区发现"><a href="#社区发现" class="headerlink" title="社区发现"></a>社区发现</h2><p>　　随着复杂网络理论的发展，继1998年Watts和Strogtz提出了WS小世界模型(<a href="https://en.wikipedia.org/wiki/Small-world_network" target="_blank" rel="noopener">Small-world network</a>)，1999年Barabasi和Albert提出无标度网络模型(<a href="https://en.wikipedia.org/wiki/Scale-free_network" target="_blank" rel="noopener">Scale-free network</a>)之后，人们发现复杂网络具有一定的社区结构。相同类型节点之间连接较多，构成一个一个的小社区，不同类型节点之间连接较少，但成为沟通不同社区的重要通道，这种连接的不均匀性表明，网络内部存在一定的自然分化。</p>
+<p>　　对于社区（community），目前没有明确的定义，常见的是Newman和Gievan提出的：社区是图的一个子图，相比于图的其他部分，其中包含着密集的节点，或者等价地说，如果图一个子图内部的链接数量高于这些子图之间的链接数，我们就可以说这个图含有社区。如下图所示，图中网络包含三个社区结构，分别对应图中的三个虚线圈内的节点，同一社区内的节点和节点之间连接很紧密，而社区与社区之间的连接比较稀疏。换而言之，复杂网络的社区结构是复杂网络中社区之间的连接相对稀疏，而社区内部的连接相对稠密的特性。</p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-1-21/26762790.jpg" alt="具有社区结构的网络示意图"></p>
+<h2 id="介数和边介数"><a href="#介数和边介数" class="headerlink" title="介数和边介数"></a>介数和边介数</h2><p>　　一种复杂网络中社区发现的方法是寻找位于社区之间的边，如果能找到并移除这些边，最终将只剩下孤立的社区。</p>
+<p>　　谈及一条位于社区之间的边，由于与多方法可以对其量化，并基于此实现社区发现算法。2004年，Newman和Girvan的论文中提出了利用介数中心性（betweenness centrality）的方法，称之为Girvan-Newman算法，这篇论文也是开创了社区发现这一领域的文章。本文主要针对无权和有权网络，对此类算法进行一定的研究分析。</p>
+<p>　　在图论中，介数中心性（betweenness centrality）是基于最短路径的图的中心的度量方法。对于连通图中的每对顶点，在顶点之间至少存在一条最短路径，而一个节点的介数一般是指通过该节点的最短路径数。</p>
+<p>介数中心性的定义为：</p>
+<script type="math/tex; mode=display">C_B(v)= \sum_{s\ne v\ne t \in V}{\frac{\sigma_{st(v)}}{\sigma_{st}}}</script><p>　　其中 <script type="math/tex">σ_st (v)</script> 表示经过节点v的s→t的最短路径数，<script type="math/tex">σ_st</script> 表示s→t的最短路径数。直观上来说，介数中心性反映了节点v作为“桥梁”的重要程度。因此，我们可以定义边介数（edge betweenness）为经过该边的最短路径数，如图1所示，位于社区之间的边的边介数将会很大。同时，可以进一步得到边介数中心性（edge betweenness centrality）。</p>
+<h2 id="社区发现的衡量标准——模块度函数Q"><a href="#社区发现的衡量标准——模块度函数Q" class="headerlink" title="社区发现的衡量标准——模块度函数Q"></a>社区发现的衡量标准——模块度函数Q</h2><p>　　Newman和Girvan针对社区发现问题的同时，提出了模块度函数 <script type="math/tex">Q</script> 来定量的衡量社区划分的结果。该度量标准自提出以来，逐渐被大多数研究者们接受，并发展了很多以模块度为目标函数的新算法。</p>
+<p>　　模块度，是指复杂网络中连接社区内部节点的边所占的比例，与另一个随机网络中连接社区内部节点的边所占的比例的期望值的差值。其中，这个随机网络的构造方法为：保持每个节点的社区属性不变，根据节点度对节点间的边进行随机连接。如果社区结构比较明显，则社区内部连接的边的比例应改高于随机网络的期望值。</p>
+<p>　　因此，可以用模块度函数 <script type="math/tex">Q</script> 定量描述社区划分的模块化水平。假设已经发现复杂网络的社区结构，<script type="math/tex">M</script> 为已发现的社区个数，<script type="math/tex">L</script> 为网络中的边数，<script type="math/tex">l_s</script> 是社区<code>$s$</code> 中节点相互连接的数目，<script type="math/tex">d_s</script> 是社区 <script type="math/tex">s</script> 中所有节点相互连接数目的和。则 <script type="math/tex">Q</script> 的函数表达式如下所示：</p>
+<script type="math/tex; mode=display">Q = \sum_{s}^{M}{\left[\frac{l_s}{L}-(\frac{d_s}{2L})^2 \right]}</script><p>　　上式的物理意义是：网络中连接两个同种类型的节点的边（即社区内部边）比例，减去在同样的社区结构下任意连接这两个节点的边的比例的期望值。如果社区内部边的比例不大于任意连接时的期望值，则有 <script type="math/tex">Q=0</script> ， <script type="math/tex">Q</script> 的上限为1，而 <script type="math/tex">Q</script> 越接近这个值，就说明社区结构越明显，在实际网络中， <script type="math/tex">Q</script> 值常位于0.3和0.7之间。</p>
+<h1 id="基于介数的社区发现的经典算法——Girvan-Newman算法"><a href="#基于介数的社区发现的经典算法——Girvan-Newman算法" class="headerlink" title="基于介数的社区发现的经典算法——Girvan-Newman算法"></a>基于介数的社区发现的经典算法——Girvan-Newman算法</h1><h2 id="基于边介数的社区发现算法"><a href="#基于边介数的社区发现算法" class="headerlink" title="基于边介数的社区发现算法"></a>基于边介数的社区发现算法</h2><p>　　这样的社区发现算法的主要思路为：计算网络中所有边的边介数，然后寻找边介数值最大的边并移除。在移除时，会改变一些边的边介数。以前经过被移除边的最短路径，现在改为经由其他边，因此必须重新计算边介数，然后再次搜索值最大的边并移除，依此类推。当一条接一条边被移除时，最初连通的网络最终会被分成两部分、三部分等等，直至网络的每一个成为一个社区，是一种<strong>分裂算法</strong>。</p>
+<p>　　算法的执行过程可用树状图表示，如下图所示。算法从顶部开始生成树状图，首先是单个连通网络，然后将其不断划分，直至每个分支只有单个结点为止。在算法运行期间，每个独立的网络结构状态对应于树状图的水平切分，在图2中用红线表示。与红线相交的每个分支代表一组节点，即一个社区，沿分支向下到底部的全部节点都为其成员。因此对于一个连通网络，树状图能够得到算法执行全过程中每个阶段里网络划分的社区结构。</p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-1-21/23305862.jpg" alt="分裂算法"></p>
+<p>　　这样我们可以发现，这种算法并不是给出将网络划分成社区的唯一划分，而是给出多种不同程度的划分。范围比较粗的划分，将网络划分为几个大的社区，范围比较细的划分，将网络划分为许多比较小的社区。这种不同程度的划分，可以揭示关于层次网络结构的信息。同时，用户可根据目标社区数来决定进行哪些划分，或者利用模块度函数 <script type="math/tex">Q</script> 给出该算法的最优划分。</p>
+<h2 id="Girvan-Newman算法"><a href="#Girvan-Newman算法" class="headerlink" title="Girvan-Newman算法"></a>Girvan-Newman算法</h2><p>　　如前所述，直观来看，在社区内部节点之间相互连接的边密度较大，因此，通过边介数（连接社区的边的边介数大）来识别社区是一种较为直观的社区发现算法。Girvan-Newman算法即是一种基于介数的社区发现算法，其基本思想是根据边介数中心性（edge betweenness）从大到小的顺序不断的将边从网络中移除直到整个网络分解为各个社区。因此，Girvan-Newman算法实际上是一种分裂方法。</p>
+<pre><code>Girvan-Newman算法的基本流程如下：
+（1）计算网络中所有边的边介数；
+（2）找到边介数最高的边并将它从网络中移除；
+（3）重复步骤2，直到每个节点成为一个独立的社区为止，即网络中没有边存在。
+</code></pre><p>　　Girvan-Newman算法给出了如何除去边得到社区结构。但在得到最终的社区数之前，还有一个问题没有得到解决，即如何确定合适的社区数，使社区划分结果最优。这时需要用到之前提到的衡量标准——模块度函数 <script type="math/tex">Q</script> 。</p>
+<p>　　这样可以利用 <script type="math/tex">Q</script> 值寻找合适的社区数，Girvan-Newman算法中每去除一次边，则计算一下所得社区结构的 <script type="math/tex">Q</script> 值，寻找到 <script type="math/tex">Q</script> 值最大时的社区数量。如下图所示，当边去除后，社区数量为4时，所得 <script type="math/tex">Q</script> 值最大，因此该网络划分为4个社区最优。<br><img src="http://ormnbkvfv.bkt.clouddn.com/18-1-21/48488885.jpg" alt="Girvan-Newman算法演示"></p>
+<h2 id="Python实现"><a href="#Python实现" class="headerlink" title="Python实现"></a>Python实现</h2><p><strong>Zachary’s karate club网络</strong></p>
+<p>　　Zachary网络是一个检验不同社区发现算法的经典真实的无权网络，一共有34个节点，78条边。该网络是Zachary在上世纪70年代，用了两年时间观察研究空手道俱乐部34个成员之间的个关系而得到的，如下图所示。在调查过程中，俱乐部的主管和校长产生争执，分裂成了两个团体，真实的社区如下所示：</p>
+<pre><code>[[1, 2, 3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 17, 18, 20, 22], 
+[32, 33, 34, 9, 10, 15, 16, 19, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31]]
+</code></pre><p><img src="http://ormnbkvfv.bkt.clouddn.com/18-1-21/79561109.jpg" alt="Zachary&#39;s karate club"></p>
+<p>　　这里使用Python的NetworkX包以及Matplotlib包来完成对于Girvan-Newman算法的演示，以及Gephi，一个基于JVM的可视化平台。</p>
+<p>　　NetworkX是一个用于创建，操作和研究复杂网络的结构、动态和功能的Python包。Matplotlib是一个Python 2D绘图库，利用它完成模块化函数Q与划分社区数目的关系曲线，之后使用Gephi作为网络的可视化工具，将GML文件中的图中划分的社区表示出来。</p>
+<pre><code>Python环境需求：
+1. Python-3.6.3
+2. NetworkX-2.0
+3. Matplotlib-2.1.0
+</code></pre><p>　　安装好Python环境需求后，可直接运行Girvan-Newman.py，输出格式为GML的文件，以及其他信息。获得基于Girvan-Newman算法的社区发现的一些特性。Zachary’s karate club网络Girvan-Newman算法划分社区数与Q值的关系（如下图所示）。</p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-1-21/21607724.jpg" alt="划分社区数与Q值"></p>
+<p>　　我们可以看到，当我们已知应该划分社区的个数，即2个社区时，Girvan-Newman算法的模块度函数Q值到达极大值，为0.35996055226824464，将输出的GML文件用Gephi打开。这时的社区划分结果如下所示，除了节点3以外,其它节点都被正确归类，如下图所示。</p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-1-21/17264809.jpg" alt="划分结果"></p>
+<pre><code>-----------Using number to divide communities and the Q-----------
+The number of Communites: 2
+Communites: [[1, 2, 4, 5, 6, 7, 8, 11, 12, 13, 14, 17, 18, 20, 22], [32, 33, 34, 3, 9, 10, 15, 16, 19, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31]]
+Max_Q: 0.35996055226824464
+-------------------------------------------------------------------
+</code></pre><p>　　但是对于不知道应该划分社区个数时，依赖模块度函数Q的最大值划分社区，从图3中可知，当划分成5个社区时，模块度函数Q达到最大值，为0.40129848783694944，这时的社区划分结果较实际网络相差略大。</p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-1-21/24362381.jpg" alt="Q的最大值划分社区数量"></p>
+<pre><code>-----------the Max Q and divided communities-----------------------
+The number of Communites 5
+Communites: [[1, 2, 4, 8, 12, 13, 14, 18, 20, 22], [32, 3, 25, 26, 28, 29], [5, 6, 7, 11, 17], [33, 34, 9, 15, 16, 19, 21, 23, 24, 27, 30, 31], [10]]
+Max_Q: 0.40129848783694944
+-------------------------------------------------------------------
+</code></pre><p>　　下图为Newman和Girvan在论文Finding and evaluating community structure in networks中给出计算结果，和之前给出的图以及计算出的划分社区的每一个步骤对比发现，我们实现的Girvan-Newman算法与论文中给出的结果相一致。</p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-1-21/55901962.jpg" alt="论文中给出的划分结果"></p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>1、Newman M E J, Girvan M. Finding and evaluating community structure in networks[J]. Physical review E, 2004, 69(2): 026113.<br>2、杨晓光. 基于复杂网络的社区发现算法研究与实现[D].南京理工大学,2017.<br>3、汪洋. 复杂网络的社团发现算法研究[D].安徽大学,2014.<br>4、莫春玲. 复杂网络中聚类方法及社团结构的研究[D].武汉理工大学,2007.</p>
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2017/12/20/GN/">http://sikasjc.github.io/2017/12/20/GN/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/复杂网络-社区发现-算法-python/">复杂网络 社区发现 算法 python</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2017/11/10/Application_layer/">
+        <span class="next-text nav-default">计算机网络的基础知识：应用层</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/u/5605720030" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/si-qia-sika" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  
+  
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+
+    
+  </body>
+</html>

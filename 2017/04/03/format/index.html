@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="python基础 自python2.6开始，新增了一种格式化字符串的函数str.format()..."/>
+
+
+
+
+  <meta name="keywords" content="python," />
+
+
+
+
+  <link rel="alternate" href="/default" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2017/04/03/format/"/>
+
+
+<meta name="description" content="python基础 自python2.6开始，新增了一种格式化字符串的函数str.format()...">
+<meta name="keywords" content="python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python format函数">
+<meta property="og:url" content="http://sikasjc.github.io/2017/04/03/format/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="python基础 自python2.6开始，新增了一种格式化字符串的函数str.format()...">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2017-09-17T13:36:07.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="python format函数">
+<meta name="twitter:description" content="python基础 自python2.6开始，新增了一种格式化字符串的函数str.format()...">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> python format函数 · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          python format函数
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017年4月3日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#语法"><span class="toc-number">1.</span> <span class="toc-text">语法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#“映射”示例"><span class="toc-number">2.</span> <span class="toc-text">“映射”示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#格式限定符"><span class="toc-number">3.</span> <span class="toc-text">格式限定符</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><p>它通过<strong><code>{}</code></strong>和<strong><code>:</code></strong>来代替<strong><code>%</code></strong></p>
+<h3 id="“映射”示例"><a href="#“映射”示例" class="headerlink" title="“映射”示例"></a>“映射”示例</h3><ul>
+<li>通过位置<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;&#125;&#123;&#125;'</span>.format(<span class="string">'123'</span>,<span class="string">'abc'</span>)</span><br><span class="line"><span class="string">'123abc'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;1&#125;,&#123;0&#125;'</span>.format(<span class="string">'123'</span>,<span class="string">'abc'</span>)</span><br><span class="line"><span class="string">'abc,123'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;1&#125;,&#123;0&#125;:&#123;1&#125;'</span>.format(<span class="string">'123'</span>,<span class="string">'abc'</span>)</span><br><span class="line"><span class="string">'abc,123:abc'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;1&#125;,&#123;0&#125;:&#123;&#123;&#125;&#125;'</span>.format(<span class="string">'123'</span>,<span class="string">'abc'</span>)</span><br><span class="line"><span class="string">'abc,123:&#123;&#125;'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>字符串的format函数可以接受不限个参数，位置可以不按顺序，可以不用也可以使用多次,大括号可以写两遍来转义。</p>
+<ul>
+<li><p>通过关键字参数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;name&#125;|&#123;age&#125;'</span>.format(age=<span class="number">18</span>,name=<span class="string">"abc"</span>)</span><br><span class="line"><span class="string">'abc|18'</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过对象属性</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#class Car:  </span></span><br><span class="line"><span class="comment">#    def __init__(self,color,price):  </span></span><br><span class="line"><span class="comment">#        self.color, self.price = color, price </span></span><br><span class="line"><span class="comment">#        def __str__(self):  </span></span><br><span class="line"><span class="comment">#           return 'This car is &#123;self.color&#125; and worth $&#123;self.price&#125;'.format(self=self)  </span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>str(Car(<span class="string">'blue'</span>,<span class="number">200</span>)) </span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'This car is blue and worth $200'</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过下标</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>car=[<span class="string">'blue'</span>,<span class="number">200</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;0[0]&#125;,&#123;0[1]&#125;'</span>.format(car)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'blue,200'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="格式限定符"><a href="#格式限定符" class="headerlink" title="格式限定符"></a>格式限定符</h3><p>它有着丰富的的“格式限定符”（语法是{}中带:号），比如：</p>
+<ul>
+<li>填充与对齐</li>
+</ul>
+<p>填充常跟对齐一起使用<br><code>^</code>、<code>&lt;</code>、<code>&gt;</code>分别是居中、左对齐、右对齐，后面带宽度<br><code>:</code>号后面带填充的字符，只能是一个字符，不指定的话默认是用空格填充<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;:&gt;8&#125;'</span>.format(<span class="string">'189'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'     189'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;:0&gt;8&#125;'</span>.format(<span class="string">'189'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'00000189'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;:a&gt;8&#125;'</span>.format(<span class="string">'189'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'aaaaa189'</span></span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>精度与类型f</li>
+</ul>
+<p>精度常跟类型f一起使用<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;:.2f&#125;'</span>.format(<span class="number">321.33345</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'321.33'</span></span><br></pre></td></tr></table></figure></p>
+<p>其中.2表示长度为2的精度，f表示float类型。</p>
+<ul>
+<li>多进制表示</li>
+</ul>
+<p>b、d、o、x分别是二进制、十进制、八进制、十六进制。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;:b&#125;'</span>.format(<span class="number">17</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'10001'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;:d&#125;'</span>.format(<span class="number">17</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'17'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;:o&#125;'</span>.format(<span class="number">17</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'21'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;:x&#125;'</span>.format(<span class="number">17</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'11'</span></span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>其他类型<br>千位分隔符<br>用，号还能用来做金额的千位分隔符。<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;:,&#125;'</span>.format(<span class="number">1234567890</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'1,234,567,890'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>‘c’ - 字符。在打印之前将整数转换成对应的Unicode字符串<br>‘e’ - 幂符号。用科学计数法打印数字。用’e’表示幂<br>‘g’ - 一般格式。将数值以fixed-point格式输出。当数值特别大的时候，用幂形式打印<br>‘n’ - 数字。当值为整数时和’d’相同，值为浮点数时和’g’相同。不同的是它会根据区域设置插入数字分隔符。<br>‘%’ - 百分数。将数值乘以100然后以fixed-point(‘f’)格式打印，值后面会有一个百分号。</p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2017/04/03/format/">http://sikasjc.github.io/2017/04/03/format/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/06/01/bored/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">无所事事的感觉真不好</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/04/03/subarray/">
+        <span class="next-text nav-default">Maximum subarray problem 最大子数组问题</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/u/5605720030" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/si-qia-sika" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  
+  
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+
+    
+  </body>
+</html>

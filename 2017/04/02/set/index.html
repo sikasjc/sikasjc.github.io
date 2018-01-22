@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="在 leetcode 看到了[349. Intersection of Two Arrays][1]，题很简单，正好复习总结下 set 的各种操作"/>
+
+
+
+
+  <meta name="keywords" content="python," />
+
+
+
+
+  <link rel="alternate" href="/default" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2017/04/02/set/"/>
+
+
+<meta name="description" content="在 leetcode 看到了[349. Intersection of Two Arrays][1]，题很简单，正好复习总结下 set 的各种操作">
+<meta name="keywords" content="python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python set 集合运算总结">
+<meta property="og:url" content="http://sikasjc.github.io/2017/04/02/set/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="在 leetcode 看到了[349. Intersection of Two Arrays][1]，题很简单，正好复习总结下 set 的各种操作">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2017-09-17T13:36:07.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="python set 集合运算总结">
+<meta name="twitter:description" content="在 leetcode 看到了[349. Intersection of Two Arrays][1]，题很简单，正好复习总结下 set 的各种操作">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> python set 集合运算总结 · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          python set 集合运算总结
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2017年4月2日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#set-操作"><span class="toc-number">1.</span> <span class="toc-text">set 操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#添加删除"><span class="toc-number">1.1.</span> <span class="toc-text">添加删除</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#交集-并集-差集-对称差集-子集超集"><span class="toc-number">1.2.</span> <span class="toc-text">交集 并集 差集 对称差集 子集超集</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p>在 leetcode 看到了<a href="https://leetcode.com/problems/intersection-of-two-arrays/#/description" target="_blank" rel="noopener">349. Intersection of Two Arrays</a>，题很简单，正好复习总结下 set 的各种操作</p>
+<h2 id="set-操作"><a href="#set-操作" class="headerlink" title="set 操作"></a>set 操作</h2><h3 id="添加删除"><a href="#添加删除" class="headerlink" title="添加删除"></a>添加删除</h3><ul>
+<li>添加</li>
+</ul>
+<p>python set 的添加有两种常用方法，分别是add和update。<br><code>add</code>方法：是把要传入的元素做为一个整个添加到 set 中，例如：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = set(<span class="string">'boy'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a.add(<span class="string">'python'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">&#123;<span class="string">'y'</span>, <span class="string">'b'</span>, <span class="string">'o'</span>, <span class="string">'python'</span>&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>update</code>方法：是把要传入的元素拆分，做为个体传入到 set 中，利用这个特效<code>update</code>可以添加多项，例如：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = set(<span class="string">'boy'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a.update(<span class="string">'python'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">&#123;<span class="string">'y'</span>, <span class="string">'p'</span>, <span class="string">'t'</span>, <span class="string">'b'</span>, <span class="string">'n'</span>, <span class="string">'h'</span>, <span class="string">'o'</span>&#125;</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a.update(<span class="string">'['</span>ant<span class="string">','</span>bat<span class="string">','</span>cat<span class="string">']'</span>)<span class="comment">#传入  set，并拆分</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">&#123;<span class="string">'y'</span>, <span class="string">'p'</span>, <span class="string">'ant'</span>, <span class="string">'t'</span>, <span class="string">'b'</span>, <span class="string">'n'</span>, <span class="string">'h'</span>, <span class="string">'cat'</span>, <span class="string">'o'</span>, <span class="string">'bat'</span>&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>删除</li>
+</ul>
+<p><code>remove</code>，<code>discard</code>，<code>pop</code>方法：<br><code>remove</code>和<code>discard</code>都是删除 set 内元素的方法，区别在于<code>remove</code>删除不存在的元素时，会返回一个KeyError而<code>discard</code>不会。<a href="http://stackoverflow.com/questions/27850073/runtime-difference-between-set-discard-and-set-remove-methods-in-python" target="_blank" rel="noopener">详情以及其他不同</a><br><code>pop</code>方法按顺序删除元素，并返回删除元素<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">set([<span class="string">'y'</span>, <span class="string">'python'</span>, <span class="string">'b'</span>, <span class="string">'o'</span>，<span class="string">'n'</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a.remove(<span class="string">'python'</span>) <span class="comment">#remove()</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">set([<span class="string">'y'</span>, <span class="string">'b'</span>, <span class="string">'o'</span>, <span class="string">'n'</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a.discard(<span class="string">'o'</span>) <span class="comment">#discard()</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">set([<span class="string">'y'</span>, <span class="string">'b'</span>, <span class="string">'n'</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a.pop() <span class="comment">#pop()</span></span><br><span class="line"><span class="string">'y'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">set([<span class="string">'b'</span>, <span class="string">'n'</span>])</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>其他</li>
+</ul>
+<p><code>clear</code>清空 set<br><code>copy</code>复制 set </p>
+<h3 id="交集-并集-差集-对称差集-子集超集"><a href="#交集-并集-差集-对称差集-子集超集" class="headerlink" title="交集 并集 差集 对称差集 子集超集"></a>交集 并集 差集 对称差集 子集超集</h3><ul>
+<li>交集</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>n = set(<span class="string">'abc'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>m = set(<span class="string">'bcdef'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>m &amp; n <span class="comment">#交集 &amp;</span></span><br><span class="line">&#123;<span class="string">'c'</span>, <span class="string">'b'</span>&#125;</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>m.intersection(n) <span class="comment">#交集 使用 intersection() 方法，取交集，创建新的set对象</span></span><br><span class="line">&#123;<span class="string">'c'</span>, <span class="string">'b'</span>&#125;</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>m.intersection_update(n) <span class="comment">#交集 使用 intersection_update() 方法，取交集，更新原来的set对象</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>m</span><br><span class="line">&#123;<span class="string">'c'</span>, <span class="string">'b'</span>&#125;</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>m = set(<span class="string">'bcdef'</span>) </span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>m.isdisjoint(n) <span class="comment">#使用 isdisjoint() 方法，没有交集，返回True，否则，返回False</span></span><br><span class="line"><span class="keyword">False</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>s = &#123;<span class="string">'a'</span>&#125;</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>m.isdisjoint(s)</span><br><span class="line"><span class="keyword">True</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>s.isdisjoint(m)</span><br><span class="line"><span class="keyword">True</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>并集</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>n = set(<span class="string">'abc'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>m = set(<span class="string">'bcdef'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>m | n <span class="comment">#并集 | </span></span><br><span class="line">&#123;<span class="string">'c'</span>, <span class="string">'f'</span>, <span class="string">'b'</span>, <span class="string">'d'</span>, <span class="string">'e'</span>, <span class="string">'a'</span>&#125;</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>m.union(n) <span class="comment">#并集 使用 union() 方法，取并集，创建新的set对象</span></span><br><span class="line">&#123;<span class="string">'c'</span>, <span class="string">'f'</span>, <span class="string">'b'</span>, <span class="string">'d'</span>, <span class="string">'e'</span>, <span class="string">'a'</span>&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>差集<br>与前后顺序有关</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>n = set(<span class="string">'abc'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>m = set(<span class="string">'bcdef'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>m - n <span class="comment"># m 与 n 的差集</span></span><br><span class="line">&#123;<span class="string">'e'</span>, <span class="string">'d'</span>, <span class="string">'f'</span>&#125;</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>n - m <span class="comment"># n 与 m 的差集</span></span><br><span class="line">&#123;<span class="string">'a'</span>&#125;</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>m.difference(n) <span class="comment">#使用 difference() 方法，m 与 n 的差集，创建新的set对象</span></span><br><span class="line">&#123;<span class="string">'e'</span>, <span class="string">'d'</span>, <span class="string">'f'</span>&#125;</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>n.difference(m) <span class="comment">#使用 difference() 方法，n 与 m 的差集，创建新的set对象</span></span><br><span class="line">&#123;<span class="string">'a'</span>&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>对称差集</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>m ^ n <span class="comment">#对称差集-------------m 与 n 共同部分的补集</span></span><br><span class="line">&#123;<span class="string">'e'</span>, <span class="string">'d'</span>, <span class="string">'a'</span>, <span class="string">'f'</span>&#125;</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>m.symmetric_difference(n) <span class="comment">#使用 symmetric_difference() 方法，取对称差集，创建新的set对象</span></span><br><span class="line">&#123;<span class="string">'e'</span>, <span class="string">'d'</span>, <span class="string">'a'</span>, <span class="string">'f'</span>&#125;</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>m.symmetric_difference_update(n) <span class="comment">#使用 symmetric_difference_update() 方法，取对称差集，更新原来的set对象</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>m</span><br><span class="line">&#123;<span class="string">'f'</span>, <span class="string">'d'</span>, <span class="string">'e'</span>, <span class="string">'a'</span>&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>子集与超集</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>m</span><br><span class="line">&#123;<span class="string">'f'</span>, <span class="string">'c'</span>, <span class="string">'b'</span>, <span class="string">'e'</span>, <span class="string">'d'</span>&#125;</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>k = &#123;<span class="string">'f'</span>,<span class="string">'b'</span>,<span class="string">'e'</span>&#125;</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>k.issubset(m) <span class="comment"># k 是 m 的子集</span></span><br><span class="line"><span class="keyword">True</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>m.issuperset(k) <span class="comment"># m 是 k 的超集</span></span><br><span class="line"><span class="keyword">True</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2017/04/02/set/">http://sikasjc.github.io/2017/04/02/set/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2017/04/02/intersection/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">leetcode 349. Intersection of Two Arrays python</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2017/03/30/ransomnote/">
+        <span class="next-text nav-default">leetcode 383. Ransom Note python</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/u/5605720030" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/si-qia-sika" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  
+  
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+
+    
+  </body>
+</html>
