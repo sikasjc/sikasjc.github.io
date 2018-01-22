@@ -50,7 +50,7 @@
 <meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-1-21/17264809.jpg">
 <meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-1-21/24362381.jpg">
 <meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-1-21/55901962.jpg">
-<meta property="og:updated_time" content="2018-01-21T15:14:35.042Z">
+<meta property="og:updated_time" content="2018-01-22T10:14:42.222Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GN算法--复杂网络中社区发现与Python实现">
 <meta name="twitter:description" content="一般意义上讲，一个社区也可以被称为群、聚类或模块，是网络中一群阶段或边的集合，其内部的节点间连接较为紧密，而社区间的连接却相对稀疏。那么，社区发现就是在复杂网络中发现这些连接紧密的社区结构。社区发现可以理解为网络中的结点聚类...">
@@ -271,7 +271,8 @@
 （3）重复步骤2，直到每个节点成为一个独立的社区为止，即网络中没有边存在。
 </code></pre><p>　　Girvan-Newman算法给出了如何除去边得到社区结构。但在得到最终的社区数之前，还有一个问题没有得到解决，即如何确定合适的社区数，使社区划分结果最优。这时需要用到之前提到的衡量标准——模块度函数 <script type="math/tex">Q</script> 。</p>
 <p>　　这样可以利用 <script type="math/tex">Q</script> 值寻找合适的社区数，Girvan-Newman算法中每去除一次边，则计算一下所得社区结构的 <script type="math/tex">Q</script> 值，寻找到 <script type="math/tex">Q</script> 值最大时的社区数量。如下图所示，当边去除后，社区数量为4时，所得 <script type="math/tex">Q</script> 值最大，因此该网络划分为4个社区最优。<br><img src="http://ormnbkvfv.bkt.clouddn.com/18-1-21/48488885.jpg" alt="Girvan-Newman算法演示"></p>
-<h2 id="Python实现"><a href="#Python实现" class="headerlink" title="Python实现"></a>Python实现</h2><p><strong>Zachary’s karate club网络</strong></p>
+<h2 id="Python实现"><a href="#Python实现" class="headerlink" title="Python实现"></a>Python实现</h2><p><strong>Python代码：<a href="https://github.com/sikasjc/CommunityDetection" target="_blank" rel="noopener">GitHub</a></strong></p>
+<p><strong>Zachary’s karate club网络</strong></p>
 <p>　　Zachary网络是一个检验不同社区发现算法的经典真实的无权网络，一共有34个节点，78条边。该网络是Zachary在上世纪70年代，用了两年时间观察研究空手道俱乐部34个成员之间的个关系而得到的，如下图所示。在调查过程中，俱乐部的主管和校长产生争执，分裂成了两个团体，真实的社区如下所示：</p>
 <pre><code>[[1, 2, 3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 17, 18, 20, 22], 
 [32, 33, 34, 9, 10, 15, 16, 19, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31]]
@@ -303,6 +304,9 @@ Max_Q: 0.40129848783694944
 <h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>1、Newman M E J, Girvan M. Finding and evaluating community structure in networks[J]. Physical review E, 2004, 69(2): 026113.<br>2、杨晓光. 基于复杂网络的社区发现算法研究与实现[D].南京理工大学,2017.<br>3、汪洋. 复杂网络的社团发现算法研究[D].安徽大学,2014.<br>4、莫春玲. 复杂网络中聚类方法及社团结构的研究[D].武汉理工大学,2007.</p>
 <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+
+
+
       
     </div>
 
