@@ -42,7 +42,7 @@
 <meta property="og:site_name" content="Sika">
 <meta property="og:description" content="朋友今年考研，在等待中传的录取结果，帮助写了一个小工具监测中传研招网的更新">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:updated_time" content="2018-04-17T10:35:48.040Z">
+<meta property="og:updated_time" content="2018-04-17T10:48:32.784Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Page Monitor 静态网页内容监测">
 <meta name="twitter:description" content="朋友今年考研，在等待中传的录取结果，帮助写了一个小工具监测中传研招网的更新">
@@ -242,7 +242,7 @@
         <h2 id="一个小工具用于监测静态网页"><a href="#一个小工具用于监测静态网页" class="headerlink" title="一个小工具用于监测静态网页"></a>一个小工具用于监测静态网页</h2><p>朋友今年考研，在等待中传的录取结果，帮助写了一个小工具监测中传研招网的更新内容</p>
 <h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>第一种：</p>
 <ol>
-<li>可以向服务器发送一个 If-Modified-Since<br>的请求（<a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html）。" target="_blank" rel="noopener">http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html）。</a></li>
+<li>可以向服务器发送一个 If-Modified-Since的请求（ <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html" target="_blank" rel="noopener">http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html</a> ）。</li>
 <li>把 a.html 的修改时间写到请求里。</li>
 <li>如果网页更新了，服务器会返回一个 200 的应答，这时就重新抓取网页，更新本地文件。</li>
 <li>如果网页没有更新，服务器会返回一个304的应答。这时就不需要更新文件了。</li>
