@@ -238,24 +238,34 @@
   <div class="post-toc" id="post-toc">
     <h2 class="post-toc-title">目录</h2>
     <div class="post-toc-content">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#应用层"><span class="toc-number">1.</span> <span class="toc-text">应用层</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#应用层协议原理"><span class="toc-number">1.1.</span> <span class="toc-text">应用层协议原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#一些应用层具体应用"><span class="toc-number">1.2.</span> <span class="toc-text">一些应用层具体应用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Web和HTTP"><span class="toc-number">1.2.1.</span> <span class="toc-text">Web和HTTP</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#文件传输协议FTP"><span class="toc-number">1.2.2.</span> <span class="toc-text">文件传输协议FTP</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#电子邮件"><span class="toc-number">1.2.3.</span> <span class="toc-text">电子邮件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DNS：因特网的目录服务"><span class="toc-number">1.2.4.</span> <span class="toc-text">DNS：因特网的目录服务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#P2P应用"><span class="toc-number">1.2.5.</span> <span class="toc-text">P2P应用</span></a></li></ol></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#应用层"><span class="toc-number">1.</span> <span class="toc-text"> 应用层</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#应用层协议原理"><span class="toc-number">1.1.</span> <span class="toc-text"> 应用层协议原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#一些应用层具体应用"><span class="toc-number">1.2.</span> <span class="toc-text"> 一些应用层具体应用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#web和http"><span class="toc-number">1.2.1.</span> <span class="toc-text"> Web和HTTP</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#文件传输协议ftp"><span class="toc-number">1.2.2.</span> <span class="toc-text"> 文件传输协议FTP</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#电子邮件"><span class="toc-number">1.2.3.</span> <span class="toc-text"> 电子邮件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#dns因特网的目录服务"><span class="toc-number">1.2.4.</span> <span class="toc-text"> DNS：因特网的目录服务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#p2p应用"><span class="toc-number">1.2.5.</span> <span class="toc-text"> P2P应用</span></a></li></ol></li></ol></li></ol>
     </div>
   </div>
 
 
     <div class="post-content">
       
-        <h2 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h2><p>学习《计算机网络——自顶向下方法》的总结，留以自用，打好基础</p>
+        <h2 id="应用层"><a class="markdownIt-Anchor" href="#应用层"></a> 应用层</h2>
+<p>学习《计算机网络——自顶向下方法》的总结，留以自用，打好基础</p>
 <hr>
-<h3 id="应用层协议原理"><a href="#应用层协议原理" class="headerlink" title="应用层协议原理"></a>应用层协议原理</h3><p><strong>网络应用程序体系结构</strong><br>主要有三类：<br>1.客户-服务器结构（Client-Server Architecture）<br>主要应用有：Web、FTP、Telnet、电子邮件等；</p>
-<p>2.对等P2P结构（Peers-to-Peers Architecture）<br>文件共享（BitTorrent）、p2p下载加速器（迅雷）、网络电话（Skype）等；</p>
-<p>3.混合（Client-Server + P2P）<br>即时通信应用——服务器跟踪用户IP地址，用户之间通过P2P直接发送接收报文（message）。</p>
-<p><strong>进程通信</strong><br>网络中进行通信是实际是进程，不同主机的不同进程之间交换报文（message）来相互通信。</p>
+<h3 id="应用层协议原理"><a class="markdownIt-Anchor" href="#应用层协议原理"></a> 应用层协议原理</h3>
+<p><strong>网络应用程序体系结构</strong><br>
+主要有三类：<br>
+1.客户-服务器结构（Client-Server Architecture）<br>
+主要应用有：Web、FTP、Telnet、电子邮件等；</p>
+<p>2.对等P2P结构（Peers-to-Peers Architecture）<br>
+文件共享（BitTorrent）、p2p下载加速器（迅雷）、网络电话（Skype）等；</p>
+<p>3.混合（Client-Server + P2P）<br>
+即时通信应用——服务器跟踪用户IP地址，用户之间通过P2P直接发送接收报文（message）。</p>
+<p><strong>进程通信</strong><br>
+网络中进行通信是实际是进程，不同主机的不同进程之间交换报文（message）来相互通信。</p>
 <ul>
 <li>主机（host）：可以被分配到IP地址的设备就可以认为是主机（host）或端系统（end system）</li>
 <li>进程（process）：可以认为程序是指令、数据及其组织形式的描述，进程是程序的实体</li>
 </ul>
-<p><strong>客户和服务器进程</strong><br>一般情况下，我们可以认为发起通信的进程标识为客户（client），等待联系的进程是服务器（server）<br>例如：</p>
+<p><strong>客户和服务器进程</strong><br>
+一般情况下，我们可以认为发起通信的进程标识为客户（client），等待联系的进程是服务器（server）<br>
+例如：</p>
 <ul>
 <li>浏览器 - Web服务器交换报文</li>
 <li>P2P 文件从一个对等方的进程传输到另一个counterpart的进程</li>
@@ -264,36 +274,52 @@
 <ul>
 <li><strong>套接字（Socket），是同一台主机内应用层与传输层之间的接口，是应用程序和网络之间的API</strong></li>
 </ul>
-<p><strong>进程寻址</strong><br>主机地址（IP地址）+ 接收进程标识符（端口号）</p>
+<p><strong>进程寻址</strong><br>
+主机地址（IP地址）+ 接收进程标识符（端口号）</p>
 <p><strong>Internet提供的传输层协议</strong></p>
 <ul>
-<li>TCP服务——面向连接，全双工，可靠的数据传送服务，提供拥塞控制</li>
-<li><p>UDP服务——无连接，不可靠数据传送服务<br>注意TCP和UDP都无加密机制，但TCP可以附加安全套接字层SSL加密，SSL实现在应用层。<br><strong>Internet传输层协议不提供的服务</strong></p>
+<li>
+<p>TCP服务——面向连接，全双工，可靠的数据传送服务，提供拥塞控制</p>
 </li>
-<li><p>能为时间敏感应用提供满意的服务，但不提供任何定时(timing，感觉这个概念更接近于网络延时log)或带宽(throughput)保证<br><img src="http://ormnbkvfv.bkt.clouddn.com/17-11-10/98649460.jpg" alt="常见应用所需应用层协议"><br>常见应用所需应用层协议</p>
+<li>
+<p>UDP服务——无连接，不可靠数据传送服务<br>
+注意TCP和UDP都无加密机制，但TCP可以附加安全套接字层SSL加密，SSL实现在应用层。<br>
+<strong>Internet传输层协议不提供的服务</strong></p>
+</li>
+<li>
+<p>能为时间敏感应用提供满意的服务，但不提供任何定时(timing，感觉这个概念更接近于网络延时log)或带宽(throughput)保证<br>
+<img src="http://ormnbkvfv.bkt.clouddn.com/17-11-10/98649460.jpg" alt="常见应用所需应用层协议"><br>
+常见应用所需应用层协议</p>
 </li>
 </ul>
-<p><strong>应用层协议定义</strong><br>定义了运行在不同端系统上应用程序进程如何相互传递报文</p>
+<p><strong>应用层协议定义</strong><br>
+定义了运行在不同端系统上应用程序进程如何相互传递报文</p>
 <ul>
 <li>报文类型，如请求报文，响应报文</li>
 <li>报文类型的语法</li>
 <li>报文的字段含义</li>
 <li>何时、如何发送报文，响应规则</li>
 </ul>
-<h3 id="一些应用层具体应用"><a href="#一些应用层具体应用" class="headerlink" title="一些应用层具体应用"></a>一些应用层具体应用</h3><p>Web、FTP、电子邮件、DNS、BitTorrent、DHT<br>这些是应用层的一些具体应用</p>
+<h3 id="一些应用层具体应用"><a class="markdownIt-Anchor" href="#一些应用层具体应用"></a> 一些应用层具体应用</h3>
+<p>Web、FTP、电子邮件、DNS、BitTorrent、DHT<br>
+这些是应用层的一些具体应用</p>
 <hr>
-<h4 id="Web和HTTP"><a href="#Web和HTTP" class="headerlink" title="Web和HTTP"></a>Web和HTTP</h4><hr>
-<p><strong>统一资源定位符（URL Uniform Resource Locator）</strong><br>作为文件，网页需要有一个唯一的标识符来和其他网页区别开，为了定义一个网页，我们需要4个标识符：获取网页的协议、主机、端口、路径。<br>如下所示：</p>
+<h4 id="web和http"><a class="markdownIt-Anchor" href="#web和http"></a> Web和HTTP</h4>
+<hr>
+<p><strong>统一资源定位符（URL Uniform Resource Locator）</strong><br>
+作为文件，网页需要有一个唯一的标识符来和其他网页区别开，为了定义一个网页，我们需要4个标识符：获取网页的协议、主机、端口、路径。<br>
+如下所示：</p>
 <blockquote>
 <p>scheme://host.domain:port/path/filename</p>
 </blockquote>
 <ul>
 <li>scheme - 定义Internet服务的类型。最常见的类型是 http</li>
 <li>host - 定义域主机（http 的默认主机是 www）</li>
-<li>domain - 定义Internet域名，比如 w3school.com.cn</li>
+<li>domain - 定义Internet域名，比如 <a href="http://w3school.com.cn" target="_blank" rel="noopener">w3school.com.cn</a></li>
 <li>:port - 定义主机上的端口号（http 的默认端口号是 80）</li>
 <li>path - 定义服务器上的路径（如果省略，则文档必须位于网站的根目录中）。</li>
-<li>filename - 定义文档/资源的名称<br><img src="http://ormnbkvfv.bkt.clouddn.com/17-11-10/88952353.jpg" alt="URL Schemes"></li>
+<li>filename - 定义文档/资源的名称<br>
+<img src="http://ormnbkvfv.bkt.clouddn.com/17-11-10/88952353.jpg" alt="URL Schemes"></li>
 </ul>
 <p><strong>HTTP概况</strong></p>
 <ul>
@@ -307,18 +333,18 @@
 <ul>
 <li>Non-persistent：每次的请求、响应在不同的TCP连接中</li>
 <li>persistent：每次的请求、响应在同一个TCP连接中</li>
-<li><p>Round-trip time（RTT）往返时间——packet-propagation delays + packet queuing delays + packet-processing delays<br> 请求与接收一个HTML对象所需的时间，如下图所示。一个TCP连接时间：2个RTT+传输HTML文件的时间</p>
-<p><img src="http://ormnbkvfv.bkt.clouddn.com/17-11-10/21730053.jpg" alt="简单示意图请求与接收一个HTML对象的时间"></p>
-</li>
+<li>Round-trip time（RTT）往返时间——packet-propagation delays + packet queuing delays + packet-processing delays<br>
+请求与接收一个HTML对象所需的时间，如下图所示。一个TCP连接时间：2个RTT+传输HTML文件的时间</li>
 </ul>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/17-11-10/21730053.jpg" alt="简单示意图请求与接收一个HTML对象的时间"></p>
 <p>1.采用非持续连接的HTTP</p>
 <ul>
 <li>每个TCP连接只传输一个请求报文和一个响应报文</li>
 <li>每个连接在客户和服务器都要分配TCP的缓冲区和保持TCP变量</li>
 <li>TCP连接三次握手，第三次握手向TCP连接发送一个HTTP请求报文</li>
-<li>缺点：<pre><code>  1.必须为每个请求建立和维护一个全新的连接，可能会给Web服务器带来严重的负担
-  2.每一个对象经受两倍RTT的交付时延，一个用于创建连接，一个用于请求和接收一个对象
-</code></pre></li>
+<li>缺点：<br>
+1.必须为每个请求建立和维护一个全新的连接，可能会给Web服务器带来严重的负担<br>
+2.每一个对象经受两倍RTT的交付时延，一个用于创建连接，一个用于请求和接收一个对象</li>
 </ul>
 <p>2.采用持续连接的HTTP（default）</p>
 <p>服务器发送响应后保持该TCP连接打开，经过一定时间间隔（超时）未被使用，HTTP服务器关闭该连接</p>
@@ -330,9 +356,14 @@ Connection:close-------------------------------------------------Header line
 User-agent: Mozilla/5.0------------------------------------------Header line
 Accept-language: fr----------------------------------------------Header line
 ...
-</code></pre><ul>
-<li>Request line请求行<ul>
-<li>method field——主要GET, POST, HEAD, PUT, DELETE    <ul>
+</code></pre>
+<ul>
+<li>
+<p>Request line请求行</p>
+</li>
+<li>
+<p>method field——主要GET, POST, HEAD, PUT, DELETE</p>
+<ul>
 <li>GET 从指定的资源请求数据。</li>
 <li>POST 向指定的资源提交要被处理的数据，例如表单</li>
 <li>HEAD 与 GET 相同，但只返回HTTP报头，不返回文档主体。服务器会对请求HTTP报文产生响应，并不返回请求对象，用于调试跟踪</li>
@@ -340,27 +371,44 @@ Accept-language: fr----------------------------------------------Header line
 <li>DELETE 删除web服务器上的对象</li>
 </ul>
 </li>
-<li>URL field</li>
-<li>HTTP version field</li>
-</ul>
+<li>
+<p>URL field</p>
 </li>
-<li><p>Header lines首部行</p>
-<ul>
-<li>Host: Web proxy caches需要（Web代理高速缓存使用）</li>
-<li>Connection：close——浏览器告诉服务器使用No-persistent</li>
-<li>User-agent：浏览器类型</li>
-<li>Accept-language</li>
-<li>cookies</li>
-<li>…</li>
-</ul>
+<li>
+<p>HTTP version field</p>
 </li>
-<li><p>Blank line空白行——\r\n</p>
+<li>
+<p>Header lines首部行</p>
 </li>
-<li>Entity body实体体——用于POST method</li>
+<li>
+<p>Host: Web proxy caches需要（Web代理高速缓存使用）</p>
+</li>
+<li>
+<p>Connection：close——浏览器告诉服务器使用No-persistent</p>
+</li>
+<li>
+<p>User-agent：浏览器类型</p>
+</li>
+<li>
+<p>Accept-language</p>
+</li>
+<li>
+<p>cookies</p>
+</li>
+<li>
+<p>…</p>
+</li>
+<li>
+<p>Blank line空白行——\r\n</p>
+</li>
+<li>
+<p>Entity body实体体——用于POST method</p>
+</li>
 </ul>
 <p>——（response message）响应报文</p>
 <ul>
-<li>状态行（status line）<ul>
+<li>状态行（status line）
+<ul>
 <li>状态码（status code）200、301、400、404…详见<a href="http://tool.oschina.net/commons?type=5" target="_blank" rel="noopener">此处</a></li>
 </ul>
 </li>
@@ -369,7 +417,8 @@ Accept-language: fr----------------------------------------------Header line
 <li>entity body</li>
 </ul>
 <p><strong>用户与服务器的交互：cookie</strong></p>
-<p>服务器希望限制用户访问，或希望把内容与用户身份联系起来<br>用户第一次请求服务器—&gt;响应报文的响应头（首部行）带一个cookie—&gt;浏览器管理cookie—&gt;请求报文带cookie—&gt;服务器根据cookie识别用户</p>
+<p>服务器希望限制用户访问，或希望把内容与用户身份联系起来<br>
+用户第一次请求服务器—&gt;响应报文的响应头（首部行）带一个cookie—&gt;浏览器管理cookie—&gt;请求报文带cookie—&gt;服务器根据cookie识别用户</p>
 <p><img src="http://ormnbkvfv.bkt.clouddn.com/17-11-10/56311835.jpg" alt="Keeping user state with cookies"></p>
 <p><strong>Web缓存（proxy server代理服务器）</strong></p>
 <ul>
@@ -377,34 +426,43 @@ Accept-language: fr----------------------------------------------Header line
 <li>web cache拥有自己的储存空间，并且将最近请求的对象保存在储存空间中</li>
 <li>web cache既可以是server也可以是client</li>
 <li>可以显著的减少client的请求响应的时间</li>
-<li>大大减少接入链路到Internet的网络流量，同时整体上减少Internet上的web流量<br><img src="http://ormnbkvfv.bkt.clouddn.com/17-11-10/84470108.jpg" alt="Clients requesting objects through a Web cache"><br>与CDN（内容分发网络）结合，使大量流量实现了本地化</li>
+<li>大大减少接入链路到Internet的网络流量，同时整体上减少Internet上的web流量<br>
+<img src="http://ormnbkvfv.bkt.clouddn.com/17-11-10/84470108.jpg" alt="Clients requesting objects through a Web cache"><br>
+与CDN（内容分发网络）结合，使大量流量实现了本地化</li>
 </ul>
-<p><strong>条件Get方法</strong><br>虽然web cache很有用，但会引入一个问题，储存在cache上的对象可能会过期，所以有了条件GET。<br>conditional GET：允许cache验证对象是否为最新的</p>
+<p><strong>条件Get方法</strong><br>
+虽然web cache很有用，但会引入一个问题，储存在cache上的对象可能会过期，所以有了条件GET。<br>
+conditional GET：允许cache验证对象是否为最新的</p>
 <p>web cache向server请求对象</p>
 <pre><code>GET /fruit/kiwi.gif HTTP/1.1
 Host: www.exotiquecuisine.com
 If-modified-since: Wed, 7 Sep 2011 09:23:24
-</code></pre><p>若server对象无更新，server响应web cache</p>
+</code></pre>
+<p>若server对象无更新，server响应web cache</p>
 <pre><code>HTTP/1.1 304 Not Modified
 Date: Sat, 15 Oct 2011 15:39:29
 Server: Apache/1.3.0 (Unix)
 
 (empty entity body)
-</code></pre><ul>
+</code></pre>
+<ul>
 <li>请求报文中包含“If-Modified-Since：” 位于header line</li>
 <li>304 Not modified</li>
 </ul>
 <hr>
-<h4 id="文件传输协议FTP"><a href="#文件传输协议FTP" class="headerlink" title="文件传输协议FTP"></a>文件传输协议FTP</h4><hr>
+<h4 id="文件传输协议ftp"><a class="markdownIt-Anchor" href="#文件传输协议ftp"></a> 文件传输协议FTP</h4>
+<hr>
 <ul>
 <li>基于TCP</li>
 <li>FTP使用两个并行TCP连接传输文件</li>
 <li>控制连接（control connection）：用于两主机之间传输控制信息，如：用户标识、口令、操作命令，贯穿整个用户会话期间，因此整个会话中，FTP服务器必须保存用户的状态信息</li>
 <li>数据连接（data connection）：传输文件，一个文件一个连接，非连续</li>
-<li>FTP的控制信息是带外传送的（如上），HTTP属于带内传送<br><img src="http://ormnbkvfv.bkt.clouddn.com/17-11-10/59530408.jpg" alt="FTP"></li>
+<li>FTP的控制信息是带外传送的（如上），HTTP属于带内传送<br>
+<img src="http://ormnbkvfv.bkt.clouddn.com/17-11-10/59530408.jpg" alt="FTP"></li>
 </ul>
 <hr>
-<h4 id="电子邮件"><a href="#电子邮件" class="headerlink" title="电子邮件"></a>电子邮件</h4><hr>
+<h4 id="电子邮件"><a class="markdownIt-Anchor" href="#电子邮件"></a> 电子邮件</h4>
+<hr>
 <p><strong>STMP</strong></p>
 <ul>
 <li>STMP：Simple Mail transfer Protocol</li>
@@ -427,19 +485,23 @@ Server: Apache/1.3.0 (Unix)
 </ul>
 <p>client的代理（qq邮箱客户端）—&gt;SMTP/HTTP—&gt;QQ邮箱服务器—&gt;SMTP—&gt;163邮箱服务器—&gt;POP3/IMAP/HTTP—&gt;client的代理（163邮箱Web端）</p>
 <hr>
-<h4 id="DNS：因特网的目录服务"><a href="#DNS：因特网的目录服务" class="headerlink" title="DNS：因特网的目录服务"></a>DNS：因特网的目录服务</h4><hr>
+<h4 id="dns因特网的目录服务"><a class="markdownIt-Anchor" href="#dns因特网的目录服务"></a> DNS：因特网的目录服务</h4>
+<hr>
 <ul>
 <li>DNS：Domain Name System</li>
 <li>一个由分层的DNS服务器实现的分布式数据库</li>
 <li>DNS也是一个允许主机查询这个分布式数据库的应用层协议</li>
 <li>DNS提供的服务：主机名—&gt;IP地址转换的目录服务</li>
-<li>DNS（域名系统） = DNS服务器 + DNS协议 </li>
+<li>DNS（域名系统） = DNS服务器 + DNS协议</li>
 <li>DNS协议运行在UDP上，53号端口</li>
 <li>通常由其他应用层协议使用，包括HTTP、SMTP、FTP</li>
 </ul>
-<p><strong>主机别名</strong><br>邮件服务器别名，允许一个公司的邮件服务器和Web服务器使用相同主机名，可以利用主机别名来实现负载分配——一个站点若有多台服务器（多IP地址对应一个主机名），DNS服务器循环回答这些地址</p>
+<p><strong>主机别名</strong><br>
+邮件服务器别名，允许一个公司的邮件服务器和Web服务器使用相同主机名，可以利用主机别名来实现负载分配——一个站点若有多台服务器（多IP地址对应一个主机名），DNS服务器循环回答这些地址</p>
 <p><strong>DNS工作机理</strong></p>
-<p>分布式、层次数据库<br><img src="http://ormnbkvfv.bkt.clouddn.com/17-11-10/6064865.jpg" alt="DNS Architecture"><br>层次结构</p>
+<p>分布式、层次数据库<br>
+<img src="http://ormnbkvfv.bkt.clouddn.com/17-11-10/6064865.jpg" alt="DNS Architecture"><br>
+层次结构</p>
 <ul>
 <li>根DNS服务器：13个根服务器（群），世界各地</li>
 <li>顶级域（DNS）服务器：com/org/edu/uk/cn，由世界各公司维护</li>
@@ -447,21 +509,23 @@ Server: Apache/1.3.0 (Unix)
 <li>本地DNS服务器：当主机发出DNS请求时，先发往本地服务器，若无缓存，转发到DNS服务器层次结构中的根DNS服务器，迭代返回各层次DNS服务器地址，最后才能直接查询主机名对应的IP地址</li>
 </ul>
 <p>递归查询、迭代查询，通常从请求主机到本地DNS服务器的查询是递归的，其余的查询是迭代的</p>
-<p><strong>DNS缓存</strong><br>允许本地DNS绕过查询链中的根DNS服务器<br>有缓存时间</p>
+<p><strong>DNS缓存</strong><br>
+允许本地DNS绕过查询链中的根DNS服务器<br>
+有缓存时间</p>
 <p><strong>DNS记录和报文</strong></p>
 <ul>
-<li>资源记录（如果你在阿里的万网上注册一个域名，是需要这个配置的）<ul>
-<li>A：主机名-IP地址，如（relay1.bar.foo.com, 145.37.93.126, A）</li>
-<li>NS：域名-DNS服务器主机名， 如（foo.com, dns.foo.com , NS）</li>
-<li>CNAME：别名-其他服务规范主机名，如（ foo.com, relay1.bar.foo.com,<br>CNAME）</li>
-<li>MX：别名-邮件服务器规范主机名（foo.com, mail.bar.foo.com, MX）</li>
-</ul>
-</li>
+<li>资源记录（如果你在阿里的万网上注册一个域名，是需要这个配置的）</li>
+<li>A：主机名-IP地址，如（<a href="http://relay1.bar.foo.com" target="_blank" rel="noopener">relay1.bar.foo.com</a>, 145.37.93.126, A）</li>
+<li>NS：域名-DNS服务器主机名， 如（<a href="http://foo.com" target="_blank" rel="noopener">foo.com</a>, <a href="http://dns.foo.com" target="_blank" rel="noopener">dns.foo.com</a> , NS）</li>
+<li>CNAME：别名-其他服务规范主机名，如（ <a href="http://foo.com" target="_blank" rel="noopener">foo.com</a>, <a href="http://relay1.bar.foo.com" target="_blank" rel="noopener">relay1.bar.foo.com</a>,<br>
+CNAME）</li>
+<li>MX：别名-邮件服务器规范主机名（<a href="http://foo.com" target="_blank" rel="noopener">foo.com</a>, <a href="http://mail.bar.foo.com" target="_blank" rel="noopener">mail.bar.foo.com</a>, MX）</li>
 <li>DNS报文</li>
 <li>查询报文</li>
 <li>回答报文</li>
 </ul>
-<p><strong>在DNS数据库中插入记录</strong><br>向某注册登录机构注册域名时（如万网），需要提供基本和辅助权威DNS服务器的名字和IP地址</p>
+<p><strong>在DNS数据库中插入记录</strong><br>
+向某注册登录机构注册域名时（如万网），需要提供基本和辅助权威DNS服务器的名字和IP地址</p>
 <p><strong>安全性</strong></p>
 <ul>
 <li>DDoS（分布式拒绝服务）带宽泛洪攻击：向处理如.com域的域名服务器发送大量DNS请求，使得大部分合法请求无法获得响应</li>
@@ -469,10 +533,13 @@ Server: Apache/1.3.0 (Unix)
 <li>DNS反射攻击：请求中冒充目标主机源地址，大量请求DNS服务器，DNS就大量向源地址主机发送回答，淹没目标主机</li>
 </ul>
 <hr>
-<h4 id="P2P应用"><a href="#P2P应用" class="headerlink" title="P2P应用"></a>P2P应用</h4><hr>
+<h4 id="p2p应用"><a class="markdownIt-Anchor" href="#p2p应用"></a> P2P应用</h4>
+<hr>
 <p><strong>P2P文件分发（BitTorrent）</strong></p>
 <p>在P2P文件分发中，每个对等方能重新分发它所有的该文件的任何部分，可以协助服务器分发</p>
-<p><strong>P2P体系结构的扩展性</strong><br>最小分发时间，对等方N越大，P2P的最小分发时间越小<br>对等方除了是比特的消费者外还是他们的重新分发者</p>
+<p><strong>P2P体系结构的扩展性</strong><br>
+最小分发时间，对等方N越大，P2P的最小分发时间越小<br>
+对等方除了是比特的消费者外还是他们的重新分发者</p>
 <p><strong>BitTorrent</strong></p>
 <p>P2P文件共享协议，参与一个特定文件分发的所有对等方结合被称为一个洪流（torrent），在一个洪流的对等方彼此下载等长度的文件块，可以随时离开洪流，也可继续向其他对等方上载</p>
 <ul>
@@ -488,9 +555,15 @@ Server: Apache/1.3.0 (Unix)
 </ul>
 <p><strong>分布式散列表（DHT）</strong></p>
 <ul>
-<li>分布式、P2P版本的key-value数据库，在大量对等方上存储key-value值（键值对）</li>
-<li>分布式数据库用来定位拥有某key-value的对等方，然后向查询方返回该键值对</li>
-<li>环形DHT、对等方扰动</li>
+<li>
+<p>分布式、P2P版本的key-value数据库，在大量对等方上存储key-value值（键值对）</p>
+</li>
+<li>
+<p>分布式数据库用来定位拥有某key-value的对等方，然后向查询方返回该键值对</p>
+</li>
+<li>
+<p>环形DHT、对等方扰动</p>
+</li>
 </ul>
 
       
@@ -558,6 +631,10 @@ Server: Apache/1.3.0 (Unix)
           </div>
           
   <div class="comments" id="comments">
+	<!-- UY BEGIN -->
+		<div id="uyan_frame"></div>
+		<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2161534"></script>
+	<!-- UY END -->
     
   </div>
 
@@ -677,6 +754,8 @@ Server: Apache/1.3.0 (Unix)
 
     <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
 <script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
     
   </body>

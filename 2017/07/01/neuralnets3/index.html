@@ -50,7 +50,7 @@
 <meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/17-7-4/19897655.jpg">
 <meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/17-7-4/11927944.jpg">
 <meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/17-7-4/79395850.jpg">
-<meta property="og:updated_time" content="2017-09-17T13:36:07.000Z">
+<meta property="og:updated_time" content="2018-04-19T14:21:27.201Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Neural Networks and Deep Learning 学习笔记三：">
 <meta name="twitter:description" content="学习Neural Networks，帮助自己理解">
@@ -241,20 +241,22 @@
   <div class="post-toc" id="post-toc">
     <h2 class="post-toc-title">目录</h2>
     <div class="post-toc-content">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#开始"><span class="toc-number">1.</span> <span class="toc-text">开始</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#网络"><span class="toc-number">2.</span> <span class="toc-text">网络</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#用梯度下降（-gradient-descent）的方法来学习（learn）"><span class="toc-number">3.</span> <span class="toc-text">用梯度下降（ gradient descent）的方法来学习（learn）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#MNIST-training-data"><span class="toc-number">3.1.</span> <span class="toc-text">MNIST training data</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cost-function-Sometimes-referred-to-as-a-loss-or-objective-function"><span class="toc-number">3.2.</span> <span class="toc-text">cost function(Sometimes referred to as a loss or objective function)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#stochastic-gradient-descent"><span class="toc-number">3.3.</span> <span class="toc-text">stochastic gradient descent</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#开始"><span class="toc-number">1.</span> <span class="toc-text"> 开始</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#网络"><span class="toc-number">2.</span> <span class="toc-text"> 网络</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#用梯度下降-gradient-descent的方法来学习learn"><span class="toc-number">3.</span> <span class="toc-text"> 用梯度下降（ gradient descent）的方法来学习（learn）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#mnist-training-data"><span class="toc-number">3.1.</span> <span class="toc-text"> MNIST training data</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cost-functionsometimes-referred-to-as-a-loss-or-objective-function"><span class="toc-number">3.2.</span> <span class="toc-text"> cost function(Sometimes referred to as a loss or objective function)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#stochastic-gradient-descent"><span class="toc-number">3.3.</span> <span class="toc-text"> stochastic gradient descent</span></a></li></ol></li></ol>
     </div>
   </div>
 
 
     <div class="post-content">
       
-        <h2 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h2><p><img src="http://neuralnetworksanddeeplearning.com/images/digits.png" alt="handwriting recognition"></p>
+        <h2 id="开始"><a class="markdownIt-Anchor" href="#开始"></a> 开始</h2>
+<p><img src="http://neuralnetworksanddeeplearning.com/images/digits.png" alt="handwriting recognition"></p>
 <p>识别诸如此类的手写数字问题，由两个子问题构成，一则是分离这些数字，将它们分为如下的单独的数字，再对每一个数字进行识别</p>
 <p><img src="http://neuralnetworksanddeeplearning.com/images/digits_separate.png" alt="separate images"></p>
 <p>二就是识别单独数字了，比如从第一个数字开始，对我们人类来说很容易就能看出来这是5。</p>
 <p><img src="http://neuralnetworksanddeeplearning.com/images/mnist_first_digit.png" alt="5"></p>
 <p>对于神经网络来说，我们关注第二个问题，识别（或者说归类）单独的数字。</p>
-<h2 id="网络"><a href="#网络" class="headerlink" title="网络"></a>网络</h2><p>在这里，我们使用如下的一个三层神经网络来进行手写体识别</p>
+<h2 id="网络"><a class="markdownIt-Anchor" href="#网络"></a> 网络</h2>
+<p>在这里，我们使用如下的一个三层神经网络来进行手写体识别</p>
 <p><img src="http://ormnbkvfv.bkt.clouddn.com/17-7-4/23778918.jpg" alt="neural networks"></p>
 <p>网络的输入是已编码的像素值。由于神经网络的训练数据由扫描手写数字图像（28×28）组成，因此输入层包含784 = 28×28个神经元。同时，输入像素为灰度值，值为0.0时，表示白色，值为1.0时，表示黑色，在这中间的值自然表示逐渐变暗的灰色。</p>
 <p>网络的第二层是隐藏层。我们用n表示这个隐藏层中的神经元数，将用n来验证不同的值对神经网络的影响。 所示的示例示出了仅包含n = 15个神经元的隐藏层。</p>
@@ -271,16 +273,18 @@
 <p>所以如果所有这四个隐藏的神经元都在触发，那么我们可以得出结论，数字是一个0。至少在这种情况下，我们得出结论，输入是0。</p>
 <p>假设神经网络是以这种方式的话，我们可以给出一个合理的解释，为什么最好从网络中输出10个输出，而不是4。</p>
 <p>假设我们使用4个输出神经元，则第一个输出神经元将尝试确定该位的最高有效位，例如：4， 最高有效位为0（0100）。而且没有简单的方法可以将最高有效位与上面所示的简单形状联系起来。</p>
-<p>也许有一个很不错的学习算法会找到一些权重的赋值，让我们只使用4个输出神经元来完成识别。 </p>
+<p>也许有一个很不错的学习算法会找到一些权重的赋值，让我们只使用4个输出神经元来完成识别。</p>
 <p>当然，也存在通过向上述三层网络添加额外层，来确定数字的按位表示的方法。 额外的层将上一层的输出转换为二进制表示。</p>
 <p><img src="http://ormnbkvfv.bkt.clouddn.com/17-7-4/79395850.jpg" alt="按位输出"></p>
-<h2 id="用梯度下降（-gradient-descent）的方法来学习（learn）"><a href="#用梯度下降（-gradient-descent）的方法来学习（learn）" class="headerlink" title="用梯度下降（ gradient descent）的方法来学习（learn）"></a>用梯度下降（ gradient descent）的方法来学习（learn）</h2><p>现在需要的事找到是学习的数据集，即所谓的训练数据集。 使用<a href="http://yann.lecun.com/exdb/mnist/" target="_blank" rel="noopener">MNIST</a>数据集，其中包含数以万计的手写数字扫描图像及其正确的分类。 当然，当测试我们的网络时，我们会要求它识别不在训练集中的图像。</p>
-<p>MNIST数据分为两部分。 第一部分包含60,000张图像作为训练数据。这些图像是灰度图像，大小为28×28像素。 MNIST数据集的第二部分是要用作测试数据的10,000张图像，同样也是28乘28灰度图像。 使用测试数据来评估我们的神经网络学到如何识别数字。 </p>
-<h3 id="MNIST-training-data"><a href="#MNIST-training-data" class="headerlink" title="MNIST training data"></a>MNIST training data</h3><h3 id="cost-function-Sometimes-referred-to-as-a-loss-or-objective-function"><a href="#cost-function-Sometimes-referred-to-as-a-loss-or-objective-function" class="headerlink" title="cost function(Sometimes referred to as a loss or objective function)"></a>cost function(Sometimes referred to as a loss or objective function)</h3><script type="math/tex; mode=display">
+<h2 id="用梯度下降-gradient-descent的方法来学习learn"><a class="markdownIt-Anchor" href="#用梯度下降-gradient-descent的方法来学习learn"></a> 用梯度下降（ gradient descent）的方法来学习（learn）</h2>
+<p>现在需要的事找到是学习的数据集，即所谓的训练数据集。 使用<a href="http://yann.lecun.com/exdb/mnist/" target="_blank" rel="noopener">MNIST</a>数据集，其中包含数以万计的手写数字扫描图像及其正确的分类。 当然，当测试我们的网络时，我们会要求它识别不在训练集中的图像。</p>
+<p>MNIST数据分为两部分。 第一部分包含60,000张图像作为训练数据。这些图像是灰度图像，大小为28×28像素。 MNIST数据集的第二部分是要用作测试数据的10,000张图像，同样也是28乘28灰度图像。 使用测试数据来评估我们的神经网络学到如何识别数字。</p>
+<h3 id="mnist-training-data"><a class="markdownIt-Anchor" href="#mnist-training-data"></a> MNIST training data</h3>
+<h3 id="cost-functionsometimes-referred-to-as-a-loss-or-objective-function"><a class="markdownIt-Anchor" href="#cost-functionsometimes-referred-to-as-a-loss-or-objective-function"></a> cost function(Sometimes referred to as a loss or objective function)</h3>
 \begin{eqnarray}  C(w,b) \equiv
   \frac{1}{2n} \sum_x \| y(x) - a\|^2.
-\tag{1}\end{eqnarray}</script><h3 id="stochastic-gradient-descent"><a href="#stochastic-gradient-descent" class="headerlink" title="stochastic gradient descent"></a>stochastic gradient descent</h3><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
+\tag{1}\end{eqnarray} 
+<h3 id="stochastic-gradient-descent"><a class="markdownIt-Anchor" href="#stochastic-gradient-descent"></a> stochastic gradient descent</h3>
 
       
     </div>
@@ -349,6 +353,10 @@
           </div>
           
   <div class="comments" id="comments">
+	<!-- UY BEGIN -->
+		<div id="uyan_frame"></div>
+		<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2161534"></script>
+	<!-- UY END -->
     
   </div>
 
@@ -468,6 +476,8 @@
 
     <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
 <script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
     
   </body>

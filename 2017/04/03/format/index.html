@@ -230,49 +230,64 @@
   <div class="post-toc" id="post-toc">
     <h2 class="post-toc-title">目录</h2>
     <div class="post-toc-content">
-      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#语法"><span class="toc-number">1.</span> <span class="toc-text">语法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#“映射”示例"><span class="toc-number">2.</span> <span class="toc-text">“映射”示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#格式限定符"><span class="toc-number">3.</span> <span class="toc-text">格式限定符</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#语法"><span class="toc-number">1.</span> <span class="toc-text"> 语法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#映射示例"><span class="toc-number">2.</span> <span class="toc-text"> “映射”示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#格式限定符"><span class="toc-number">3.</span> <span class="toc-text"> 格式限定符</span></a></li></ol>
     </div>
   </div>
 
 
     <div class="post-content">
       
-        <h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><p>它通过<strong><code>{}</code></strong>和<strong><code>:</code></strong>来代替<strong><code>%</code></strong></p>
-<h3 id="“映射”示例"><a href="#“映射”示例" class="headerlink" title="“映射”示例"></a>“映射”示例</h3><ul>
-<li>通过位置<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;&#125;&#123;&#125;'</span>.format(<span class="string">'123'</span>,<span class="string">'abc'</span>)</span><br><span class="line"><span class="string">'123abc'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;1&#125;,&#123;0&#125;'</span>.format(<span class="string">'123'</span>,<span class="string">'abc'</span>)</span><br><span class="line"><span class="string">'abc,123'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;1&#125;,&#123;0&#125;:&#123;1&#125;'</span>.format(<span class="string">'123'</span>,<span class="string">'abc'</span>)</span><br><span class="line"><span class="string">'abc,123:abc'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;1&#125;,&#123;0&#125;:&#123;&#123;&#125;&#125;'</span>.format(<span class="string">'123'</span>,<span class="string">'abc'</span>)</span><br><span class="line"><span class="string">'abc,123:&#123;&#125;'</span></span><br></pre></td></tr></table></figure>
-</li>
+        <h3 id="语法"><a class="markdownIt-Anchor" href="#语法"></a> 语法</h3>
+<p>它通过**<code>{}</code><strong>和</strong><code>:</code><strong>来代替</strong><code>%</code>**</p>
+<h3 id="映射示例"><a class="markdownIt-Anchor" href="#映射示例"></a> “映射”示例</h3>
+<ul>
+<li>通过位置</li>
 </ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;&#125;&#123;&#125;'</span>.format(<span class="string">'123'</span>,<span class="string">'abc'</span>)</span><br><span class="line"><span class="string">'123abc'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;1&#125;,&#123;0&#125;'</span>.format(<span class="string">'123'</span>,<span class="string">'abc'</span>)</span><br><span class="line"><span class="string">'abc,123'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;1&#125;,&#123;0&#125;:&#123;1&#125;'</span>.format(<span class="string">'123'</span>,<span class="string">'abc'</span>)</span><br><span class="line"><span class="string">'abc,123:abc'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;1&#125;,&#123;0&#125;:&#123;&#123;&#125;&#125;'</span>.format(<span class="string">'123'</span>,<span class="string">'abc'</span>)</span><br><span class="line"><span class="string">'abc,123:&#123;&#125;'</span></span><br></pre></td></tr></table></figure>
 <p>字符串的format函数可以接受不限个参数，位置可以不按顺序，可以不用也可以使用多次,大括号可以写两遍来转义。</p>
 <ul>
-<li><p>通过关键字参数</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;name&#125;|&#123;age&#125;'</span>.format(age=<span class="number">18</span>,name=<span class="string">"abc"</span>)</span><br><span class="line"><span class="string">'abc|18'</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>通过对象属性</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#class Car:  </span></span><br><span class="line"><span class="comment">#    def __init__(self,color,price):  </span></span><br><span class="line"><span class="comment">#        self.color, self.price = color, price </span></span><br><span class="line"><span class="comment">#        def __str__(self):  </span></span><br><span class="line"><span class="comment">#           return 'This car is &#123;self.color&#125; and worth $&#123;self.price&#125;'.format(self=self)  </span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>str(Car(<span class="string">'blue'</span>,<span class="number">200</span>)) </span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'This car is blue and worth $200'</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>通过下标</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>car=[<span class="string">'blue'</span>,<span class="number">200</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;0[0]&#125;,&#123;0[1]&#125;'</span>.format(car)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'blue,200'</span></span><br></pre></td></tr></table></figure>
-</li>
+<li>通过关键字参数</li>
 </ul>
-<h3 id="格式限定符"><a href="#格式限定符" class="headerlink" title="格式限定符"></a>格式限定符</h3><p>它有着丰富的的“格式限定符”（语法是{}中带:号），比如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;name&#125;|&#123;age&#125;'</span>.format(age=<span class="number">18</span>,name=<span class="string">"abc"</span>)</span><br><span class="line"><span class="string">'abc|18'</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>通过对象属性</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#class Car:  </span></span><br><span class="line"><span class="comment">#    def __init__(self,color,price):  </span></span><br><span class="line"><span class="comment">#        self.color, self.price = color, price </span></span><br><span class="line"><span class="comment">#        def __str__(self):  </span></span><br><span class="line"><span class="comment">#           return 'This car is &#123;self.color&#125; and worth $&#123;self.price&#125;'.format(self=self)  </span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>str(Car(<span class="string">'blue'</span>,<span class="number">200</span>)) </span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'This car is blue and worth $200'</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>通过下标</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>car=[<span class="string">'blue'</span>,<span class="number">200</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;0[0]&#125;,&#123;0[1]&#125;'</span>.format(car)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'blue,200'</span></span><br></pre></td></tr></table></figure>
+<h3 id="格式限定符"><a class="markdownIt-Anchor" href="#格式限定符"></a> 格式限定符</h3>
+<p>它有着丰富的的“格式限定符”（语法是{}中带:号），比如：</p>
 <ul>
 <li>填充与对齐</li>
 </ul>
-<p>填充常跟对齐一起使用<br><code>^</code>、<code>&lt;</code>、<code>&gt;</code>分别是居中、左对齐、右对齐，后面带宽度<br><code>:</code>号后面带填充的字符，只能是一个字符，不指定的话默认是用空格填充<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;:&gt;8&#125;'</span>.format(<span class="string">'189'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'     189'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;:0&gt;8&#125;'</span>.format(<span class="string">'189'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'00000189'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;:a&gt;8&#125;'</span>.format(<span class="string">'189'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'aaaaa189'</span></span><br></pre></td></tr></table></figure></p>
+<p>填充常跟对齐一起使用<br>
+<code>^</code>、<code>&lt;</code>、<code>&gt;</code>分别是居中、左对齐、右对齐，后面带宽度<br>
+<code>:</code>号后面带填充的字符，只能是一个字符，不指定的话默认是用空格填充</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;:&gt;8&#125;'</span>.format(<span class="string">'189'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'     189'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;:0&gt;8&#125;'</span>.format(<span class="string">'189'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'00000189'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;:a&gt;8&#125;'</span>.format(<span class="string">'189'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'aaaaa189'</span></span><br></pre></td></tr></table></figure>
 <ul>
 <li>精度与类型f</li>
 </ul>
-<p>精度常跟类型f一起使用<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;:.2f&#125;'</span>.format(<span class="number">321.33345</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'321.33'</span></span><br></pre></td></tr></table></figure></p>
+<p>精度常跟类型f一起使用</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;:.2f&#125;'</span>.format(<span class="number">321.33345</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'321.33'</span></span><br></pre></td></tr></table></figure>
 <p>其中.2表示长度为2的精度，f表示float类型。</p>
 <ul>
 <li>多进制表示</li>
 </ul>
-<p>b、d、o、x分别是二进制、十进制、八进制、十六进制。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;:b&#125;'</span>.format(<span class="number">17</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'10001'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;:d&#125;'</span>.format(<span class="number">17</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'17'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;:o&#125;'</span>.format(<span class="number">17</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'21'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;:x&#125;'</span>.format(<span class="number">17</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'11'</span></span><br></pre></td></tr></table></figure></p>
+<p>b、d、o、x分别是二进制、十进制、八进制、十六进制。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;:b&#125;'</span>.format(<span class="number">17</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'10001'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;:d&#125;'</span>.format(<span class="number">17</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'17'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;:o&#125;'</span>.format(<span class="number">17</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'21'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;:x&#125;'</span>.format(<span class="number">17</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'11'</span></span><br></pre></td></tr></table></figure>
 <ul>
-<li>其他类型<br>千位分隔符<br>用，号还能用来做金额的千位分隔符。<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;:,&#125;'</span>.format(<span class="number">1234567890</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'1,234,567,890'</span></span><br></pre></td></tr></table></figure>
-</li>
+<li>其他类型<br>
+千位分隔符<br>
+用，号还能用来做金额的千位分隔符。</li>
 </ul>
-<p>‘c’ - 字符。在打印之前将整数转换成对应的Unicode字符串<br>‘e’ - 幂符号。用科学计数法打印数字。用’e’表示幂<br>‘g’ - 一般格式。将数值以fixed-point格式输出。当数值特别大的时候，用幂形式打印<br>‘n’ - 数字。当值为整数时和’d’相同，值为浮点数时和’g’相同。不同的是它会根据区域设置插入数字分隔符。<br>‘%’ - 百分数。将数值乘以100然后以fixed-point(‘f’)格式打印，值后面会有一个百分号。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'&#123;:,&#125;'</span>.format(<span class="number">1234567890</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">'1,234,567,890'</span></span><br></pre></td></tr></table></figure>
+<p>‘c’ - 字符。在打印之前将整数转换成对应的Unicode字符串<br>
+‘e’ - 幂符号。用科学计数法打印数字。用’e’表示幂<br>
+‘g’ - 一般格式。将数值以fixed-point格式输出。当数值特别大的时候，用幂形式打印<br>
+‘n’ - 数字。当值为整数时和’d’相同，值为浮点数时和’g’相同。不同的是它会根据区域设置插入数字分隔符。<br>
+‘%’ - 百分数。将数值乘以100然后以fixed-point(‘f’)格式打印，值后面会有一个百分号。</p>
 
       
     </div>
@@ -339,6 +354,10 @@
           </div>
           
   <div class="comments" id="comments">
+	<!-- UY BEGIN -->
+		<div id="uyan_frame"></div>
+		<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2161534"></script>
+	<!-- UY END -->
     
   </div>
 
@@ -458,6 +477,8 @@
 
     <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
 <script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
     
   </body>

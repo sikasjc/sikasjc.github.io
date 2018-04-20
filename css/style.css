@@ -584,12 +584,12 @@ h6 {
       color: #8a8a8a; }
   .post .post-toc {
     position: absolute;
-    width: 200px;
+    width: 300px;
     margin-left: 800px;
     padding: 10px;
-    font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+    font-family: Fantasy;
     border-radius: 5px;
-    background: rgba(239, 240, 220, 0.6);
+    background: #EFF0DC;
     box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.125);
     word-wrap: break-word;
     box-sizing: border-box;
@@ -597,7 +597,8 @@ h6 {
     overflow-y: auto; }
     .post .post-toc .post-toc-title {
       margin: 0 10px;
-      font-size: 20px;
+      text-align: center;
+      font-size: 30px;
       font-weight: 400;
       text-transform: uppercase; }
     .post .post-toc .post-toc-content {
@@ -606,10 +607,14 @@ h6 {
       .post .post-toc .post-toc-content .toc-child {
         list-style: square; }
       .post .post-toc .post-toc-content .toc {
+        font-size: 16px;
         margin: 10px 0;
         padding-left: 20px; }
         .post .post-toc .post-toc-content .toc .toc-child {
-          padding-left: 15px; }
+          font-size: 14px;
+          padding-left: 20px;
+          padding-top: 10px;
+          padding-bottom: 10px; }
       .post .post-toc .post-toc-content .toc-link.active {
         color: #c05b4d; }
   @media screen and (max-width: 800px) {

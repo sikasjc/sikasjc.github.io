@@ -34,18 +34,18 @@
 <link rel="canonical" href="http://sikasjc.github.io/2017/04/03/subarray/"/>
 
 
-<meta name="description" content="Maximum subarray problem是在一维数组中找到一个连续的子数组，使该子数组的和为最大。例如，对一个数组 −2, 1, −3, 4, −1, 2, 1, −5, 4，其连续子数组中和最大的是 4, −1, 2, 1, 其和为6。">
+<meta name="description" content="Maximum subarray problem是在一维数组中找到一个连续的子数组，使该子数组的和为最大。 例如，对一个数组 −2, 1, −3, 4, −1, 2, 1, −5, 4，其连续子数组中和最大的是 4, −1, 2, 1, 其和为6。">
 <meta name="keywords" content="算法,数组">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Maximum subarray problem 最大子数组问题">
 <meta property="og:url" content="http://sikasjc.github.io/2017/04/03/subarray/index.html">
 <meta property="og:site_name" content="Sika">
-<meta property="og:description" content="Maximum subarray problem是在一维数组中找到一个连续的子数组，使该子数组的和为最大。例如，对一个数组 −2, 1, −3, 4, −1, 2, 1, −5, 4，其连续子数组中和最大的是 4, −1, 2, 1, 其和为6。">
+<meta property="og:description" content="Maximum subarray problem是在一维数组中找到一个连续的子数组，使该子数组的和为最大。 例如，对一个数组 −2, 1, −3, 4, −1, 2, 1, −5, 4，其连续子数组中和最大的是 4, −1, 2, 1, 其和为6。">
 <meta property="og:locale" content="zh-cn">
 <meta property="og:updated_time" content="2017-09-17T13:36:07.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Maximum subarray problem 最大子数组问题">
-<meta name="twitter:description" content="Maximum subarray problem是在一维数组中找到一个连续的子数组，使该子数组的和为最大。例如，对一个数组 −2, 1, −3, 4, −1, 2, 1, −5, 4，其连续子数组中和最大的是 4, −1, 2, 1, 其和为6。">
+<meta name="twitter:description" content="Maximum subarray problem是在一维数组中找到一个连续的子数组，使该子数组的和为最大。 例如，对一个数组 −2, 1, −3, 4, −1, 2, 1, −5, 4，其连续子数组中和最大的是 4, −1, 2, 1, 其和为6。">
 
 
 <link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
@@ -232,22 +232,32 @@
   <div class="post-toc" id="post-toc">
     <h2 class="post-toc-title">目录</h2>
     <div class="post-toc-content">
-      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Kadane’s-algorithm"><span class="toc-number">1.</span> <span class="toc-text">Kadane’s algorithm</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#修改：跟踪最大子数组和的起始位置和结束位置"><span class="toc-number">2.</span> <span class="toc-text">修改：跟踪最大子数组和的起始位置和结束位置</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#kadanes-algorithm"><span class="toc-number">1.</span> <span class="toc-text"> Kadane’s algorithm</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#修改跟踪最大子数组和的起始位置和结束位置"><span class="toc-number">2.</span> <span class="toc-text"> 修改：跟踪最大子数组和的起始位置和结束位置</span></a></li></ol>
     </div>
   </div>
 
 
     <div class="post-content">
       
-        <p><a href="https://en.wikipedia.org/wiki/Maximum_subarray_problem" target="_blank" rel="noopener">Maximum subarray problem</a>是在一维数组中找到一个连续的子数组，使该子数组的和为最大。<br>例如，对一个数组 −2, 1, −3, 4, −1, 2, 1, −5, 4，其连续子数组中和最大的是 4, −1, 2, 1, 其和为6。<br><a id="more"></a></p>
-<h3 id="Kadane’s-algorithm"><a href="#Kadane’s-algorithm" class="headerlink" title="Kadane’s algorithm"></a>Kadane’s algorithm</h3><p>Kadane’s algorithm 从一个简单的归纳问题开始：如果我们知道在位置 <strong><em>i</em></strong> 的最大子数组和，那么在位置 <strong><em>i+1</em></strong> 的最大子数组和会是什么？有两种情况：</p>
+        <p><a href="https://en.wikipedia.org/wiki/Maximum_subarray_problem" target="_blank" rel="noopener">Maximum subarray problem</a>是在一维数组中找到一个连续的子数组，使该子数组的和为最大。<br>
+例如，对一个数组 −2, 1, −3, 4, −1, 2, 1, −5, 4，其连续子数组中和最大的是 4, −1, 2, 1, 其和为6。</p>
+<a id="more"></a>
+<h3 id="kadanes-algorithm"><a class="markdownIt-Anchor" href="#kadanes-algorithm"></a> Kadane’s algorithm</h3>
+<p>Kadane’s algorithm 从一个简单的归纳问题开始：如果我们知道在位置 <em><strong>i</strong></em> 的最大子数组和，那么在位置 <em><strong>i+1</strong></em> 的最大子数组和会是什么？有两种情况：</p>
 <ul>
-<li>数组的最大子数组和在位置 <strong><em>i+1</em></strong> ，包括了在位置 <strong><em>i</em></strong> 的最大子数组和</li>
-<li>在位置 <strong><em>i+1</em></strong> 不是数组的最大子数组和</li>
+<li>数组的最大子数组和在位置 <em><strong>i+1</strong></em> ，包括了在位置 <em><strong>i</strong></em> 的最大子数组和</li>
+<li>在位置 <em><strong>i+1</strong></em> 不是数组的最大子数组和</li>
 </ul>
-<p>因此，我们可以通过遍历数组，来计算每个位置的最大子数组和，我们只需要跟踪其中最大的那个。<br><code>python</code> 代码如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">max_subarray</span><span class="params">(A)</span>:</span></span><br><span class="line">    max_ending_here = max_so_far = A[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">for</span> x <span class="keyword">in</span> A[<span class="number">1</span>:]:</span><br><span class="line">        max_ending_here = max(x, max_ending_here + x)</span><br><span class="line">        max_so_far = max(max_so_far, max_ending_here)</span><br><span class="line">    <span class="keyword">return</span> max_so_far</span><br><span class="line">    <span class="comment">#max_ending_here 现在位置的最大子数组和</span></span><br><span class="line">    <span class="comment">#max_so_far 目前为止所以位置的最大的子数组和</span></span><br></pre></td></tr></table></figure></p>
-<h3 id="修改：跟踪最大子数组和的起始位置和结束位置"><a href="#修改：跟踪最大子数组和的起始位置和结束位置" class="headerlink" title="修改：跟踪最大子数组和的起始位置和结束位置"></a>修改：跟踪最大子数组和的起始位置和结束位置</h3><p><strong>跟踪结束位置</strong><br>结束位置是比较简单的，只需要注意 max_so_far 改变的时候<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">max_subarray</span><span class="params">(A)</span>:</span></span><br><span class="line">    max_ending_here = max_so_far = A[<span class="number">0</span>]</span><br><span class="line">    i, end = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> x <span class="keyword">in</span> A[<span class="number">1</span>:]:</span><br><span class="line">        max_ending_here = max(x, max_ending_here + x)</span><br><span class="line">        <span class="keyword">if</span> max_so_far &lt; max_ending_here:</span><br><span class="line">            end = i + <span class="number">1</span></span><br><span class="line">            max_so_far = max_ending_here</span><br><span class="line">        i += <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> max_so_far, end</span><br><span class="line">    <span class="comment">#max_ending_here 现在位置的最大子数组和</span></span><br><span class="line">    <span class="comment">#max_so_far 目前为止所以位置的最大的子数组和</span></span><br></pre></td></tr></table></figure></p>
-<p><strong>跟踪起始位置</strong><br>起始位置则需注意 max_ending_here 改变时。当 max_ending_here 变为 x 的时候，说明当前位置元素大于之前所有位置的最大子数组和，所以从这里重新开始计算最大子数组和，即为起始位置<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">max_subarray</span><span class="params">(A)</span>:</span></span><br><span class="line">    max_ending_here = max_so_far = A[<span class="number">0</span>]</span><br><span class="line">    i, start = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> x <span class="keyword">in</span> A[<span class="number">1</span>:]:</span><br><span class="line">        max_ending_here = max(x, max_ending_here + x)</span><br><span class="line">        <span class="keyword">if</span> max_ending_here == x:</span><br><span class="line">            start = i + <span class="number">1</span></span><br><span class="line">        max_so_far = max(max_so_far, max_ending_here)</span><br><span class="line">        i += <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> max_so_far, start</span><br><span class="line">    <span class="comment">#max_ending_here 现在位置的最大子数组和</span></span><br><span class="line">    <span class="comment">#max_so_far 目前为止所以位置的最大的子数组和</span></span><br></pre></td></tr></table></figure></p>
+<p>因此，我们可以通过遍历数组，来计算每个位置的最大子数组和，我们只需要跟踪其中最大的那个。<br>
+<code>python</code> 代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">max_subarray</span><span class="params">(A)</span>:</span></span><br><span class="line">    max_ending_here = max_so_far = A[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">for</span> x <span class="keyword">in</span> A[<span class="number">1</span>:]:</span><br><span class="line">        max_ending_here = max(x, max_ending_here + x)</span><br><span class="line">        max_so_far = max(max_so_far, max_ending_here)</span><br><span class="line">    <span class="keyword">return</span> max_so_far</span><br><span class="line">    <span class="comment">#max_ending_here 现在位置的最大子数组和</span></span><br><span class="line">    <span class="comment">#max_so_far 目前为止所以位置的最大的子数组和</span></span><br></pre></td></tr></table></figure>
+<h3 id="修改跟踪最大子数组和的起始位置和结束位置"><a class="markdownIt-Anchor" href="#修改跟踪最大子数组和的起始位置和结束位置"></a> 修改：跟踪最大子数组和的起始位置和结束位置</h3>
+<p><strong>跟踪结束位置</strong><br>
+结束位置是比较简单的，只需要注意 max_so_far 改变的时候</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">max_subarray</span><span class="params">(A)</span>:</span></span><br><span class="line">    max_ending_here = max_so_far = A[<span class="number">0</span>]</span><br><span class="line">    i, end = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> x <span class="keyword">in</span> A[<span class="number">1</span>:]:</span><br><span class="line">        max_ending_here = max(x, max_ending_here + x)</span><br><span class="line">        <span class="keyword">if</span> max_so_far &lt; max_ending_here:</span><br><span class="line">            end = i + <span class="number">1</span></span><br><span class="line">            max_so_far = max_ending_here</span><br><span class="line">        i += <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> max_so_far, end</span><br><span class="line">    <span class="comment">#max_ending_here 现在位置的最大子数组和</span></span><br><span class="line">    <span class="comment">#max_so_far 目前为止所以位置的最大的子数组和</span></span><br></pre></td></tr></table></figure>
+<p><strong>跟踪起始位置</strong><br>
+起始位置则需注意 max_ending_here 改变时。当 max_ending_here 变为 x 的时候，说明当前位置元素大于之前所有位置的最大子数组和，所以从这里重新开始计算最大子数组和，即为起始位置</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">max_subarray</span><span class="params">(A)</span>:</span></span><br><span class="line">    max_ending_here = max_so_far = A[<span class="number">0</span>]</span><br><span class="line">    i, start = <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> x <span class="keyword">in</span> A[<span class="number">1</span>:]:</span><br><span class="line">        max_ending_here = max(x, max_ending_here + x)</span><br><span class="line">        <span class="keyword">if</span> max_ending_here == x:</span><br><span class="line">            start = i + <span class="number">1</span></span><br><span class="line">        max_so_far = max(max_so_far, max_ending_here)</span><br><span class="line">        i += <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> max_so_far, start</span><br><span class="line">    <span class="comment">#max_ending_here 现在位置的最大子数组和</span></span><br><span class="line">    <span class="comment">#max_so_far 目前为止所以位置的最大的子数组和</span></span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -316,6 +326,10 @@
           </div>
           
   <div class="comments" id="comments">
+	<!-- UY BEGIN -->
+		<div id="uyan_frame"></div>
+		<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2161534"></script>
+	<!-- UY END -->
     
   </div>
 
@@ -435,6 +449,8 @@
 
     <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
 <script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
     
   </body>

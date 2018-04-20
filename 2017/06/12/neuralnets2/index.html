@@ -47,7 +47,7 @@
 <meta property="og:image" content="https://ooo.0o0.ooo/2017/06/16/594358b50b354.png">
 <meta property="og:image" content="https://ooo.0o0.ooo/2017/06/16/594358b50ffad.png">
 <meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/17-7-4/30232175.jpg">
-<meta property="og:updated_time" content="2017-09-17T13:36:07.000Z">
+<meta property="og:updated_time" content="2018-04-19T14:21:13.215Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Neural Networks and Deep Learning 学习笔记二：">
 <meta name="twitter:description" content="学习Neural Networks，帮助自己理解">
@@ -238,52 +238,59 @@
   <div class="post-toc" id="post-toc">
     <h2 class="post-toc-title">目录</h2>
     <div class="post-toc-content">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#学习"><span class="toc-number">1.</span> <span class="toc-text">学习</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Sigmoid-neurons"><span class="toc-number">2.</span> <span class="toc-text">Sigmoid neurons</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#神经网络的结构"><span class="toc-number">3.</span> <span class="toc-text">神经网络的结构</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#学习"><span class="toc-number">1.</span> <span class="toc-text"> 学习</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sigmoid-neurons"><span class="toc-number">2.</span> <span class="toc-text"> Sigmoid neurons</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#神经网络的结构"><span class="toc-number">3.</span> <span class="toc-text"> 神经网络的结构</span></a></li></ol>
     </div>
   </div>
 
 
     <div class="post-content">
       
-        <h2 id="学习"><a href="#学习" class="headerlink" title="学习"></a>学习</h2><p>Deep Learning重点自然在于学习，通过让神经网络学习，来达到我们想要的功能。</p>
-<p>学习算法听起来很棒。 我们如何为神经网络设计这样的算法？ </p>
-<p>假设我们有一个感知器网络，我们想用来学习来使感知机网络可以解决一些问题。 例如，网络的输入可能是来自数字扫描的手写图像的原始像素数据。 我们希望感知机网络学习权重和偏差，以便网络的输出正确地对数字进行分类。 </p>
+        <h2 id="学习"><a class="markdownIt-Anchor" href="#学习"></a> 学习</h2>
+<p>Deep Learning重点自然在于学习，通过让神经网络学习，来达到我们想要的功能。</p>
+<p>学习算法听起来很棒。 我们如何为神经网络设计这样的算法？</p>
+<p>假设我们有一个感知器网络，我们想用来学习来使感知机网络可以解决一些问题。 例如，网络的输入可能是来自数字扫描的手写图像的原始像素数据。 我们希望感知机网络学习权重和偏差，以便网络的输出正确地对数字进行分类。</p>
 <p>假设我们在网络中的一些权重（或偏差）中做了一个小的改变。 我们想要的是这个小的权重变化只会导致网络输出的相对较小的变化。 我们稍后会看到，这个属性将使学习成为可能。 理论上，这就是我们想要的（当然这个网络太简单了，无法做手写识别！）：</p>
 <p><img src="http://neuralnetworksanddeeplearning.com/images/tikz8.png" alt="学习"></p>
 <p>如果权重（或偏差）的微小变化只会导致输出的微小变化，那么我们可以使用这个前提来修改权重和偏差，以使我们的网络可以达到我们要想到功能。 例如，假设网络错误地将图像“9”分类为“8”。 我们可以在权重和偏差上做一个小的改变，这样网络可以更接近地将图像分类为“9”。 改变权重和偏差，以产生更好的输出， 这就是网络在学习。</p>
 <p>事实上，网络中任何单个感知器的权重或偏差的小小变化有时可能导致该感知器的输出完全翻转，例如从0到1。然后，这种翻转可能导致网络其余部分会以一些非常复杂的方式完全改变，这样得到我们想要的输出会非常的困难。</p>
-<h2 id="Sigmoid-neurons"><a href="#Sigmoid-neurons" class="headerlink" title="Sigmoid neurons"></a>Sigmoid neurons</h2><p>我们可以通过引入Sigmoid neurons来解决这个问题。Sigmoid neurons与感知器类似，但是其权量和偏差的微小变化只会导致其输出的微小变化。 这就是Sigmoid neurons能够学习的关键所在。</p>
+<h2 id="sigmoid-neurons"><a class="markdownIt-Anchor" href="#sigmoid-neurons"></a> Sigmoid neurons</h2>
+<p>我们可以通过引入Sigmoid neurons来解决这个问题。Sigmoid neurons与感知器类似，但是其权量和偏差的微小变化只会导致其输出的微小变化。 这就是Sigmoid neurons能够学习的关键所在。</p>
 <p><img src="http://neuralnetworksanddeeplearning.com/images/tikz9.png" alt="Sigmoid neurons"></p>
-<p>像感知器一样，Sigmoid neurons有输入，x1，x2，… 但是，不是仅仅是0或1，这些输入可以在0和1之间取任何值，例如，0.638 …。 和感知器一样，Sigmoid neurons对于每个输入有权重w1，w2，… 和偏差b，但输出不是0或1，而是$ σ（w·x + b）$，其中$ σ $称为Sigmoid函数：</p>
-<script type="math/tex; mode=display">\begin{eqnarray} 
+<p>像感知器一样，Sigmoid neurons有输入，x1，x2，… 不仅仅是0或1，这些输入可以在0和1之间取任何值，例如，0.638 …</p>
+<p>和感知器一样，Sigmoid neurons对于每个输入有权重w1，w2，… 和偏差b，输出不是0或1，而是<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>σ</mi><mo>(</mo><mi>w</mi><mo separator="true">⋅</mo><mi>x</mi><mo>+</mo><mi>b</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">\sigma(w·x + b)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.03588em;">σ</span><span class="mopen">(</span><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="mpunct">⋅</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit">x</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit">b</span><span class="mclose">)</span></span></span></span>，其中<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>σ</mi></mrow><annotation encoding="application/x-tex">σ</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.03588em;">σ</span></span></span></span>称为Sigmoid函数：</p>
+ \begin{eqnarray} 
   \sigma(z) \equiv \frac{1}{1+e^{-z}}.
-\tag{1}\end{eqnarray}</script><p>更明确地说，输入x1，x2，…，权重w1，w2，…和偏差b的Sigmoid neurons的输出是：</p>
-<script type="math/tex; mode=display">\begin{eqnarray} 
-  \frac{1}{1+\exp(-\sum_j w_j x_j-b)}.
-\tag{2}\end{eqnarray}</script><p>看起来Sigmoid neurons和感知机有很大区别，实际上它们是非常相似的。首先，我们先看下Sigmoid函数$ σ() $的图像:</p>
+\tag{1}\end{eqnarray} 
+<p>更明确地说，输入x1，x2，…，权重w1，w2，…和偏差b的Sigmoid neurons的输出是：</p>
+ \begin{eqnarray} 
+\frac{1}{1+\exp(-\sum_j w_j x_j-b)}.
+\tag{2}\end{eqnarray} 
+<p>看起来Sigmoid neurons和感知机有很大区别，实际上它们是非常相似的。首先，我们先看Sigmoid函数<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>σ</mi><mo>(</mo><mo>)</mo></mrow><annotation encoding="application/x-tex">\sigma()</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.03588em;">σ</span><span class="mopen">(</span><span class="mclose">)</span></span></span></span>的图像:</p>
 <p><img src="https://ooo.0o0.ooo/2017/06/16/594358b50b354.png" alt="Sigmoid function"></p>
-<p>假设$ z≡w⋅x+b $是一个非常大的正数，那么$ e^{-z} \approx 0 $并且$ σ(z)≈1 $。换句话说，当$ z=w⋅x+b $非常大并且为正数，sigmoid neurons的输出结果接近于1, 就像感知器一样。 假设$ z=w⋅x+b $是非常大的负数，则有$ e^{-z} \rightarrow \infty $, 并且$ σ(z)≈0 $。即当$ z=w⋅x+b $非常大并且为负数，就像感知器一样，sigmoid neurons的输出结果接近于0。只有当$ w⋅x+b $具有适度的大小时，才有与感知器模型有很大的偏差。</p>
+<p>假设<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>z</mi><mo>≡</mo><mi>w</mi><mo>⋅</mo><mi>x</mi><mo>+</mo><mi>b</mi></mrow><annotation encoding="application/x-tex">z≡w⋅x+b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.04398em;">z</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≡</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit">x</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit">b</span></span></span></span>是一个非常大的正数，那么<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mi>e</mi><mo>−</mo></msup><mi>z</mi><mo>≈</mo><mrow><mn>0</mn></mrow></mrow><annotation encoding="application/x-tex">e^-z\approx{0}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.771331em;"></span><span class="strut bottom" style="height:0.771331em;vertical-align:0em;"></span><span class="base"><span class="mord"><span class="mord mathit">e</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.771331em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mbin mtight">−</span></span></span></span></span></span></span></span><span class="mord mathit" style="margin-right:0.04398em;">z</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≈</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord"><span class="mord">0</span></span></span></span></span> 并且<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>σ</mi><mo>(</mo><mi>z</mi><mo>)</mo><mo>≈</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">σ(z)≈1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.03588em;">σ</span><span class="mopen">(</span><span class="mord mathit" style="margin-right:0.04398em;">z</span><span class="mclose">)</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≈</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">1</span></span></span></span>。换句话说，当<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>z</mi><mo>=</mo><mi>w</mi><mo>⋅</mo><mi>x</mi><mo>+</mo><mi>b</mi></mrow><annotation encoding="application/x-tex">z=w⋅x+b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.04398em;">z</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit">x</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit">b</span></span></span></span>非常大并且为正数，sigmoid neurons的输出结果接近于1, 就像感知器一样。 假设<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>z</mi><mo>=</mo><mi>w</mi><mo>⋅</mo><mi>x</mi><mo>+</mo><mi>b</mi></mrow><annotation encoding="application/x-tex">z=w⋅x+b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.04398em;">z</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit">x</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit">b</span></span></span></span>是非常大的负数，则有<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mi>e</mi><mrow><mo>−</mo><mi>z</mi></mrow></msup><mo>→</mo><mi mathvariant="normal">∞</mi></mrow><annotation encoding="application/x-tex">e^{-z}\rightarrow\infty</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.771331em;"></span><span class="strut bottom" style="height:0.771331em;vertical-align:0em;"></span><span class="base"><span class="mord"><span class="mord mathit">e</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.771331em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mathit mtight" style="margin-right:0.04398em;">z</span></span></span></span></span></span></span></span></span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">→</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">∞</span></span></span></span>, 并且<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>σ</mi><mo>(</mo><mi>z</mi><mo>)</mo><mo>≈</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">σ(z)≈0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.03588em;">σ</span><span class="mopen">(</span><span class="mord mathit" style="margin-right:0.04398em;">z</span><span class="mclose">)</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≈</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">0</span></span></span></span>。即当<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>z</mi><mo>=</mo><mi>w</mi><mo>⋅</mo><mi>x</mi><mo>+</mo><mi>b</mi></mrow><annotation encoding="application/x-tex">z=w⋅x+b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.04398em;">z</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit">x</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit">b</span></span></span></span>非常大并且为负数，就像感知器一样，sigmoid neurons的输出结果接近于0。因此只有当<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>w</mi><mo>⋅</mo><mi>x</mi><mo>+</mo><mi>b</mi></mrow><annotation encoding="application/x-tex">w⋅x+b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit">x</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit">b</span></span></span></span>具有适度的大小时，才有与感知器模型有很大的偏差。</p>
 <p>这种形状可以认为是阶梯函数的平滑版本：</p>
 <p><img src="https://ooo.0o0.ooo/2017/06/16/594358b50ffad.png" alt="step function"></p>
-<p>如果<script type="math/tex">σ</script>是一个阶梯函数，那么Sigmoid neurons将成为感知器，因为输出为1或0，取决于$ w·x + b $是正还是负。</p>
+<p>如果<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>σ</mi></mrow><annotation encoding="application/x-tex">σ</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.03588em;">σ</span></span></span></span>是一个阶梯函数，那么Sigmoid neurons将成为感知器，因为输出为1或0，取决于<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>w</mi><mo separator="true">⋅</mo><mi>x</mi><mo>+</mo><mi>b</mi></mrow><annotation encoding="application/x-tex">w·x + b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="mpunct">⋅</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit">x</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit">b</span></span></span></span>是正还是负。</p>
 <pre><code>但是实际上，当w⋅x+ b = 0时，感知器输出0，而step函数输出1。所以严格来说，它们还是有一点区别的
-</code></pre><hr>
+</code></pre>
+<hr>
 <p>Sigmoid neurons 可以像感知机一样，根据 w (weight权重) 和 b (bias偏差)来引起输出的微小变化，这样Sigmoid neurons才能够完成学习，如下所示：</p>
-<script type="math/tex; mode=display">\begin{eqnarray} 
-  \Delta \mbox{output} \approx \sum_j \frac{\partial \, \mbox{output}}{\partial w_j}
-  \Delta w_j + \frac{\partial \, \mbox{output}}{\partial b} \Delta b
-\tag{3}\end{eqnarray}</script><p>Sigmoid neurons的输出$ σ（w·x + b）$可能会是0.731，0.293等等，我们可以通过判断输出是否大于某个特定的值，例如0.5，将输出分为1或者0，完成分类。</p>
-<script type="math/tex; mode=display">\begin{eqnarray}
-  \mbox{output} = \left\{ 
-    \begin{array}{ll} 
-      0 & \mbox{if } \sigma(w \cdot x+b)\leq 0.5 \\
-      1 & \mbox{if } \sigma(w \cdot x+b) > 0.5
-    \end{array}
-  \right.
-\tag{4}\end{eqnarray}</script><p>之后，会有如何根据输出的结果与预期的结果，用一些算法，例如后向传播算法，来调整$ w $ (weight)和$ b $ (bias)，让我们的网络可以完成我们想要的功能。</p>
-<h2 id="神经网络的结构"><a href="#神经网络的结构" class="headerlink" title="神经网络的结构"></a>神经网络的结构</h2><p><img src="http://ormnbkvfv.bkt.clouddn.com/17-7-4/30232175.jpg" alt="The architecture of neural networks"></p>
-<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
+ \begin{eqnarray} 
+\Delta \mbox{output} \approx \sum_j \frac{\partial \, \mbox{output}}{\partial w_j}
+\Delta w_j + \frac{\partial \, \mbox{output}}{\partial b} \Delta b
+\tag{3}\end{eqnarray} 
+<p>Sigmoid neurons的输出<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>σ</mi><mo>(</mo><mi>w</mi><mo separator="true">⋅</mo><mi>x</mi><mo>+</mo><mi>b</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">\sigma(w·x + b)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.03588em;">σ</span><span class="mopen">(</span><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="mpunct">⋅</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit">x</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit">b</span><span class="mclose">)</span></span></span></span>可能会是0.731，0.293等等，我们可以通过判断输出是否大于某个特定的值，例如0.5，将输出分为1或者0，完成分类。</p>
+ \begin{eqnarray}
+\mbox{output} = \left\{ 
+\begin{array}{ll} 
+0 & \mbox{if } \sigma(w \cdot x+b)\leq 0.5 \\
+1 & \mbox{if } \sigma(w \cdot x+b) > 0.5
+\end{array}
+\right.
+\tag{4}\end{eqnarray} 
+<p>之后，会有如何根据输出的结果与预期的结果，用一些算法，例如后向传播算法，来调整<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>w</mi></mrow><annotation encoding="application/x-tex">w</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02691em;">w</span></span></span></span> (weight)和<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>b</mi></mrow><annotation encoding="application/x-tex">b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base"><span class="mord mathit">b</span></span></span></span> (bias)，让我们的网络可以完成我们想要的功能。</p>
+<h2 id="神经网络的结构"><a class="markdownIt-Anchor" href="#神经网络的结构"></a> 神经网络的结构</h2>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/17-7-4/30232175.jpg" alt="The architecture of neural networks"></p>
 
       
     </div>
@@ -352,6 +359,10 @@
           </div>
           
   <div class="comments" id="comments">
+	<!-- UY BEGIN -->
+		<div id="uyan_frame"></div>
+		<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2161534"></script>
+	<!-- UY END -->
     
   </div>
 
@@ -471,6 +482,8 @@
 
     <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
 <script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
     
   </body>

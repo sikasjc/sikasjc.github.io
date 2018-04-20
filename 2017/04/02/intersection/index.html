@@ -232,19 +232,25 @@
   <div class="post-toc" id="post-toc">
     <h2 class="post-toc-title">目录</h2>
     <div class="post-toc-content">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#349-Intersection-of-Two-Arrays-—leetcode"><span class="toc-number">1.</span> <span class="toc-text">349. Intersection of Two Arrays —leetcode</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#题目"><span class="toc-number">1.1.</span> <span class="toc-text">题目</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#python解法"><span class="toc-number">1.2.</span> <span class="toc-text">python解法</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#349-intersection-of-two-arrays-leetcode"><span class="toc-number">1.</span> <span class="toc-text"> 349. Intersection of Two Arrays --leetcode</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#题目"><span class="toc-number">1.1.</span> <span class="toc-text"> 题目</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#python解法"><span class="toc-number">1.2.</span> <span class="toc-text"> python解法</span></a></li></ol></li></ol>
     </div>
   </div>
 
 
     <div class="post-content">
       
-        <h2 id="349-Intersection-of-Two-Arrays-—leetcode"><a href="#349-Intersection-of-Two-Arrays-—leetcode" class="headerlink" title="349. Intersection of Two Arrays —leetcode"></a><a href="https://leetcode.com/problems/intersection-of-two-arrays/#/description" target="_blank" rel="noopener">349. Intersection of Two Arrays —leetcode</a></h2><hr>
+        <h2 id="349-intersection-of-two-arrays-leetcode"><a class="markdownIt-Anchor" href="#349-intersection-of-two-arrays-leetcode"></a> <a href="https://leetcode.com/problems/intersection-of-two-arrays/#/description" target="_blank" rel="noopener">349. Intersection of Two Arrays --leetcode</a></h2>
+<hr>
 <p>编程练习，多多思考。题很简单，我自己总结了下 set 的集合运算<a href="https://sikasjc.github.io/2017/04/02/set/">见此</a></p>
-<h3 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h3><p>Given two arrays, write a function to compute their intersection.</p>
-<p><strong>Example:</strong><br>Given nums1 = [1, 2, 2, 1], nums2 = [2, 2], return <a href="https://leetcode.com/problems/intersection-of-two-arrays/#/description" target="_blank" rel="noopener">2</a>.</p>
-<p><strong>Note:</strong><br>Each element in the result must be unique.<br>The result can be in any order.</p>
-<h3 id="python解法"><a href="#python解法" class="headerlink" title="python解法"></a>python解法</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">intersection</span><span class="params">(self, nums1, nums2)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        :type nums1: List[int]</span></span><br><span class="line"><span class="string">        :type nums2: List[int]</span></span><br><span class="line"><span class="string">        :rtype: List[int]</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        num1 = set(nums1)</span><br><span class="line">        num2 = set(nums2)</span><br><span class="line">        <span class="keyword">return</span> list(num1 &amp;num2)</span><br></pre></td></tr></table></figure>
+<h3 id="题目"><a class="markdownIt-Anchor" href="#题目"></a> 题目</h3>
+<p>Given two arrays, write a function to compute their intersection.</p>
+<p><strong>Example:</strong><br>
+Given nums1 = [1, 2, 2, 1], nums2 = [2, 2], return <a href="https://leetcode.com/problems/intersection-of-two-arrays/#/description" target="_blank" rel="noopener">2</a>.</p>
+<p><strong>Note:</strong><br>
+Each element in the result must be unique.<br>
+The result can be in any order.</p>
+<h3 id="python解法"><a class="markdownIt-Anchor" href="#python解法"></a> python解法</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">intersection</span><span class="params">(self, nums1, nums2)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        :type nums1: List[int]</span></span><br><span class="line"><span class="string">        :type nums2: List[int]</span></span><br><span class="line"><span class="string">        :rtype: List[int]</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        num1 = set(nums1)</span><br><span class="line">        num2 = set(nums2)</span><br><span class="line">        <span class="keyword">return</span> list(num1 &amp;num2)</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -313,6 +319,10 @@
           </div>
           
   <div class="comments" id="comments">
+	<!-- UY BEGIN -->
+		<div id="uyan_frame"></div>
+		<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2161534"></script>
+	<!-- UY END -->
     
   </div>
 
@@ -432,6 +442,8 @@
 
     <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
 <script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
     
   </body>

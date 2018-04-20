@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="霍夫变换(Hough Transform)是图像处理中的一种特征提取技术，它通过一种投票算法检测具有特定形状的物体。该过程在一个参数空间中通过计算累计结果的局部最大值得到一个符合该特定形状的集合作为霍夫变换结果。经典霍夫变换用来检测图像中的直线，后来霍夫变换扩展到任意形状物体的识别，多为圆和椭圆。"/>
+
+
+
+
+  <meta name="keywords" content="算法,python,Hough Transform,霍夫变换,直线检测," />
+
+
+
+
+  <link rel="alternate" href="/default" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2018/04/20/Hough/"/>
+
+
+<meta name="description" content="霍夫变换(Hough Transform)是图像处理中的一种特征提取技术，它通过一种投票算法检测具有特定形状的物体。该过程在一个参数空间中通过计算累计结果的局部最大值得到一个符合该特定形状的集合作为霍夫变换结果。经典霍夫变换用来检测图像中的直线，后来霍夫变换扩展到任意形状物体的识别，多为圆和椭圆。">
+<meta name="keywords" content="算法,python,Hough Transform,霍夫变换,直线检测">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hough Transform 霍夫变换">
+<meta property="og:url" content="http://sikasjc.github.io/2018/04/20/Hough/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="霍夫变换(Hough Transform)是图像处理中的一种特征提取技术，它通过一种投票算法检测具有特定形状的物体。该过程在一个参数空间中通过计算累计结果的局部最大值得到一个符合该特定形状的集合作为霍夫变换结果。经典霍夫变换用来检测图像中的直线，后来霍夫变换扩展到任意形状物体的识别，多为圆和椭圆。">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-4-20/19104296.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-4-20/25605684.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-4-20/79714005.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-4-20/9357870.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-4-20/35017049.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-4-20/56720159.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-4-20/4397464.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-4-20/9796412.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-4-20/7685408.jpg">
+<meta property="og:updated_time" content="2018-04-20T10:09:46.552Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hough Transform 霍夫变换">
+<meta name="twitter:description" content="霍夫变换(Hough Transform)是图像处理中的一种特征提取技术，它通过一种投票算法检测具有特定形状的物体。该过程在一个参数空间中通过计算累计结果的局部最大值得到一个符合该特定形状的集合作为霍夫变换结果。经典霍夫变换用来检测图像中的直线，后来霍夫变换扩展到任意形状物体的识别，多为圆和椭圆。">
+<meta name="twitter:image" content="http://ormnbkvfv.bkt.clouddn.com/18-4-20/19104296.jpg">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> Hough Transform 霍夫变换 · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Hough Transform 霍夫变换
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018年4月20日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/算法/">算法</a>
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/Hough-Transform/">Hough Transform</a>
+            
+              <a href="/tags/霍夫变换/">霍夫变换</a>
+            
+              <a href="/tags/直线检测/">直线检测</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#introduction-介绍"><span class="toc-number">1.</span> <span class="toc-text"> Introduction 介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hough-space-and-hough-transform-霍夫空间与霍夫变换"><span class="toc-number">2.</span> <span class="toc-text"> Hough space and Hough Transform 霍夫空间与霍夫变换</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#直线在-hough-space-中的表示"><span class="toc-number">2.1.</span> <span class="toc-text"> 直线在 Hough space 中的表示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#极坐标系下"><span class="toc-number">2.2.</span> <span class="toc-text"> 极坐标系下</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#algorithm-算法"><span class="toc-number">3.</span> <span class="toc-text"> Algorithm 算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#transformation-to-hough-space"><span class="toc-number">3.1.</span> <span class="toc-text"> Transformation to Hough Space</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#the-hough-space-accumulator"><span class="toc-number">3.2.</span> <span class="toc-text"> The Hough Space Accumulator</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#detection-of-infinite-lines"><span class="toc-number">3.3.</span> <span class="toc-text"> Detection of Infinite Lines</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#finite-line"><span class="toc-number">3.4.</span> <span class="toc-text"> Finite line</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#progressive-probabilistic-hough-transform-渐进概率霍夫变换"><span class="toc-number">4.</span> <span class="toc-text"> Progressive Probabilistic Hough Transform 渐进概率霍夫变换</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#问题"><span class="toc-number">4.1.</span> <span class="toc-text"> 问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#步骤与应用"><span class="toc-number">5.</span> <span class="toc-text"> 步骤与应用</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h2 id="introduction-介绍"><a class="markdownIt-Anchor" href="#introduction-介绍"></a> Introduction 介绍</h2>
+<p>当图像要用于分析图像中的不同区域（如目标识别）时，减少图像中的数据量，同时保留重要的特征结构信息是非常重要的。</p>
+<p>边缘检测（Edge Detection）可以显着减少图像中的数据量。然而，边缘检测器的输出仍然是由像素描述的图像。 如果线条，椭圆等可以通过它们的特征方程来定义，那么数据量将会减少得更多。</p>
+<p>Hough变换最初是为了识别直线（Line）而开发的，并且后来被广义化为涵盖任意形状。</p>
+<h2 id="hough-space-and-hough-transform-霍夫空间与霍夫变换"><a class="markdownIt-Anchor" href="#hough-space-and-hough-transform-霍夫空间与霍夫变换"></a> Hough space and Hough Transform 霍夫空间与霍夫变换</h2>
+<h3 id="直线在-hough-space-中的表示"><a class="markdownIt-Anchor" href="#直线在-hough-space-中的表示"></a> 直线在 Hough space 中的表示</h3>
+<p>直线可以唯一地由两个参数来表示，经过点 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">(x, y)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mopen">(</span><span class="mord mathit">x</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="mclose">)</span></span></span></span> 的直线可表示为：</p>
+\begin{equation}
+y=a·x+b
+\tag{1}
+\end{equation}
+<p>其中参数 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>a</mi></mrow><annotation encoding="application/x-tex">a</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit">a</span></span></span></span> 为斜率, <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>b</mi></mrow><annotation encoding="application/x-tex">b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base"><span class="mord mathit">b</span></span></span></span> 为截距，通过点 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">(x,y)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mopen">(</span><span class="mord mathit">x</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="mclose">)</span></span></span></span> 的直线有无数条，且对应于不同的 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>a</mi></mrow><annotation encoding="application/x-tex">a</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit">a</span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>b</mi></mrow><annotation encoding="application/x-tex">b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base"><span class="mord mathit">b</span></span></span></span> 值, 如果将 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit">x</span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>y</mi></mrow><annotation encoding="application/x-tex">y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.03588em;">y</span></span></span></span> 视为常数，而将原本的参数 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>a</mi></mrow><annotation encoding="application/x-tex">a</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit">a</span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>b</mi></mrow><annotation encoding="application/x-tex">b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base"><span class="mord mathit">b</span></span></span></span> 看作变量，则 (1) 可以表示为：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>b</mi><mo>=</mo><mo>−</mo><mi>x</mi><mo separator="true">⋅</mo><mi>a</mi><mo>+</mo><mi>y</mi></mrow><annotation encoding="application/x-tex">b=-x·a+y
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="base"><span class="mord mathit">b</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">−</span><span class="mord mathit">x</span><span class="mpunct">⋅</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit">a</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit" style="margin-right:0.03588em;">y</span></span></span></span></span></p>
+<p>这样直线 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>y</mi><mo>=</mo><mi>a</mi><mo separator="true">⋅</mo><mi>x</mi><mo>+</mo><mi>b</mi></mrow><annotation encoding="application/x-tex">y=a·x+b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit">a</span><span class="mpunct">⋅</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit">x</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit">b</span></span></span></span> 就变换到了参数为 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>(</mo><mi>a</mi><mo separator="true">,</mo><mi>b</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">(a,b)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mopen">(</span><span class="mord mathit">a</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit">b</span><span class="mclose">)</span></span></span></span> 的 Hough 空间，这就是直角坐标系中对于 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">(x,y)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mopen">(</span><span class="mord mathit">x</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="mclose">)</span></span></span></span> 点的 <strong>Hough Transform 霍夫变换</strong>。</p>
+<p>我们可以发现在直角坐标系(即欧式空间)中的一条直线，对应于 Hough 空间中的一个点，如下图所示</p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-4-20/19104296.jpg" alt="1"></p>
+<p>欧式空间中的一条直线对应于Hough空间中的一个点，反过来Hough空间中的一条线自然对应于欧式空间的一个点，如下图所示</p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-4-20/25605684.jpg" alt="2"></p>
+<p>这时我们就可以想到，对于欧式空间的多个点，映射到Hough空间，即为多条直线。</p>
+<p>如果我们可以找到一条穿过这些点的直线，每个点映射到Hough空间的线必然相交于一个点，而这个点就是我们需要的直线参数，即完成了对于直线的检测。</p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-4-20/79714005.jpg" alt="3"></p>
+<h3 id="极坐标系下"><a class="markdownIt-Anchor" href="#极坐标系下"></a> 极坐标系下</h3>
+<p>上面的内容已经将Hough变换检测直线的原理呈现出来了，但是在直角坐标系下的表示形式，存在无法表示垂直于x轴的直线的问题，此时<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>a</mi><mo>=</mo><mi mathvariant="normal">∞</mi></mrow><annotation encoding="application/x-tex">a=\infty</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit">a</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">∞</span></span></span></span></p>
+<p>所以我们将(1)改写为极坐标表示：</p>
+\begin{equation}
+r=x·cos\theta + y·sin\theta
+\tag{2} 
+\end{equation}
+<p>并保持与 (1) 的形式一致:</p>
+\begin{equation}
+y=-\frac{cos\theta}{sin\theta}·x+\frac{r}{sin\theta}
+\tag{3}
+\end{equation}
+<p>当<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>θ</mi><mo>∈</mo><mo>[</mo><mn>0</mn><mo separator="true">,</mo><mn>1</mn><mn>8</mn><mn>0</mn><mo>]</mo></mrow><annotation encoding="application/x-tex">\theta \in [0, 180]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02778em;">θ</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">∈</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mopen">[</span><span class="mord">0</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">1</span><span class="mord">8</span><span class="mord">0</span><span class="mclose">]</span></span></span></span> 和<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>r</mi><mo>∈</mo><mrow><mi mathvariant="bold">R</mi></mrow></mrow><annotation encoding="application/x-tex">r \in \mathbf{R}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68611em;"></span><span class="strut bottom" style="height:0.72521em;vertical-align:-0.0391em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02778em;">r</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">∈</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord"><span class="mord mathbf">R</span></span></span></span></span>（或者<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>θ</mi><mo>∈</mo><mo>[</mo><mn>0</mn><mo separator="true">,</mo><mn>3</mn><mn>6</mn><mn>0</mn><mo>]</mo></mrow><annotation encoding="application/x-tex">\theta \in [0, 360]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02778em;">θ</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">∈</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mopen">[</span><span class="mord">0</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">3</span><span class="mord">6</span><span class="mord">0</span><span class="mclose">]</span></span></span></span>且 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>r</mi><mo>⩾</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">r\geqslant 0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.64444em;"></span><span class="strut bottom" style="height:0.78111em;vertical-align:-0.13667em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02778em;">r</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel amsrm">⩾</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">0</span></span></span></span>）时，极坐标系中所有的直线都可以用这种形式表示。</p>
+<p>Hough空间因此具有这两个维度: <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>θ</mi></mrow><annotation encoding="application/x-tex">\theta</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02778em;">θ</span></span></span></span>和 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>r</mi></mrow><annotation encoding="application/x-tex">r</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02778em;">r</span></span></span></span>，并且极坐标系下直线由Hough空间的单个点表示，对应于唯一的一组参数（<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>θ</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">\theta_0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="base"><span class="mord"><span class="mord mathit" style="margin-right:0.02778em;">θ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"></span></span></span></span></span></span></span></span>，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>r</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">r_0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="base"><span class="mord"><span class="mord mathit" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"></span></span></span></span></span></span></span></span>）</p>
+<p>与直角坐标系相同，极坐标系下的多点，对应于Hough空间中的多个曲线，若存在过这些点的一条直线，则Hough空间中的曲线必然相交于一点。</p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-4-20/9357870.jpg" alt="4"></p>
+<h2 id="algorithm-算法"><a class="markdownIt-Anchor" href="#algorithm-算法"></a> Algorithm 算法</h2>
+<h3 id="transformation-to-hough-space"><a class="markdownIt-Anchor" href="#transformation-to-hough-space"></a> Transformation to Hough Space</h3>
+<p>如之前所述，每个edge point被转换成Hough空间中的一条线，并且大多数Hough空间线，相交的区域在Edge Image中对应于一条直线。</p>
+<p>即欧式空间中可能被拟合为一条直线的多点，对应于与Hough空间中的多条线，并且这些线可以相交于一点，该点参数即为欧式空间中直线的参数；</p>
+<p>同理，如果可以拟合成多条直线，则Hough空间中必定存在多个曲线相交的点。</p>
+<h3 id="the-hough-space-accumulator"><a class="markdownIt-Anchor" href="#the-hough-space-accumulator"></a> The Hough Space Accumulator</h3>
+<p>为了确定霍夫空间中大多数线相交的区域（点），使用一个覆盖Hough空间的累加器（Accumulator）</p>
+<p>当一个Edge point被转换到Hough空间时，对于Hough空间位置的累加器的值增加,同时也很好理解，累加器的分辨率决定了检测直线的精度。</p>
+<p>这样我们也可以看到，累加器的维数对应于Hough变换问题中未知参数的个数。</p>
+<p><strong>对于椭圆而言，需要5个参数（其中心的坐标，其主轴和副轴的长度以及角度）,对于直线，只需两个维度（<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>r</mi></mrow><annotation encoding="application/x-tex">r</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02778em;">r</span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>θ</mi></mrow><annotation encoding="application/x-tex">\theta</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02778em;">θ</span></span></span></span>）就足够了</strong></p>
+<h3 id="detection-of-infinite-lines"><a class="markdownIt-Anchor" href="#detection-of-infinite-lines"></a> Detection of Infinite Lines</h3>
+<p>当所有Edeg points 已经被转换到Hough空间时，通过检测累加器的值来检测直线。</p>
+<p>检测直线最基本的方法是为累加器设置一些阈值，然后保留高于阈值的值。阈值可以是累加器中最大值的50％，这种方法偶尔可以满足要求，但在许多情况下，必须采用其他的约束条件。</p>
+<p>从下图中可以看出，Hough Transform累加器最大值周围的点，也具有较大的值。因此，仅设置一个简单的阈值，将会检测到与真实直线相近的多个直线。</p>
+<p>为了避免这种情况，可以定义一个抑制邻域的方法，这样在检测到两条线之前，必须有两条线显著的不同。</p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-4-20/35017049.jpg" alt="5"></p>
+<h3 id="finite-line"><a class="markdownIt-Anchor" href="#finite-line"></a> Finite line</h3>
+<p>经典的Hough transform检测仅由参数 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>r</mi></mrow><annotation encoding="application/x-tex">r</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02778em;">r</span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>θ</mi></mrow><annotation encoding="application/x-tex">\theta</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02778em;">θ</span></span></span></span>给出直线，并且没有关于长度的信息。 因此，所有检测到的线的长度都是无限的。</p>
+<p>如果需要有限长的直线，则必须执行一些附加分析以确定图像的哪些区域存在直线。</p>
+<p>有以下几种算法：</p>
+<ul>
+<li>一种方法是存储累加器中所有点的坐标信息，并使用这些信息来限制线条。 但是，这会导致累加器使用更多的内存。</li>
+<li>另一种方法是沿Edge图像中无限长的直线搜索以找到有限长度的直线。 这种方法的一种变体称为 <em><strong>Progressive Probabilistic Hough Transform（渐进概率霍夫变换）</strong></em></li>
+</ul>
+<h2 id="progressive-probabilistic-hough-transform-渐进概率霍夫变换"><a class="markdownIt-Anchor" href="#progressive-probabilistic-hough-transform-渐进概率霍夫变换"></a> Progressive Probabilistic Hough Transform 渐进概率霍夫变换</h2>
+<p>霍夫变换不是一个查找图像中长度无限的线快速算法，由于需要附加的分析以检测长度有限的线，则会更慢。加快Hough变换算法速度，并同时寻找长度有限的直线的方法是 <em><strong>Progressive Probabilistic Hough Transform渐进概率霍夫变换（PPHT）</strong></em></p>
+<p>这种方法的想法是将Edge图像中随机选择的像素，转换到累加器。 当在累加器可确认一个特定的无限长度的直线时，沿该条直线搜索Edge图像，以查看是否存在一个或多个有限长度的线。</p>
+<p>然后在该直线的所有像素被从Edge图像中除去。通过这种方式，算法返回有限长度的直线。 如果搜索阈值较高，则在累加器中评估的像素数量会变小。</p>
+<p>该算法可以概括如下：</p>
+<ol>
+<li>创建输入边 Edge 图像（IMG1）的副本（IMG2）。</li>
+<li>用从 IMG2 随机选择的像素更新累加器。</li>
+<li>从 IMG2 中删除像素。</li>
+<li>如果修改的累加器（BINX）中具有最大值的较低阈值，转到第1点。</li>
+<li>沿着由BINX指定的线在 IMG1 中搜索，找到连续或间隙不超过给定阈值的间隔的最长像素段。</li>
+<li>从 IMG2 中删除段中的像素。</li>
+<li>清除BINX。</li>
+<li>如果检测到的线段比给定的最小长度长，请将其添加到输出列表中。</li>
+<li>转到第2点</li>
+</ol>
+<h3 id="问题"><a class="markdownIt-Anchor" href="#问题"></a> 问题</h3>
+<p>该算法的一个问题是，多次运行可能会产生不同的结果。 如果许多直线共享像素，则会出现这种情况。</p>
+<p>如果两条线交叉，要检测的第一条线将去除公共像素（以及其周围的部分），从而导致另一条线上出现凹陷。 如果多条线交叉，则许多像素可能会错过最后一行，并且累加器中的投票可能无法达到阈值。</p>
+<h2 id="步骤与应用"><a class="markdownIt-Anchor" href="#步骤与应用"></a> 步骤与应用</h2>
+<p>直线检测算法可以分为以下几个步骤：</p>
+<ol>
+<li>边缘检测（edge detection），例如：Canny edge detection</li>
+<li>将edge point映射到霍夫空间并存储在累加器中。</li>
+<li>通过阈值和可能的其他限制，寻找累加器中最合理的点（例如，寻找累加器中值最大的一点 或者 大于阈值的点），产生无限长度的直线。</li>
+<li>将无限长度的直线转换为有限长度，并重叠在原始图像上。</li>
+</ol>
+<p><strong>Hough Transform 霍夫变换本身应用在第2点</strong></p>
+<p>opencv 以及 skimage 库都实现了***Hough transform*** 以及***Progressive Probabilistic Hough Transform***，以直接调用其提供的算法接口。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> cv2</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line">img = cv2.imread(<span class="string">'building.jpg'</span>)</span><br><span class="line">gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)</span><br><span class="line">plt.imshow(gray, cmap=<span class="string">'gray'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-4-20/56720159.jpg" alt="6"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Using canny edge detection</span></span><br><span class="line">low_threshold = <span class="number">50</span>  <span class="comment"># Canny edge detection low threshold</span></span><br><span class="line">high_threshold = <span class="number">200</span>  <span class="comment"># Canny edge detection high threshold</span></span><br><span class="line">edges = cv2.Canny(gray, low_threshold, high_threshold)</span><br><span class="line">plt.imshow(edges, cmap=<span class="string">'gray'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-4-20/4397464.jpg" alt="7"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">rho = <span class="number">1</span></span><br><span class="line">theta = np.pi / <span class="number">180</span></span><br><span class="line">threshold = <span class="number">100</span></span><br><span class="line">min_line_length = <span class="number">30</span></span><br><span class="line">max_line_gap = <span class="number">10</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">draw_lines</span><span class="params">(img, lines, color=[<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>], thickness=<span class="number">2</span>)</span>:</span></span><br><span class="line">  <span class="keyword">for</span> line <span class="keyword">in</span> lines:</span><br><span class="line">    <span class="keyword">for</span> x1, y1, x2, y2 <span class="keyword">in</span> line:</span><br><span class="line">      cv2.line(img, (x1, y1), (x2, y2), color, thickness)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hough_lines</span><span class="params">(img, rho, theta, threshold, </span></span></span><br><span class="line"><span class="function"><span class="params">                min_line_len, max_line_gap)</span>:</span></span><br><span class="line">  lines = cv2.HoughLinesP(img, rho, theta, threshold, np.array([]),</span><br><span class="line">                          minLineLength=min_line_len, </span><br><span class="line">                          maxLineGap=max_line_gap)</span><br><span class="line">  line_img = np.zeros((img.shape[<span class="number">0</span>], img.shape[<span class="number">1</span>], <span class="number">3</span>), dtype=np.uint8)</span><br><span class="line">  draw_lines(line_img, lines)</span><br><span class="line">  <span class="keyword">return</span> line_img</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">line_img = hough_lines(edges, rho, theta, threshold, min_line_length, max_line_gap)</span><br><span class="line">plt.imshow(line_img, cmap=<span class="string">'gray'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-4-20/9796412.jpg" alt="8"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">threshold = <span class="number">10</span> <span class="comment"># 修改门限值</span></span><br><span class="line">line_img = hough_lines(edges, rho, theta, threshold, min_line_length, max_line_gap)</span><br><span class="line">plt.imshow(line_img, cmap=<span class="string">'gray'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-4-20/7685408.jpg" alt="9"></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2018/04/20/Hough/">http://sikasjc.github.io/2018/04/20/Hough/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/算法/">算法</a>
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/Hough-Transform/">Hough Transform</a>
+            
+              <a href="/tags/霍夫变换/">霍夫变换</a>
+            
+              <a href="/tags/直线检测/">直线检测</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2018/04/17/pagemonitor/">
+        <span class="next-text nav-default">Page Monitor 静态网页内容监测</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+	<!-- UY BEGIN -->
+		<div id="uyan_frame"></div>
+		<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2161534"></script>
+	<!-- UY END -->
+    
+  </div>
+
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/u/5605720030" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/si-qia-sika" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  
+  
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>
