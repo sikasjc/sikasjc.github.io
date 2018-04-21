@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="RANSAC为Random Sample Consensus的缩写，它是根据一组包含异常数据的样本数据集，计算出数据的数学模型参数，得到有效样本数据的算法。它于1981年由Fischler和Bolles最先提出"/>
+
+
+
+
+  <meta name="keywords" content="算法,python,直线检测,Ransac,随机采样一致," />
+
+
+
+
+  <link rel="alternate" href="/default" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2018/04/21/Ransac/"/>
+
+
+<meta name="description" content="RANSAC为Random Sample Consensus的缩写，它是根据一组包含异常数据的样本数据集，计算出数据的数学模型参数，得到有效样本数据的算法。它于1981年由Fischler和Bolles最先提出">
+<meta name="keywords" content="算法,python,直线检测,Ransac,随机采样一致">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RANSAC 随机采样一致">
+<meta property="og:url" content="http://sikasjc.github.io/2018/04/21/Ransac/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="RANSAC为Random Sample Consensus的缩写，它是根据一组包含异常数据的样本数据集，计算出数据的数学模型参数，得到有效样本数据的算法。它于1981年由Fischler和Bolles最先提出">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-4-21/87060280.jpg">
+<meta property="og:updated_time" content="2018-04-21T15:16:18.737Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RANSAC 随机采样一致">
+<meta name="twitter:description" content="RANSAC为Random Sample Consensus的缩写，它是根据一组包含异常数据的样本数据集，计算出数据的数学模型参数，得到有效样本数据的算法。它于1981年由Fischler和Bolles最先提出">
+<meta name="twitter:image" content="http://ormnbkvfv.bkt.clouddn.com/18-4-21/87060280.jpg">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> RANSAC 随机采样一致 · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          RANSAC 随机采样一致
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018年4月21日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/算法/">算法</a>
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/直线检测/">直线检测</a>
+            
+              <a href="/tags/Ransac/">Ransac</a>
+            
+              <a href="/tags/随机采样一致/">随机采样一致</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ransac-随机采样一致"><span class="toc-number">1.</span> <span class="toc-text"> RANSAC 随机采样一致</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#introduction-介绍"><span class="toc-number">1.1.</span> <span class="toc-text"> Introduction 介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#overview-概述"><span class="toc-number">1.2.</span> <span class="toc-text"> Overview 概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#motivation"><span class="toc-number">1.2.1.</span> <span class="toc-text"> Motivation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#assumptions"><span class="toc-number">1.2.2.</span> <span class="toc-text"> Assumptions</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#method"><span class="toc-number">1.2.3.</span> <span class="toc-text"> Method</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#algorithm-算法"><span class="toc-number">1.3.</span> <span class="toc-text"> Algorithm 算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#prerequisites"><span class="toc-number">1.3.1.</span> <span class="toc-text"> Prerequisites</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#flow"><span class="toc-number">1.3.2.</span> <span class="toc-text"> Flow</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#parameters"><span class="toc-number">1.3.3.</span> <span class="toc-text"> Parameters</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#conclusion-总结"><span class="toc-number">1.4.</span> <span class="toc-text"> Conclusion 总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#优点"><span class="toc-number">1.4.1.</span> <span class="toc-text"> 优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#缺点"><span class="toc-number">1.4.2.</span> <span class="toc-text"> 缺点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#python实现"><span class="toc-number">1.5.</span> <span class="toc-text"> Python实现</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h1 id="ransac-随机采样一致"><a class="markdownIt-Anchor" href="#ransac-随机采样一致"></a> RANSAC 随机采样一致</h1>
+<hr>
+<p>代码见：<a href="https://github.com/sikasjc/Ransac" target="_blank" rel="noopener">GitHub</a></p>
+<p>RANSAC是Random Sample Consensus（随机采样一致）的缩写。</p>
+<p>RANSAC是一种通用算法，可以与其他参数估计方法一起使用，当数据中存在大量离群（outilers，即异常值）时，估计拟合的内群（inliers）的数学模型参数</p>
+<p>RANSAC是一种迭代方法，也是一个非确定性算法，在某种意义上说，它会产生一个在一定概率下合理的结果，而更多次的迭代会使这一概率增加。此RANSAC算法在1981年由Fischler和Bolles首次提出，随后产生了许多变体，并在机器视觉、模型估计（Model Fitting）等领域有着巨大影响。</p>
+<pre><code>for a better world without outliers...
+</code></pre>
+<h2 id="introduction-介绍"><a class="markdownIt-Anchor" href="#introduction-介绍"></a> Introduction 介绍</h2>
+<p>一般的参数估计算法基于数据点中的噪声（离群outliers）服从零均值的高斯分布，因此，在对所有数据点进行平均的参数优化，就可以对噪声有很大的抑制，线性最小二乘（Linear least squares），便是这样的思想。</p>
+<p>然而显而易见，这个假设在存在大量误差时，是不成立的，服从其他分布的噪声、严重的噪声值、采样过程中错误的测量值等等，都可能导致这样的大量误差。这样的噪声在我们进行参数估计时，应该被排除在外，以便我们获得更好的模型参数的估计值。</p>
+<p>如下图所示：<br>
+<img src="http://ormnbkvfv.bkt.clouddn.com/18-4-21/87060280.jpg" alt=""></p>
+<h2 id="overview-概述"><a class="markdownIt-Anchor" href="#overview-概述"></a> Overview 概述</h2>
+<h3 id="motivation"><a class="markdownIt-Anchor" href="#motivation"></a> Motivation</h3>
+<p>RANSAC就是解决这种问题一个算法，或者说一种思想，通过排除可能存在的错误数据，来估计模型参数。</p>
+<h3 id="assumptions"><a class="markdownIt-Anchor" href="#assumptions"></a> Assumptions</h3>
+<p>RANSAC假设数据由可以用模型解释的内群（inliers）组成，而离群（outliers）是完全不适合模型的错误数据。 因此，在训练模型时使用离群（outliers）会增加我们的最终预测误差，因为它们几乎不包含有关模型的信息。</p>
+<p>此外，RANSAC仅用内群（inliers）训练参数模型，而忽略离群（inliers）。</p>
+<p>将数据分离为内群（inliers）和离群（outliers）将是一个有力的假设，它也是RANSAC与其他方法的主要区别。 另外，即使这个假设对于数据集不成立，也不会影响RANSAC对模型的参数估计，因为在这种情况下，它将整个数据集考虑为内群（inliers），然后估计模型参数。</p>
+<p>RANSAC使用一小部分样本来估计模型参数，而不是使用所有的数据，虽然这是一个软性假设（soft assumption），然而对大多数情况都适用，例如拟合一个直线模型，两个数据样本就足够了。</p>
+<h3 id="method"><a class="markdownIt-Anchor" href="#method"></a> Method</h3>
+<p>RANSAC均匀随机地选择一个数据样本子集并用它来估计模型参数，然后选择数据集中，在生成模型的容错范围内的样本。</p>
+<p>这些样本被认为与生成的模型一致，并被称为所选数据样本的一致集（consensus set）， 即一致集（consensus set）中的数据样本为内群（inlier），其余为离群（outliers）。</p>
+<p>如果一致集（consensus set）中的样本数量足够高，就可以使用来更新模型参数。</p>
+<p>重复对这个过程进行多次迭代，更新生成模型参数，最终返回误差最小的模型。</p>
+<h2 id="algorithm-算法"><a class="markdownIt-Anchor" href="#algorithm-算法"></a> Algorithm 算法</h2>
+<h3 id="prerequisites"><a class="markdownIt-Anchor" href="#prerequisites"></a> Prerequisites</h3>
+<p>实际上，RANSAC并不是一个完整的可自我工作算法。 实际上，在存在离群（outliers）的情况下，它使用模型及其距离函数，鲁棒地估计模型参数。RANSAC只是在数据集上应用离群点分离，并根据最优化方法和模型的距离函数，来使用内群（inliers）估计模型参数。</p>
+<p>因此，在使用RANSAC之前，必须确定模型，距离函数和优化算法。不过，这也使得RANSAC完全模块化，允许它与任何估算模型，任何距离函数和任何优化方法一起工作。从这个角度说，RANSAC也可以被认为是一种思想。</p>
+<h3 id="flow"><a class="markdownIt-Anchor" href="#flow"></a> Flow</h3>
+<p>RANSAC算法流程的一般描述如下所示：</p>
+<p><strong>Given:</strong></p>
+<pre><code>data - a set of observed data points
+model - a model that can be fitted to data points
+n - the minimum number of data values required to fit the model
+k - the maximum number of iterations allowed in the algorithm
+t - a threshold value for determining when a data point fits a model
+d - the number of close data values required to assert that a model fits well to data
+</code></pre>
+<p><strong>Return:</strong></p>
+<pre><code>bestfit - model parameters which best fit the data (or nil if no good model is found)
+</code></pre>
+<hr>
+<p><strong>RUN</strong></p>
+<pre><code>iterations = 0
+bestfit = nil
+besterr = something really large
+
+while iterations &lt; k
+    maybeinliers = n randomly selected values from data
+    maybemodel = model parameters fitted to maybeinliers
+    alsoinliers = empty set
+    
+    for every point in data not in maybeinliers
+        if point fits maybemodel with an error smaller than t
+            add point to alsoinliers
+    
+    if the number of elements in alsoinliers is &gt; d
+    % this implies that we may have found a good model
+    % now test how good it is
+        bettermodel = model parameters fitted to all points in maybeinliers and alsoinliers
+        thiserr = a measure of how well model fits these points
+    
+        if thiserr &lt; besterr
+            bestfit = bettermodel
+            besterr = thiserr
+    
+    increment iterations
+return bestfit
+</code></pre>
+<blockquote>
+<p>The algorithm flow is referenced from Wikipedia (<a href="http://en.wikipedia.org/wiki/RANSAC" target="_blank" rel="noopener">http://en.wikipedia.org/wiki/RANSAC</a>)</p>
+</blockquote>
+<h3 id="parameters"><a class="markdownIt-Anchor" href="#parameters"></a> Parameters</h3>
+<p>像在算法流程开始时所描述的那样，RANSAC需要一些预定义参数来运行：</p>
+<ul>
+<li>n - 采样子集的数目</li>
+<li>t - 容错阈值</li>
+<li>d - 一致集的最小数目</li>
+<li>k - 迭代次数</li>
+<li>w - 数据集中的内群inliers（w）的比例也是很重要。</li>
+</ul>
+<p>由于RANSAC是一个随机算法，为了增加找到最优模型的概率，同时仍然保持随机化算法对于穷举确定性算法的计算优势，一个合适的预定义参数是至关重要的。</p>
+<p>这里有一些启发式来计算这些参数：</p>
+<p><strong>w - 数据集中的内群inliers的比例</strong></p>
+<p>虽然RANSAC不是算法中的一个直接参数，但是在算法参数的计算中使用了内群（inliers）的比例，甚至可以隐式地影响算法的复杂度。因此，在运行RANSAC之前，有一些关于数据集中离群（outliers）的比例的信息是有益的。</p>
+<p><strong>n - 采样子集的数目</strong></p>
+<p>采样子集的大小是RANSAC在每次迭代时对初始模型随机选择的样本数。RANSAC使用定义模型所需的最小样本数作为样本子集大小。</p>
+<p>例如 为了拟合线性模型，n为2即可，或拟合一个圆形模型，RANSAC选择3个数据样本作为3个点就足以定义一个圆。</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>n</mi><mo>≡</mo><mi>m</mi><mi>i</mi><mi>n</mi><mi>i</mi><mi>m</mi><mi>u</mi><mi>m</mi><mspace width="0.22222em"></mspace><mi>n</mi><mi>u</mi><mi>m</mi><mi>b</mi><mi>e</mi><mi>r</mi><mspace width="0.22222em"></mspace><mi>o</mi><mi>f</mi><mspace width="0.22222em"></mspace><mi>s</mi><mi>a</mi><mi>m</mi><mi>p</mi><mi>l</mi><mi>e</mi><mi>s</mi><mspace width="0.22222em"></mspace><mi>t</mi><mi>o</mi><mspace width="0.22222em"></mspace><mi>d</mi><mi>e</mi><mi>f</mi><mi>i</mi><mi>n</mi><mi>e</mi><mspace width="0.22222em"></mspace><mi>m</mi><mi>o</mi><mi>d</mi><mi>e</mi><mi>l</mi></mrow><annotation encoding="application/x-tex">n\equiv minimum\: number\: of\: samples\: to\: define\: model
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="base"><span class="mord mathit">n</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≡</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit">m</span><span class="mord mathit">i</span><span class="mord mathit">n</span><span class="mord mathit">i</span><span class="mord mathit">m</span><span class="mord mathit">u</span><span class="mord mathit">m</span><span class="mspace mediumspace"></span><span class="mord mathit">n</span><span class="mord mathit">u</span><span class="mord mathit">m</span><span class="mord mathit">b</span><span class="mord mathit">e</span><span class="mord mathit" style="margin-right:0.02778em;">r</span><span class="mspace mediumspace"></span><span class="mord mathit">o</span><span class="mord mathit" style="margin-right:0.10764em;">f</span><span class="mspace mediumspace"></span><span class="mord mathit">s</span><span class="mord mathit">a</span><span class="mord mathit">m</span><span class="mord mathit">p</span><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathit">e</span><span class="mord mathit">s</span><span class="mspace mediumspace"></span><span class="mord mathit">t</span><span class="mord mathit">o</span><span class="mspace mediumspace"></span><span class="mord mathit">d</span><span class="mord mathit">e</span><span class="mord mathit" style="margin-right:0.10764em;">f</span><span class="mord mathit">i</span><span class="mord mathit">n</span><span class="mord mathit">e</span><span class="mspace mediumspace"></span><span class="mord mathit">m</span><span class="mord mathit">o</span><span class="mord mathit">d</span><span class="mord mathit">e</span><span class="mord mathit" style="margin-right:0.01968em;">l</span></span></span></span></span></p>
+<p><strong>t - 容错阈值</strong></p>
+<p>RANSAC使用容错阈值来确定数据样本是否与生成模型一致。低于阈值下的样本将形成该模型的一致集，如果找到了正确的模型，那么这将是数据集的内群（inliers）。因此，应根据内群（inliers）的高斯误差（gaussian error）来选择。</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>t</mi><mo>≈</mo><mi>g</mi><mi>a</mi><mi>u</mi><mi>s</mi><mi>s</mi><mi>i</mi><mi>a</mi><mi>n</mi><mspace width="0.22222em"></mspace><mi>e</mi><mi>r</mi><mi>r</mi><mi>o</mi><mi>r</mi><mspace width="0.22222em"></mspace><mi>i</mi><mi>n</mi><mspace width="0.22222em"></mspace><mi>i</mi><mi>n</mi><mi>l</mi><mi>i</mi><mi>e</mi><mi>r</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">t\approx gaussian\: error\: in\: inliers
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="base"><span class="mord mathit">t</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≈</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit" style="margin-right:0.03588em;">g</span><span class="mord mathit">a</span><span class="mord mathit">u</span><span class="mord mathit">s</span><span class="mord mathit">s</span><span class="mord mathit">i</span><span class="mord mathit">a</span><span class="mord mathit">n</span><span class="mspace mediumspace"></span><span class="mord mathit">e</span><span class="mord mathit" style="margin-right:0.02778em;">r</span><span class="mord mathit" style="margin-right:0.02778em;">r</span><span class="mord mathit">o</span><span class="mord mathit" style="margin-right:0.02778em;">r</span><span class="mspace mediumspace"></span><span class="mord mathit">i</span><span class="mord mathit">n</span><span class="mspace mediumspace"></span><span class="mord mathit">i</span><span class="mord mathit">n</span><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathit">i</span><span class="mord mathit">e</span><span class="mord mathit" style="margin-right:0.02778em;">r</span><span class="mord mathit">s</span></span></span></span></span></p>
+<p><strong>d - 一致集的最小数目</strong></p>
+<p>最小一致集阈值是为了生成该迭代的最终模型而被接受为一致集的最小样本数量。最小一致集阈值应等于或小于数据集里的内群（inliers）的数目</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>d</mi><mo>≈</mo><mi>w</mi><mo>⋅</mo><mrow><mo fence="true">∣</mo><mi>D</mi><mi>a</mi><mi>t</mi><mi>a</mi><mi>S</mi><mi>e</mi><mi>t</mi><mo fence="true">∣</mo></mrow></mrow><annotation encoding="application/x-tex">d\approx w\cdot \left | DataSet \right |
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mord mathit">d</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≈</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">∣</span><span class="mord mathit" style="margin-right:0.02778em;">D</span><span class="mord mathit">a</span><span class="mord mathit">t</span><span class="mord mathit">a</span><span class="mord mathit" style="margin-right:0.05764em;">S</span><span class="mord mathit">e</span><span class="mord mathit">t</span><span class="mclose delimcenter" style="top:0em;">∣</span></span></span></span></span></span></p>
+<p>|DataSet|表示数据集中的所有样本数</p>
+<p><strong>k - 迭代次数</strong></p>
+<p>如下计算以某个概率成功运行的预期迭代次数：</p>
+<p>选择一个样本是内群（inliers）的可能性：<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>P</mi><mo>(</mo><mi>i</mi><mi>n</mi><mi>l</mi><mi>i</mi><mi>e</mi><mi>r</mi><mo>)</mo><mo>=</mo><mi>w</mi></mrow><annotation encoding="application/x-tex">P(inlier)= w</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord mathit">i</span><span class="mord mathit">n</span><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathit">i</span><span class="mord mathit">e</span><span class="mord mathit" style="margin-right:0.02778em;">r</span><span class="mclose">)</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit" style="margin-right:0.02691em;">w</span></span></span></span></p>
+<p>选择的样本子集没有离群（outliers）的概率：<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>P</mi><mo>(</mo><mi>s</mi><mi>u</mi><mi>b</mi><mi>s</mi><mi>e</mi><mi>t</mi><mspace width="0.22222em"></mspace><mi>w</mi><mi>i</mi><mi>t</mi><mi>h</mi><mspace width="0.22222em"></mspace><mi>n</mi><mi>o</mi><mspace width="0.22222em"></mspace><mi>o</mi><mi>u</mi><mi>t</mi><mi>l</mi><mi>i</mi><mi>e</mi><mi>r</mi><mi>s</mi><mo>)</mo><mo>=</mo><msup><mi>w</mi><mi>n</mi></msup></mrow><annotation encoding="application/x-tex">P(subset\: with\: no\: outliers) = w^n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord mathit">s</span><span class="mord mathit">u</span><span class="mord mathit">b</span><span class="mord mathit">s</span><span class="mord mathit">e</span><span class="mord mathit">t</span><span class="mspace mediumspace"></span><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="mord mathit">i</span><span class="mord mathit">t</span><span class="mord mathit">h</span><span class="mspace mediumspace"></span><span class="mord mathit">n</span><span class="mord mathit">o</span><span class="mspace mediumspace"></span><span class="mord mathit">o</span><span class="mord mathit">u</span><span class="mord mathit">t</span><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathit">i</span><span class="mord mathit">e</span><span class="mord mathit" style="margin-right:0.02778em;">r</span><span class="mord mathit">s</span><span class="mclose">)</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord"><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.664392em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathit mtight">n</span></span></span></span></span></span></span></span></span></span></span></p>
+<p>选择的样本子集有离群（outliers）的概率：<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>P</mi><mo>(</mo><mi>s</mi><mi>u</mi><mi>b</mi><mi>s</mi><mi>e</mi><mi>t</mi><mspace width="0.22222em"></mspace><mi>w</mi><mi>i</mi><mi>t</mi><mi>h</mi><mspace width="0.22222em"></mspace><mi>o</mi><mi>u</mi><mi>t</mi><mi>l</mi><mi>i</mi><mi>e</mi><mi>r</mi><mi>s</mi><mo>)</mo><mo>=</mo><mn>1</mn><mo>−</mo><msup><mi>w</mi><mi>n</mi></msup></mrow><annotation encoding="application/x-tex">P(subset\: with\: outliers) = 1-w^n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord mathit">s</span><span class="mord mathit">u</span><span class="mord mathit">b</span><span class="mord mathit">s</span><span class="mord mathit">e</span><span class="mord mathit">t</span><span class="mspace mediumspace"></span><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="mord mathit">i</span><span class="mord mathit">t</span><span class="mord mathit">h</span><span class="mspace mediumspace"></span><span class="mord mathit">o</span><span class="mord mathit">u</span><span class="mord mathit">t</span><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathit">i</span><span class="mord mathit">e</span><span class="mord mathit" style="margin-right:0.02778em;">r</span><span class="mord mathit">s</span><span class="mclose">)</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">1</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.664392em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathit mtight">n</span></span></span></span></span></span></span></span></span></span></span></p>
+<p>k次迭代选择的样本子集有离群（outliers）的概率：<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>P</mi><mo>(</mo><mi>k</mi><mi>s</mi><mi>u</mi><mi>b</mi><mi>s</mi><mi>e</mi><mi>t</mi><mspace width="0.22222em"></mspace><mi>w</mi><mi>i</mi><mi>t</mi><mi>h</mi><mspace width="0.22222em"></mspace><mi>o</mi><mi>u</mi><mi>t</mi><mi>l</mi><mi>i</mi><mi>e</mi><mi>r</mi><mi>s</mi><mo>)</mo><mo>=</mo><mo>(</mo><mn>1</mn><mo>−</mo><msup><mi>w</mi><mi>n</mi></msup><msup><mo>)</mo><mi>k</mi></msup></mrow><annotation encoding="application/x-tex">P(k subset\: with\: outliers) = (1-w^n)^k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.849108em;"></span><span class="strut bottom" style="height:1.099108em;vertical-align:-0.25em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord mathit" style="margin-right:0.03148em;">k</span><span class="mord mathit">s</span><span class="mord mathit">u</span><span class="mord mathit">b</span><span class="mord mathit">s</span><span class="mord mathit">e</span><span class="mord mathit">t</span><span class="mspace mediumspace"></span><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="mord mathit">i</span><span class="mord mathit">t</span><span class="mord mathit">h</span><span class="mspace mediumspace"></span><span class="mord mathit">o</span><span class="mord mathit">u</span><span class="mord mathit">t</span><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathit">i</span><span class="mord mathit">e</span><span class="mord mathit" style="margin-right:0.02778em;">r</span><span class="mord mathit">s</span><span class="mclose">)</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.664392em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathit mtight">n</span></span></span></span></span></span></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.849108em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathit mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span></span></span></span></p>
+<p>运行算法失败的概率：<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>P</mi><mo>(</mo><mi>f</mi><mi>a</mi><mi>i</mi><mi>l</mi><mo>)</mo><mo>=</mo><mo>(</mo><mn>1</mn><mo>−</mo><msup><mi>w</mi><mi>n</mi></msup><msup><mo>)</mo><mi>k</mi></msup></mrow><annotation encoding="application/x-tex">P(fail) = (1-w^n)^k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.849108em;"></span><span class="strut bottom" style="height:1.099108em;vertical-align:-0.25em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord mathit" style="margin-right:0.10764em;">f</span><span class="mord mathit">a</span><span class="mord mathit">i</span><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mclose">)</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.664392em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathit mtight">n</span></span></span></span></span></span></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.849108em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathit mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span></span></span></span></p>
+<p>运行算法成功的概率：<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>P</mi><mo>(</mo><mi>s</mi><mi>u</mi><mi>c</mi><mi>c</mi><mi>e</mi><mi>s</mi><mi>s</mi><mo>)</mo><mo>=</mo><mn>1</mn><mo>−</mo><mo>(</mo><mn>1</mn><mo>−</mo><msup><mi>w</mi><mi>n</mi></msup><msup><mo>)</mo><mi>k</mi></msup></mrow><annotation encoding="application/x-tex">P(success) = 1-(1-w^n)^k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.849108em;"></span><span class="strut bottom" style="height:1.099108em;vertical-align:-0.25em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord mathit">s</span><span class="mord mathit">u</span><span class="mord mathit">c</span><span class="mord mathit">c</span><span class="mord mathit">e</span><span class="mord mathit">s</span><span class="mord mathit">s</span><span class="mclose">)</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">1</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.664392em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathit mtight">n</span></span></span></span></span></span></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.849108em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathit mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span></span></span></span></p>
+<p>预期的迭代次数：<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>k</mi><mo>=</mo><mfrac><mrow><mi>l</mi><mi>o</mi><mi>g</mi><mo>(</mo><mn>1</mn><mo>−</mo><mi>P</mi><mo>(</mo><mi>s</mi><mi>u</mi><mi>c</mi><mi>c</mi><mi>e</mi><mi>s</mi><mi>s</mi><mo>)</mo><mo>)</mo></mrow><mrow><mi>l</mi><mi>o</mi><mi>g</mi><mo>(</mo><mn>1</mn><mo>−</mo><msup><mi>w</mi><mi>n</mi></msup><mo>)</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">k=\frac{log(1-P(success))}{log(1-w^n)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:1.01em;"></span><span class="strut bottom" style="height:1.53em;vertical-align:-0.52em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.03148em;">k</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.01em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight" style="margin-right:0.01968em;">l</span><span class="mord mathit mtight">o</span><span class="mord mathit mtight" style="margin-right:0.03588em;">g</span><span class="mopen mtight">(</span><span class="mord mtight">1</span><span class="mbin mtight">−</span><span class="mord mtight"><span class="mord mathit mtight" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.5935428571428571em;"><span style="top:-2.786em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathit mtight">n</span></span></span></span></span></span></span></span><span class="mclose mtight">)</span></span></span></span><span style="top:-3.15em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.2em;"><svg width="400em" height="0.2em" viewbox="0 0 400000 200" preserveaspectratio="xMinYMin slice"><path d="M0 80H400000 v40H0z M0 80H400000 v40H0z"/></svg></span></span><span style="top:-3.485em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight" style="margin-right:0.01968em;">l</span><span class="mord mathit mtight">o</span><span class="mord mathit mtight" style="margin-right:0.03588em;">g</span><span class="mopen mtight">(</span><span class="mord mtight">1</span><span class="mbin mtight">−</span><span class="mord mathit mtight" style="margin-right:0.13889em;">P</span><span class="mopen mtight">(</span><span class="mord mathit mtight">s</span><span class="mord mathit mtight">u</span><span class="mord mathit mtight">c</span><span class="mord mathit mtight">c</span><span class="mord mathit mtight">e</span><span class="mord mathit mtight">s</span><span class="mord mathit mtight">s</span><span class="mclose mtight">)</span><span class="mclose mtight">)</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.52em;"></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></p>
+<p>举个例子，直线拟合问题的RANSAC的迭代计算次数：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>F</mi><mi>o</mi><mi>r</mi><mrow><mo fence="true">∣</mo><mi>D</mi><mi>a</mi><mi>t</mi><mi>a</mi><mi>S</mi><mi>e</mi><mi>t</mi><mo fence="true">∣</mo></mrow><mo>=</mo><mn>1</mn><mn>2</mn><mo separator="true">,</mo><mspace width="0.22222em"></mspace><mi>n</mi><mo>=</mo><mn>2</mn><mspace width="0.22222em"></mspace><mi>a</mi><mi>n</mi><mi>d</mi><mspace width="0.22222em"></mspace><mi>P</mi><mo>(</mo><mi>s</mi><mi>u</mi><mi>c</mi><mi>c</mi><mi>e</mi><mi>s</mi><mi>s</mi><mo>)</mo><mo>=</mo><mn>0</mn><mi mathvariant="normal">.</mi><mn>9</mn><mn>9</mn></mrow><annotation encoding="application/x-tex">For \left | DataSet \right | = 12,\: n = 2\: and\: P(success)=0.99
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.13889em;">F</span><span class="mord mathit">o</span><span class="mord mathit" style="margin-right:0.02778em;">r</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">∣</span><span class="mord mathit" style="margin-right:0.02778em;">D</span><span class="mord mathit">a</span><span class="mord mathit">t</span><span class="mord mathit">a</span><span class="mord mathit" style="margin-right:0.05764em;">S</span><span class="mord mathit">e</span><span class="mord mathit">t</span><span class="mclose delimcenter" style="top:0em;">∣</span></span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">1</span><span class="mord">2</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mspace mediumspace"></span><span class="mord mathit">n</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">2</span><span class="mspace mediumspace"></span><span class="mord mathit">a</span><span class="mord mathit">n</span><span class="mord mathit">d</span><span class="mspace mediumspace"></span><span class="mord mathit" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord mathit">s</span><span class="mord mathit">u</span><span class="mord mathit">c</span><span class="mord mathit">c</span><span class="mord mathit">e</span><span class="mord mathit">s</span><span class="mord mathit">s</span><span class="mclose">)</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">0</span><span class="mord">.</span><span class="mord">9</span><span class="mord">9</span></span></span></span></span></p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>w</mi><mo>=</mo><mn>0</mn><mi mathvariant="normal">.</mi><mn>9</mn><mn>5</mn><mo>⇒</mo><mi>k</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">w = 0.95 \Rightarrow k=2
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">0</span><span class="mord">.</span><span class="mord">9</span><span class="mord">5</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">⇒</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit" style="margin-right:0.03148em;">k</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">2</span></span></span></span></span></p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>w</mi><mo>=</mo><mn>0</mn><mi mathvariant="normal">.</mi><mn>7</mn><mn>5</mn><mo>⇒</mo><mi>k</mi><mo>=</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">w = 0.75 \Rightarrow k=6
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">0</span><span class="mord">.</span><span class="mord">7</span><span class="mord">5</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">⇒</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit" style="margin-right:0.03148em;">k</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">6</span></span></span></span></span></p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>w</mi><mo>=</mo><mn>0</mn><mi mathvariant="normal">.</mi><mn>5</mn><mo>⇒</mo><mi>k</mi><mo>=</mo><mn>1</mn><mn>7</mn></mrow><annotation encoding="application/x-tex">w = 0.5 \Rightarrow k=17
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">0</span><span class="mord">.</span><span class="mord">5</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">⇒</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit" style="margin-right:0.03148em;">k</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">1</span><span class="mord">7</span></span></span></span></span></p>
+<p>如果我们希望每次都可以成功拟合的话：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>k</mi><mo>=</mo><mrow><mo fence="true">(</mo><mfrac><mrow><mrow><mo fence="true">∣</mo><mi>D</mi><mi>a</mi><mi>t</mi><mi>a</mi><mi>S</mi><mi>e</mi><mi>t</mi><mo fence="true">∣</mo></mrow></mrow><mrow><mn>2</mn></mrow></mfrac><mo fence="true">)</mo></mrow><mo>=</mo><mfrac><mrow><mrow><mo fence="true">∣</mo><mi>D</mi><mi>a</mi><mi>t</mi><mi>a</mi><mi>S</mi><mi>e</mi><mi>t</mi><mo fence="true">∣</mo></mrow><mo>⋅</mo><mrow><mo fence="true">∣</mo><mi>D</mi><mi>a</mi><mi>t</mi><mi>a</mi><mi>S</mi><mi>e</mi><mi>t</mi><mo fence="true">∣</mo></mrow><mo>−</mo><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac><mo>=</mo><mn>6</mn><mn>6</mn></mrow><annotation encoding="application/x-tex">k = \left ( \frac{\left | DataSet \right |}{2} \right )=\frac{\left | DataSet \right |\cdot \left | DataSet \right |-1}{2}=66
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:1.45em;"></span><span class="strut bottom" style="height:2.40003em;vertical-align:-0.95003em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.03148em;">k</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size3">(</span></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span></span></span><span style="top:-3.15em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.2em;"><svg width="400em" height="0.2em" viewbox="0 0 400000 200" preserveaspectratio="xMinYMin slice"><path d="M0 80H400000 v40H0z M0 80H400000 v40H0z"/></svg></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="minner"><span class="mopen delimcenter" style="top:0em;">∣</span><span class="mord mathit" style="margin-right:0.02778em;">D</span><span class="mord mathit">a</span><span class="mord mathit">t</span><span class="mord mathit">a</span><span class="mord mathit" style="margin-right:0.05764em;">S</span><span class="mord mathit">e</span><span class="mord mathit">t</span><span class="mclose delimcenter" style="top:0em;">∣</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size3">)</span></span></span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span></span></span><span style="top:-3.15em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.2em;"><svg width="400em" height="0.2em" viewbox="0 0 400000 200" preserveaspectratio="xMinYMin slice"><path d="M0 80H400000 v40H0z M0 80H400000 v40H0z"/></svg></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="minner"><span class="mopen delimcenter" style="top:0em;">∣</span><span class="mord mathit" style="margin-right:0.02778em;">D</span><span class="mord mathit">a</span><span class="mord mathit">t</span><span class="mord mathit">a</span><span class="mord mathit" style="margin-right:0.05764em;">S</span><span class="mord mathit">e</span><span class="mord mathit">t</span><span class="mclose delimcenter" style="top:0em;">∣</span></span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">∣</span><span class="mord mathit" style="margin-right:0.02778em;">D</span><span class="mord mathit">a</span><span class="mord mathit">t</span><span class="mord mathit">a</span><span class="mord mathit" style="margin-right:0.05764em;">S</span><span class="mord mathit">e</span><span class="mord mathit">t</span><span class="mclose delimcenter" style="top:0em;">∣</span></span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">6</span><span class="mord">6</span></span></span></span></span></p>
+<h2 id="conclusion-总结"><a class="markdownIt-Anchor" href="#conclusion-总结"></a> Conclusion 总结</h2>
+<h3 id="优点"><a class="markdownIt-Anchor" href="#优点"></a> 优点</h3>
+<ul>
+<li>非常的鲁棒性</li>
+<li>可应用于大多数情形的一般方法</li>
+<li>快速处理大量数据</li>
+<li>易于实施</li>
+<li>模块化</li>
+<li>可解释性</li>
+</ul>
+<h3 id="缺点"><a class="markdownIt-Anchor" href="#缺点"></a> 缺点</h3>
+<ul>
+<li>随机性算法</li>
+<li>需要有关数据的先验知识</li>
+<li>迭代次数以离群百分比为对数增加</li>
+<li>参数选择</li>
+</ul>
+<h2 id="python实现"><a class="markdownIt-Anchor" href="#python实现"></a> Python实现</h2>
+<p>代码见：<a href="https://github.com/sikasjc/Ransac" target="_blank" rel="noopener">GitHub</a></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2018/04/21/Ransac/">http://sikasjc.github.io/2018/04/21/Ransac/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/算法/">算法</a>
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/直线检测/">直线检测</a>
+            
+              <a href="/tags/Ransac/">Ransac</a>
+            
+              <a href="/tags/随机采样一致/">随机采样一致</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2018/04/20/Hough/">
+        <span class="next-text nav-default">Hough Transform 霍夫变换</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+	<!-- UY BEGIN -->
+		<div id="uyan_frame"></div>
+		<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2161534"></script>
+	<!-- UY END -->
+    
+  </div>
+
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/u/5605720030" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/si-qia-sika" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+  
+  
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>
