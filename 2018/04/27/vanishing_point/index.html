@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="消失点是相机标定，三维重建，汽车辅助驾驶，智能导航，深度估计，机器人导航等领域的重要信息，同时消失点在检测道路车道方面起着重要作用，因为车道在真实世界的3D空间中是平行的，但它们在二维相机图像中车道最终会在消失点相遇。 因此，对于自动驾驶消失点检测是必要的。"/>
+
+
+
+
+  <meta name="keywords" content="算法,python,车道线检测,Ransac,随机采样一致,消失点检测," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2018/04/27/vanishing_point/"/>
+
+
+<meta name="description" content="消失点是相机标定，三维重建，汽车辅助驾驶，智能导航，深度估计，机器人导航等领域的重要信息，同时消失点在检测道路车道方面起着重要作用，因为车道在真实世界的3D空间中是平行的，但它们在二维相机图像中车道最终会在消失点相遇。 因此，对于自动驾驶消失点检测是必要的。">
+<meta name="keywords" content="算法,python,车道线检测,Ransac,随机采样一致,消失点检测">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Ransac进行消失点（Vanishing point ）检测">
+<meta property="og:url" content="http://sikasjc.github.io/2018/04/27/vanishing_point/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="消失点是相机标定，三维重建，汽车辅助驾驶，智能导航，深度估计，机器人导航等领域的重要信息，同时消失点在检测道路车道方面起着重要作用，因为车道在真实世界的3D空间中是平行的，但它们在二维相机图像中车道最终会在消失点相遇。 因此，对于自动驾驶消失点检测是必要的。">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-4-27/30300732.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-4-27/99630878.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-4-27/82930651.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-4-27/24445890.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-4-27/53704287.jpg">
+<meta property="og:updated_time" content="2018-04-26T16:53:54.277Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用Ransac进行消失点（Vanishing point ）检测">
+<meta name="twitter:description" content="消失点是相机标定，三维重建，汽车辅助驾驶，智能导航，深度估计，机器人导航等领域的重要信息，同时消失点在检测道路车道方面起着重要作用，因为车道在真实世界的3D空间中是平行的，但它们在二维相机图像中车道最终会在消失点相遇。 因此，对于自动驾驶消失点检测是必要的。">
+<meta name="twitter:image" content="http://ormnbkvfv.bkt.clouddn.com/18-4-27/30300732.jpg">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> 使用Ransac进行消失点（Vanishing point ）检测 · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          使用Ransac进行消失点（Vanishing point ）检测
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018年4月27日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/算法/">算法</a>
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/车道线检测/">车道线检测</a>
+            
+              <a href="/tags/Ransac/">Ransac</a>
+            
+              <a href="/tags/随机采样一致/">随机采样一致</a>
+            
+              <a href="/tags/消失点检测/">消失点检测</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#使用ransac进行消失点vanishing-point-检测"><span class="toc-number">1.</span> <span class="toc-text"> 使用Ransac进行消失点（Vanishing point ）检测</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ransac"><span class="toc-number">1.1.</span> <span class="toc-text"> Ransac</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#消失点vanishing-point"><span class="toc-number">1.2.</span> <span class="toc-text"> 消失点（Vanishing point）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#用于消失点检测的-ransac-算法"><span class="toc-number">1.3.</span> <span class="toc-text"> 用于消失点检测的 Ransac 算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#python-实现"><span class="toc-number">1.4.</span> <span class="toc-text"> Python 实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#计算两直线相交点位置"><span class="toc-number">1.4.1.</span> <span class="toc-text"> 计算两直线相交点位置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#建立消失点模型"><span class="toc-number">1.4.2.</span> <span class="toc-text"> 建立消失点模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ransac-算法"><span class="toc-number">1.4.3.</span> <span class="toc-text"> Ransac 算法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#应用"><span class="toc-number">1.5.</span> <span class="toc-text"> 应用</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h1 id="使用ransac进行消失点vanishing-point-检测"><a class="markdownIt-Anchor" href="#使用ransac进行消失点vanishing-point-检测"></a> 使用Ransac进行消失点（Vanishing point ）检测</h1>
+<h2 id="ransac"><a class="markdownIt-Anchor" href="#ransac"></a> Ransac</h2>
+<p>Ransac 是一种启发式的参数估计的迭代算法，在之前的<a href="https://sikasjc.github.io/2018/04/21/Ransac/">一篇文章</a>里，我也写了关于 Ransac 的相关知识，以及我自己对 Ransac 的理解。</p>
+<p>Ransac本身并不是一个完整的可自运行的算法。 实际上，在存在离群（outliers）的情况下，它使用模型及其距离函数，鲁棒地估计模型参数。RANSAC只是在数据集上应用离群点分离，并根据最优化方法和模型的距离函数，来使用内群（inliers）估计模型参数。</p>
+<p>因此Ransac可以完全的模块化，它允许与任何估算模型，任何距离函数和任何优化方法一起工作。从这个角度说，RANSAC也可以被认为是一种思想。</p>
+<h2 id="消失点vanishing-point"><a class="markdownIt-Anchor" href="#消失点vanishing-point"></a> 消失点（Vanishing point）</h2>
+<p>消失点（Vanishing point）是三维（3D）空间中所有平行线相交的交点。</p>
+<p>消失点在检测道路车道方面起着重要作用，因为车道在真实世界的3D空间中是平行的，但它们在二维相机图像中车道最终会在消失点相遇。 因此，对于自动驾驶消失点检测是必要的。</p>
+<p>以这个思想，为了检测道路，我们首先从图像中提取所有 edge 分量，然后，估计投影 edge 分量的相遇的消失点，最后，根据消失点，确定车道。</p>
+<p>目前，消失点检测（Vanishing point detection）的算法有很多种，通过Ransac、车道纹理方向、harmony search等算法都有应用。总体而言，目前使用 Ransac 进行消失点检测最为广泛。</p>
+<h2 id="用于消失点检测的-ransac-算法"><a class="markdownIt-Anchor" href="#用于消失点检测的-ransac-算法"></a> 用于消失点检测的 Ransac 算法</h2>
+<p>Ransac 算法的基本思想可以看我之前的文章，或者参考 Wiki。</p>
+<p>基本流程如下：</p>
+<ol>
+<li>建立一个拟合模型，选择拟合函数和距离函数。这里，拟合函数选择将多条线，按顺序两两寻找它们的相交点，最后取这些相交点的平均位置为我们估计的消失点位置。距离函数选择点到直线的正交距离</li>
+<li>从线段数据集中随机采样，也为内群 ( inliers )，因为两条线相交于一点，这里我们可以选择随机采样数为2</li>
+<li>根据随机采样的线段（数目为2），估计其相交点，即消失点的位置</li>
+<li>计算估计的消失点到线段数据集中其他线段的距离，距离小于阈值的线段加入内群 ( inliers )</li>
+<li>再次估计内群中的线段相交点位置，同时如第1点所述，计算模型的拟合误差</li>
+<li>不断重复1~5，最终选择模型拟合误差最小的消失点估计位置</li>
+</ol>
+<h2 id="python-实现"><a class="markdownIt-Anchor" href="#python-实现"></a> Python 实现</h2>
+<h3 id="计算两直线相交点位置"><a class="markdownIt-Anchor" href="#计算两直线相交点位置"></a> 计算两直线相交点位置</h3>
+<p>我们先定义直线，两点确定一条直线</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Line</span><span class="params">(object)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">init</span><span class="params">(self, line)</span>:</span></span><br><span class="line"></span><br><span class="line">        self.x1 = line[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">        self.y1 = line[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">        self.x2 = line[<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line">        self.y2 = line[<span class="number">3</span>]</span><br></pre></td></tr></table></figure>
+<p>接下来，我们计算直线的参数</p>
+<p>对于直线方程 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>a</mi><mi>x</mi><mo>+</mo><mi>b</mi><mi>y</mi><mo>+</mo><mi>c</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">ax+by+c=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="base"><span class="mord mathit">a</span><span class="mord mathit">x</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit">b</span><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit">c</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">0</span></span></span></span> ，如果我们已知直线上两点 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>(</mo><msub><mi>x</mi><mn>1</mn></msub><mo separator="true">,</mo><msub><mi>y</mi><mn>1</mn></msub><mo>)</mo></mrow><annotation encoding="application/x-tex">(x_1,y_1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mopen">(</span><span class="mord"><span class="mord mathit">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"></span></span></span></span></span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"></span></span></span></span></span><span class="mclose">)</span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>(</mo><msub><mi>x</mi><mn>2</mn></msub><mo separator="true">,</mo><msub><mi>y</mi><mn>2</mn></msub><mo>)</mo></mrow><annotation encoding="application/x-tex">(x_2, y_2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mopen">(</span><span class="mord"><span class="mord mathit">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"></span></span></span></span></span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"></span></span></span></span></span><span class="mclose">)</span></span></span></span> ，那么我们可以得到直线参数：<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>a</mi><mo>=</mo><msub><mi>y</mi><mn>1</mn></msub><mo>−</mo><msub><mi>y</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">a = y_1-y_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.58333em;"></span><span class="strut bottom" style="height:0.7777700000000001em;vertical-align:-0.19444em;"></span><span class="base"><span class="mord mathit">a</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord"><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"></span></span></span></span></span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"></span></span></span></span></span></span></span></span> ，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>b</mi><mo>=</mo><msub><mi>x</mi><mn>2</mn></msub><mo>−</mo><msub><mi>x</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">b = x_2-x_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="base"><span class="mord mathit">b</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord"><span class="mord mathit">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"></span></span></span></span></span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathit">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"></span></span></span></span></span></span></span></span> ， <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>c</mi><mo>=</mo><msub><mi>x</mi><mn>1</mn></msub><mo>∗</mo><msub><mi>y</mi><mn>2</mn></msub><mo>−</mo><msub><mi>x</mi><mn>2</mn></msub><mo>∗</mo><msub><mi>y</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">c = x_1*y_2-x_2*y_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.58333em;"></span><span class="strut bottom" style="height:0.7777700000000001em;vertical-align:-0.19444em;"></span><span class="base"><span class="mord mathit">c</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord"><span class="mord mathit">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"></span></span></span></span></span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"></span></span></span></span></span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathit">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"></span></span></span></span></span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"></span></span></span></span></span></span></span></span></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getlineparam</span><span class="params">(line)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    For the line equation a*x+b*y+c=0, if we know two points(x1, y1)(x2,y2) in line, we can get</span></span><br><span class="line"><span class="string">        a = y1 - y2</span></span><br><span class="line"><span class="string">        b = x2 - x1</span></span><br><span class="line"><span class="string">        c = x1*y2 - x2*y1</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    a = line.y1 - line.y2 </span><br><span class="line">    b = line.x2 - line.x1</span><br><span class="line">    c = line.x1 * line.y2 - line.x2 * line.y1</span><br><span class="line">    <span class="keyword">return</span> a,b,c</span><br></pre></td></tr></table></figure>
+<p>然后，得到了直线参数，我们计算两直线的相交点</p>
+<p>对于两直线方程 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>a</mi><mn>1</mn></msub><mi>x</mi><mo>+</mo><msub><mi>b</mi><mn>1</mn></msub><mi>y</mi><mo>+</mo><msub><mi>c</mi><mn>1</mn></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">a_1x+b_1y+c_1=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="base"><span class="mord"><span class="mord mathit">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"></span></span></span></span></span><span class="mord mathit">x</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathit">b</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"></span></span></span></span></span><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathit">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"></span></span></span></span></span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">0</span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>a</mi><mn>2</mn></msub><mi>x</mi><mo>+</mo><msub><mi>b</mi><mn>2</mn></msub><mi>y</mi><mo>+</mo><msub><mi>c</mi><mn>2</mn></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">a_2x+b_2y+c_2=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="base"><span class="mord"><span class="mord mathit">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"></span></span></span></span></span><span class="mord mathit">x</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathit">b</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"></span></span></span></span></span><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathit">c</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"></span></span></span></span></span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">0</span></span></span></span>  ，当 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>d</mi><mo>=</mo><msub><mi>a</mi><mn>1</mn></msub><mo>∗</mo><msub><mi>b</mi><mn>2</mn></msub><mo>−</mo><msub><mi>a</mi><mn>2</mn></msub><mo>∗</mo><msub><mi>b</mi><mn>1</mn></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">d=a_1*b_2-a_2*b_1=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="base"><span class="mord mathit">d</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord"><span class="mord mathit">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"></span></span></span></span></span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathit">b</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"></span></span></span></span></span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathit">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"></span></span></span></span></span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathit">b</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"></span></span></span></span></span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">0</span></span></span></span> 时，两直线重合或平行</p>
+<p>相交点坐标为：</p>
+\begin{equation}
+\left\{\begin{matrix}
+x=\frac{b_1*c_2-b_2*c_1}{d}\\
+y=\frac{a_2c_1-a_1c_2}{d}
+\end{matrix}\right.
+\end{equation}
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getcrosspoint</span><span class="params">(line1,line2)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    if we have two lines: a1*x + b1*y + c1 = 0 and a2*x + b2*y + c2 = 0,</span></span><br><span class="line"><span class="string">    when d(= a1 * b2 - a2 * b1) is zero, then the two lines are coincident or parallel.</span></span><br><span class="line"><span class="string">    The cross point is :</span></span><br><span class="line"><span class="string">        x = (b1 * c2 - b2 * c1) / d</span></span><br><span class="line"><span class="string">        y = (a2 * c1 - a1 * c2) / d</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    a1, b1, c1 = getlineparam(line1)</span><br><span class="line">    a2, b2, c2 = getlineparam(line2)</span><br><span class="line">    d = a1 * b2 - a2 * b1</span><br><span class="line">    <span class="keyword">if</span> d == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> np.inf, np.inf</span><br><span class="line">    x = (b1 * c2 - b2 * c1) / d</span><br><span class="line">    y = (a2 * c1 - a1 * c2) / d</span><br><span class="line">    <span class="keyword">return</span> x, y</span><br></pre></td></tr></table></figure>
+<h3 id="建立消失点模型"><a class="markdownIt-Anchor" href="#建立消失点模型"></a> 建立消失点模型</h3>
+<p>我们需要定义一个拟合函数，以及一个距离函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">pointModel</span><span class="params">(Model)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.params = <span class="keyword">None</span></span><br><span class="line">        self.residual = <span class="number">0</span></span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">fit</span><span class="params">(self, lines)</span>:</span></span><br><span class="line">        lines = lines[:,<span class="number">0</span>]</span><br><span class="line">        X = []</span><br><span class="line">        Y = []</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(lines)<span class="number">-1</span>):</span><br><span class="line">            line1 = Line(lines[i])</span><br><span class="line">            line2 = Line(lines[i+<span class="number">1</span>])</span><br><span class="line">            a1, b1, c1 = getlineparam(line1)</span><br><span class="line">            a2, b2, c2 = getlineparam(line2)</span><br><span class="line">            x, y = getcrosspoint(line1, line2)</span><br><span class="line">            X.append(x)</span><br><span class="line">            Y.append(y)</span><br><span class="line">            </span><br><span class="line">        X = np.asarray(x).mean()</span><br><span class="line">        Y = np.asarray(y).mean()</span><br><span class="line">        self.params = [X, Y]       </span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(lines)):</span><br><span class="line">            line = Line(lines[i])</span><br><span class="line">            a, b, c = getlineparam(line)</span><br><span class="line">            self.residual += abs(a*X + b*Y + c) / np.sqrt(a*a + b*b)</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">distance</span><span class="params">(self, samplelines)</span>:</span></span><br><span class="line">        dists = []</span><br><span class="line">        <span class="keyword">for</span> line <span class="keyword">in</span> samplelines:</span><br><span class="line">            line = Line(line[<span class="number">0</span>,:])</span><br><span class="line">            [x, y] = self.params</span><br><span class="line">            a, b, c = getlineparam(line)</span><br><span class="line">            dist = abs((a*x + b*y + c) / np.sqrt(a*a + b*b))</span><br><span class="line">            dists.append(dist)</span><br><span class="line">        <span class="keyword">return</span> np.asarray(dists)</span><br></pre></td></tr></table></figure>
+<h3 id="ransac-算法"><a class="markdownIt-Anchor" href="#ransac-算法"></a> Ransac 算法</h3>
+<p>与之前文章的思路一致，完成Ransac代码</p>
+<p>这里因为两条直线相交于1点，这里的min_samples建议设置为2</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ransac</span><span class="params">(lines, model, min_samples, min_inliers, iterations=<span class="number">100</span>, eps=<span class="number">1</span>, random_seed=<span class="number">42</span>)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Fits a model to observed data.</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Uses the RANSC iterative method of fitting a model to observed data.</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    random.seed(random_seed)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> len(lines) &lt;= min_samples:</span><br><span class="line">        <span class="keyword">raise</span> ValueError(<span class="string">"Not enough input lines to fit the model."</span>)</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">if</span> <span class="number">0</span> &lt; min_inliers <span class="keyword">and</span> min_inliers &lt; <span class="number">1</span>:</span><br><span class="line">        min_inliers = int(min_inliers * len(lines))</span><br><span class="line">        </span><br><span class="line">    best_params = <span class="keyword">None</span></span><br><span class="line">    best_inliers = <span class="keyword">None</span></span><br><span class="line">    best_residual = np.inf</span><br><span class="line">    best_iteration = <span class="keyword">None</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(iterations):</span><br><span class="line">        indices = list(range(len(lines)))</span><br><span class="line">        random.shuffle(indices)</span><br><span class="line">        inliers = np.asarray([lines[i] <span class="keyword">for</span> i <span class="keyword">in</span> indices[:min_samples]])</span><br><span class="line">        shuffled_lines = np.asarray([lines[i] <span class="keyword">for</span> i <span class="keyword">in</span> indices[min_samples:]])</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            model.fit(inliers)</span><br><span class="line">            dists = model.distance(shuffled_lines)</span><br><span class="line">            more_inliers = shuffled_lines[np.where(dists &lt;= eps)[<span class="number">0</span>]]</span><br><span class="line">            inliers = np.concatenate((inliers, more_inliers))</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> len(inliers) &gt;= min_inliers:</span><br><span class="line">                model.fit(inliers)</span><br><span class="line">                <span class="keyword">if</span> model.residual &lt; best_residual:</span><br><span class="line">                    best_params = model.params</span><br><span class="line">                    best_inliers = inliers</span><br><span class="line">                    best_residual = model.residual</span><br><span class="line">                    best_iteration = i</span><br><span class="line">                    </span><br><span class="line">        <span class="keyword">except</span> ZeroDivisionError <span class="keyword">as</span> e:</span><br><span class="line">            print(e)</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">if</span> best_params <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">        <span class="keyword">raise</span> ValueError(<span class="string">"RANSAC failed to find a sufficiently good fit for the data."</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> (best_params, best_inliers, best_residual, best_iteration)</span><br></pre></td></tr></table></figure>
+<h2 id="应用"><a class="markdownIt-Anchor" href="#应用"></a> 应用</h2>
+<p>我们直接处理一张车道线图片</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.image <span class="keyword">as</span> mplimg</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> cv2</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">img = cv2.imread(<span class="string">'1.png'</span>)</span><br><span class="line">plt.figure(figsize=(<span class="number">15</span>,<span class="number">5</span>))</span><br><span class="line">gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)</span><br><span class="line">plt.imshow(gray,cmap=<span class="string">'gray'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-4-27/30300732.jpg" alt="1"></p>
+<p>利用 canny edge detection 得到 edge 图，也可以选择其他滤波方法，如hat_like filter等</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">blur_ksize = <span class="number">5</span>  <span class="comment"># Gaussian blur kernel size</span></span><br><span class="line">blured = cv2.GaussianBlur(gray, (blur_ksize, blur_ksize), <span class="number">0</span>, <span class="number">0</span>)</span><br><span class="line">low_threshold = <span class="number">50</span> <span class="comment"># Canny edge detection low threshold</span></span><br><span class="line">high_threshold = <span class="number">120</span>  <span class="comment"># Canny edge detection high threshold</span></span><br><span class="line">canny = cv2.Canny(blured, low_threshold, high_threshold)</span><br><span class="line">plt.figure(figsize=(<span class="number">15</span>,<span class="number">10</span>))</span><br><span class="line">plt.imshow(canny,cmap = <span class="string">'gray'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-4-27/99630878.jpg" alt="2"></p>
+<p>在选择出我们想要的感兴趣区域</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">roi_mask</span><span class="params">(img, vertices)</span>:</span></span><br><span class="line">  mask = np.zeros_like(img)</span><br><span class="line">  mask_color = <span class="number">255</span></span><br><span class="line">  cv2.fillPoly(mask, vertices, mask_color)</span><br><span class="line">  masked_img = cv2.bitwise_and(img, mask)</span><br><span class="line">  <span class="keyword">return</span> masked_img</span><br><span class="line"></span><br><span class="line">roi_vtx = np.array([[(<span class="number">0</span>, img.shape[<span class="number">0</span>]), (<span class="number">500</span>, <span class="number">200</span>), (<span class="number">650</span>, <span class="number">200</span>), (<span class="number">800</span>, img.shape[<span class="number">0</span>])]])</span><br><span class="line">roi_edges = roi_mask(canny, roi_vtx)</span><br><span class="line">plt.figure(figsize=(<span class="number">15</span>,<span class="number">5</span>))</span><br><span class="line">plt.imshow(roi_edges, cmap=<span class="string">'gray'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-4-27/82930651.jpg" alt="3"></p>
+<p>接下来用 Hough Transform 进行直线检测，关于 Hough Transform可以参考我的<a href="https://sikasjc.github.io/2018/04/20/Hough/">这篇文章</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">rho = <span class="number">1</span></span><br><span class="line">theta = np.pi / <span class="number">180</span></span><br><span class="line">threshold = <span class="number">30</span></span><br><span class="line">min_line_length = <span class="number">100</span></span><br><span class="line">max_line_gap = <span class="number">20</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">draw_lines</span><span class="params">(img, lines, color=[<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>], thickness=<span class="number">2</span>)</span>:</span></span><br><span class="line">  <span class="keyword">for</span> line <span class="keyword">in</span> lines:</span><br><span class="line">    <span class="keyword">for</span> x1, y1, x2, y2 <span class="keyword">in</span> line:</span><br><span class="line">      cv2.line(img, (x1, y1), (x2, y2), color, thickness)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hough_lines</span><span class="params">(img, rho, theta, threshold, </span></span></span><br><span class="line"><span class="function"><span class="params">                min_line_len, max_line_gap)</span>:</span></span><br><span class="line">  lines = cv2.HoughLinesP(img, rho, theta, threshold, np.array([]),</span><br><span class="line">                          minLineLength=min_line_len, </span><br><span class="line">                          maxLineGap=max_line_gap)</span><br><span class="line">  line_img = np.zeros((img.shape[<span class="number">0</span>], img.shape[<span class="number">1</span>], <span class="number">3</span>), dtype=np.uint8)</span><br><span class="line">  draw_lines(line_img, lines)</span><br><span class="line">  <span class="keyword">return</span> line_img, lines</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">line_img, lines= hough_lines(roi_edges, rho, theta, threshold,  min_line_length, max_line_gap)</span><br><span class="line">plt.figure(figsize=(<span class="number">15</span>,<span class="number">5</span>))</span><br><span class="line">plt.imshow(line_img, cmap=<span class="string">'gray'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-4-27/24445890.jpg" alt="4"></p>
+<p>最后应用 Ransac 算法</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Model = pointModel()</span><br><span class="line">(params, inliers, residual, iteration) = ransac(lines, Model, <span class="number">0.5</span>, eps=<span class="number">1</span>)</span><br><span class="line">plt.figure(figsize=(<span class="number">15</span>,<span class="number">10</span>))</span><br><span class="line">plt.imshow(line_img, cmap=<span class="string">'gray'</span>)</span><br><span class="line">plt.plot(params[<span class="number">0</span>],params[<span class="number">1</span>],<span class="string">'+'</span>, markersize=<span class="number">12</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-4-27/53704287.jpg" alt="5"></p>
+<p>效果还是很不错的！</p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2018/04/27/vanishing_point/">http://sikasjc.github.io/2018/04/27/vanishing_point/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/算法/">算法</a>
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/车道线检测/">车道线检测</a>
+            
+              <a href="/tags/Ransac/">Ransac</a>
+            
+              <a href="/tags/随机采样一致/">随机采样一致</a>
+            
+              <a href="/tags/消失点检测/">消失点检测</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2018/04/21/Ransac/">
+        <span class="next-text nav-default">RANSAC 随机采样一致</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMzQzMy85OTg5">
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>  
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/u/5605720030" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/si-qia-sika" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  
+
+  
+   <script type="text/javascript">
+	(function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>
