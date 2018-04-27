@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="一般意义上讲，一个社区也可以被称为群、聚类或模块，是网络中一群阶段或边的集合，其内部的节点间连接较为紧密，而社区间的连接却相对稀疏。之前实现了针对无权网络的GN算法，这篇文章则是针对加权网络的GN算法"/>
+
+
+
+
+  <meta name="keywords" content="算法,python,复杂网络,社区发现," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2018/04/28/weighted_GN/"/>
+
+
+<meta name="description" content="一般意义上讲，一个社区也可以被称为群、聚类或模块，是网络中一群阶段或边的集合，其内部的节点间连接较为紧密，而社区间的连接却相对稀疏。之前实现了针对无权网络的GN算法，这篇文章则是针对加权网络的GN算法">
+<meta name="keywords" content="算法,python,复杂网络,社区发现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="针对加权网络的Girvan-Newman(GN)算法">
+<meta property="og:url" content="http://sikasjc.github.io/2018/04/28/weighted_GN/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="一般意义上讲，一个社区也可以被称为群、聚类或模块，是网络中一群阶段或边的集合，其内部的节点间连接较为紧密，而社区间的连接却相对稀疏。之前实现了针对无权网络的GN算法，这篇文章则是针对加权网络的GN算法">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-1-21/23305862.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-4-27/75989614.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-4-27/36714521.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-4-27/8315054.jpg">
+<meta property="og:updated_time" content="2018-04-27T05:00:47.919Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="针对加权网络的Girvan-Newman(GN)算法">
+<meta name="twitter:description" content="一般意义上讲，一个社区也可以被称为群、聚类或模块，是网络中一群阶段或边的集合，其内部的节点间连接较为紧密，而社区间的连接却相对稀疏。之前实现了针对无权网络的GN算法，这篇文章则是针对加权网络的GN算法">
+<meta name="twitter:image" content="http://ormnbkvfv.bkt.clouddn.com/18-1-21/23305862.jpg">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> 针对加权网络的Girvan-Newman(GN)算法 · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          针对加权网络的Girvan-Newman(GN)算法
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018年4月28日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/算法/">算法</a>
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/复杂网络/">复杂网络</a>
+            
+              <a href="/tags/社区发现/">社区发现</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#针对加权网络的gn算法"><span class="toc-number">1.</span> <span class="toc-text"> 针对加权网络的GN算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#gn算法"><span class="toc-number">1.1.</span> <span class="toc-text"> GN算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#针对加权网络的gn算法描述"><span class="toc-number">1.2.</span> <span class="toc-text"> 针对加权网络的GN算法描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#python实现"><span class="toc-number">1.3.</span> <span class="toc-text"> Python实现</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#girvan-newman算法分析"><span class="toc-number">2.</span> <span class="toc-text"> Girvan-Newman算法分析</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p><strong>Python代码：<a href="https://github.com/sikasjc/CommunityDetection" target="_blank" rel="noopener">GitHub</a></strong></p>
+<hr>
+<p>​	一般意义上讲，一个社区也可以被称为群、聚类或模块，是网络中一群阶段或边的集合，其内部的节点间连接较为紧密，而社区间的连接却相对稀疏。之前实现了针对无权网络的GN算法，这篇文章则是针对加权网络的GN算法</p>
+<p>​	针对无权网络的GN算法，可以看一看我之前的<a href="https://sikasjc.coding.me/2017/12/20/GN/" target="_blank" rel="noopener">那篇文章</a></p>
+<h2 id="针对加权网络的gn算法"><a class="markdownIt-Anchor" href="#针对加权网络的gn算法"></a> 针对加权网络的GN算法</h2>
+<h3 id="gn算法"><a class="markdownIt-Anchor" href="#gn算法"></a> GN算法</h3>
+<p>GN算法是一种利用基于边介数的社区发现算法</p>
+<p>这样的社区发现算法的主要思路为：计算网络中所有边的边介数，然后寻找边介数值最大的边并移除。在移除时，会改变一些边的边介数。以前经过被移除边的最短路径，现在改为经由其他边，因此必须重新计算边介数，然后再次搜索值最大的边并移除，依此类推。当一条接一条边被移除时，最初连通的网络最终会被分成两部分、三部分等等，直至网络的每一个成为一个社区，是一种<strong>分裂算法</strong>。</p>
+<p>算法的执行过程可用树状图表示，如下图所示。算法从顶部开始生成树状图，首先是单个连通网络，然后将其不断划分，直至每个分支只有单个结点为止。在算法运行期间，每个独立的网络结构状态对应于树状图的水平切分，在图2中用红线表示。与红线相交的每个分支代表一组节点，即一个社区，沿分支向下到底部的全部节点都为其成员。因此对于一个连通网络，树状图能够得到算法执行全过程中每个阶段里网络划分的社区结构。</p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-1-21/23305862.jpg" alt="1"></p>
+<h3 id="针对加权网络的gn算法描述"><a class="markdownIt-Anchor" href="#针对加权网络的gn算法描述"></a> 针对加权网络的GN算法描述</h3>
+<p>这里给出针对有权网络的Girvan-Newman算法，加权Girvan-Newman算法求解的具体实现过程为:</p>
+<ol>
+<li>忽略边的权重，以无权网络计算网络中所有连接边的边介数；</li>
+<li>将边介数除以对应边的权重得到边权比；</li>
+<li>找到边权比最高的边将它移除，并计算网络的模块性 Q 函数，在计算中当边权比最高的边有多条时，同时移除这些边，并将此时移除的边和Q值进行存储；</li>
+<li>重复步骤1，2，直到网络中所有的边均被移除。</li>
+<li>Girvan-Newman算法划分结束后，取出Q值最大时的序号，在原始矩阵中依次去除截止到该次划分的边。得出最终连通矩阵，矩阵的值为权值。</li>
+</ol>
+<h3 id="python实现"><a class="markdownIt-Anchor" href="#python实现"></a> Python实现</h3>
+<p>Python代码：<a href="https://github.com/sikasjc/CommunityDetection" target="_blank" rel="noopener">GitHub</a></p>
+<p><strong>Python环境需求</strong></p>
+<p>这里使用Python的 NetworkX 包以及 Matplotlib 包来完成对于Girvan-Newman算法的演示</p>
+<p>以及Gephi，一个基于JVM的可视化平台。</p>
+<p>NetworkX是一个用于创建，操作和研究复杂网络的结构、动态和功能的Python包</p>
+<p>Matplotlib是一个Python 2D绘图库，利用它完成模块化函数Q与划分社团数目的关系曲线，之后使用Gephi作为网络的可视化工具，将GML文件中的图中划分的社团表示出来。</p>
+<p>Python环境需求：</p>
+<ul>
+<li>Python-3.6.3</li>
+<li>NetworkX-2.0</li>
+<li>Matplotlib-2.1.0</li>
+</ul>
+<p><strong>Lesmiserables 网络</strong></p>
+<p>Lesmiserables网络是维克多·雨果所著《悲惨世界》（Les Misérables）一书中人物角色间的加权连接网络。一共有77个节点，254条边，也并不知道应划分的社团数量。</p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-4-27/75989614.jpg" alt="2"></p>
+<p>运行完毕 <a href="https://github.com/sikasjc/CommunityDetection/blob/master/algorithm/GN-weighted.py" target="_blank" rel="noopener">Girvan-Newman_weighted.py</a> 我们可以得到以下结果，Q值在划分社团数为20时，达到最大值，如下图所示。当然我们也可以采用Q值与划分社区数量曲线中的极大值点，作为划分社团的依据。</p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-4-27/36714521.jpg" alt="3"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">-------------------------------------theMax Q and divided communities---------------------------------------</span><br><span class="line"></span><br><span class="line">Thenumber of Communites: 20</span><br><span class="line"></span><br><span class="line">Communites:[</span><br><span class="line"></span><br><span class="line">[&apos;Myriel&apos;,&apos;MlleBaptistine&apos;, &apos;MmeMagloire&apos;, &apos;CountessDeLo&apos;, &apos;Count&apos;, &apos;OldMan&apos;,&apos;Champtercier&apos;, &apos;Cravatte&apos;, &apos;Geborand&apos;, &apos;Napoleon&apos;],</span><br><span class="line"></span><br><span class="line">[&apos;Labarre&apos;],</span><br><span class="line"></span><br><span class="line">[&apos;Anzelma&apos;,&apos;Montparnasse&apos;, &apos;Gueulemer&apos;, &apos;Claquesous&apos;, &apos;MotherInnocent&apos;, &apos;Eponine&apos;,&apos;Babet&apos;, &apos;Fauchelevent&apos;, &apos;Woman2&apos;, &apos;MlleGillenormand&apos;, &apos;Marius&apos;,&apos;MmeThenardier&apos;, &apos;Brujon&apos;, &apos;Woman1&apos;, &apos;Thenardier&apos;, &apos;Javert&apos;, &apos;Gillenormand&apos;,&apos;Simplice&apos;, &apos;Valjean&apos;, &apos;Cosette&apos;], [&apos;Listolier&apos;, &apos;Tholomyes&apos;, &apos;Dahlia&apos;,&apos;Blacheville&apos;, &apos;Fameuil&apos;, &apos;Favourite&apos;, &apos;Zephine&apos;, &apos;Marguerite&apos;, &apos;Fantine&apos;], </span><br><span class="line"></span><br><span class="line">[&apos;MmeDeR&apos;], </span><br><span class="line"></span><br><span class="line">[&apos;Isabeau&apos;], </span><br><span class="line"></span><br><span class="line">[&apos;Gervais&apos;],</span><br><span class="line"></span><br><span class="line">[&apos;Brevet&apos;,&apos;Cochepaille&apos;, &apos;Judge&apos;, &apos;Champmathieu&apos;, &apos;Bamatabois&apos;, &apos;Chenildieu&apos;], </span><br><span class="line"></span><br><span class="line">[&apos;Perpetue&apos;],[&apos;Scaufflaire&apos;],</span><br><span class="line"></span><br><span class="line">[&apos;MmePontmercy&apos;,&apos;Pontmercy&apos;],</span><br><span class="line"></span><br><span class="line">[&apos;Boulatruelle&apos;],</span><br><span class="line"></span><br><span class="line">[&apos;Gribier&apos;], </span><br><span class="line"></span><br><span class="line">[&apos;Jondrette&apos;],</span><br><span class="line"></span><br><span class="line">[&apos;Enjolras&apos;, &apos;Joly&apos;,&apos;Child1&apos;, &apos;Grantaire&apos;, &apos;Courfeyrac&apos;, &apos;MmeHucheloup&apos;, &apos;MotherPlutarch&apos;,&apos;Feuilly&apos;, &apos;Bahorel&apos;, &apos;Mabeuf&apos;, &apos;Combeferre&apos;, &apos;MmeBurgon&apos;, &apos;Prouvaire&apos;,&apos;Child2&apos;, &apos;Gavroche&apos;, &apos;Bossuet&apos;], </span><br><span class="line"></span><br><span class="line">[&apos;Magnon&apos;],</span><br><span class="line"></span><br><span class="line">[&apos;MlleVaubois&apos;], </span><br><span class="line"></span><br><span class="line">[&apos;LtGillenormand&apos;], </span><br><span class="line"></span><br><span class="line">[&apos;BaronessT&apos;], </span><br><span class="line"></span><br><span class="line">[&apos;Toussaint&apos;]]</span><br><span class="line"></span><br><span class="line">Max_Q: 0.4701546903093807</span><br></pre></td></tr></table></figure>
+<p>将输出的结果导入到Gephi后，以group为依据着色，可得到下图，我们发现Girvan-Newman算法对带权值网络也是比较有效的。</p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-4-27/8315054.jpg" alt="4"></p>
+<h2 id="girvan-newman算法分析"><a class="markdownIt-Anchor" href="#girvan-newman算法分析"></a> Girvan-Newman算法分析</h2>
+<p>对于<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit">m</span></span></span></span>条边和<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit">n</span></span></span></span>个节点的网络，Girvan-Newman算法计算边介数的时间复杂度为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>O</mi><mo>(</mo><mi>n</mi><mo>(</mo><mi>m</mi><mo>+</mo><mi>n</mi><mo>)</mo><mo>)</mo></mrow><annotation encoding="application/x-tex">O(n(m+n))</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathit">n</span><span class="mopen">(</span><span class="mord mathit">m</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit">n</span><span class="mclose">)</span><span class="mclose">)</span></span></span></span>，且在移除<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit">m</span></span></span></span>条边的每条边前都需要执行该计算，所以整个算法的时间复杂度为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>O</mi><mo>(</mo><mi>m</mi><mi>n</mi><mo>(</mo><mi>m</mi><mo>+</mo><mi>n</mi><mo>)</mo><mo>)</mo></mrow><annotation encoding="application/x-tex">O(mn(m+n))</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathit">m</span><span class="mord mathit">n</span><span class="mopen">(</span><span class="mord mathit">m</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit">n</span><span class="mclose">)</span><span class="mclose">)</span></span></span></span>。</p>
+<p>若在<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>m</mi><mo>∝</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">m∝n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit">m</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">∝</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit">n</span></span></span></span>稀疏网络中的时间复杂度为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>O</mi><mo>(</mo><msup><mi>n</mi><mn>3</mn></msup><mo>)</mo></mrow><annotation encoding="application/x-tex">O(n^3 )</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.8141079999999999em;"></span><span class="strut bottom" style="height:1.064108em;vertical-align:-0.25em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord"><span class="mord mathit">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>。</p>
+<p>这里总结下Girvan-Newman算法的优缺点。</p>
+<p>Girvan-Newman算法的<strong>优点</strong>：</p>
+<ol>
+<li>
+<p>在知道划分社团数量时，可以较为精确的给出社团的划分结果；</p>
+</li>
+<li>
+<p>可以给出不同程度的社团划分结果，可以揭示关于网络层次结构的信息；</p>
+</li>
+</ol>
+<p>Girvan-Newman算法的<strong>缺点</strong>：</p>
+<ol>
+<li>在计算边介数的时候可能会有很多重复计算最短路径的情况，时间复杂度太高；</li>
+<li>若无法知道应该划分社团的数量，算法效果会相对较差；</li>
+</ol>
+<p>总而言之，Girvan-Newman算法不必依赖多余的信息来判断得到的社团结构是否具有实际意义,而是可以直接从网络的拓扑结构来进行分析。</p>
+<p>但是该算法的耗时比较大，时间复杂度为O(mn(m+n))​，因此它仅仅适用于中等规模的复杂网络(n≤10000)​。</p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2018/04/28/weighted_GN/">http://sikasjc.github.io/2018/04/28/weighted_GN/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/算法/">算法</a>
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/复杂网络/">复杂网络</a>
+            
+              <a href="/tags/社区发现/">社区发现</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2018/04/27/vanishing_point/">
+        <span class="next-text nav-default">使用Ransac进行消失点（Vanishing point ）检测</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMzQzMy85OTg5">
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>  
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/u/5605720030" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/si-qia-sika" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  
+
+  
+   <script type="text/javascript">
+	(function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>
