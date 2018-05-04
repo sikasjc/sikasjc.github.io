@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="因为RANSAC不考虑所有可能的样本子集，RANSAC比确定算法运行速度更快，但是它的性能仍然可以通过一些启发式改进。"/>
+
+
+
+
+  <meta name="keywords" content="算法,python,Ransac,随机采样一致," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2018/05/04/APC_ransac/"/>
+
+
+<meta name="description" content="因为RANSAC不考虑所有可能的样本子集，RANSAC比确定算法运行速度更快，但是它的性能仍然可以通过一些启发式改进。">
+<meta name="keywords" content="算法,python,Ransac,随机采样一致">
+<meta property="og:type" content="article">
+<meta property="og:title" content="增强RANSAC——Adaptive Parameter Calculatio">
+<meta property="og:url" content="http://sikasjc.github.io/2018/05/04/APC_ransac/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="因为RANSAC不考虑所有可能的样本子集，RANSAC比确定算法运行速度更快，但是它的性能仍然可以通过一些启发式改进。">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-5-4/67603747.jpg">
+<meta property="og:updated_time" content="2018-05-04T05:25:45.298Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="增强RANSAC——Adaptive Parameter Calculatio">
+<meta name="twitter:description" content="因为RANSAC不考虑所有可能的样本子集，RANSAC比确定算法运行速度更快，但是它的性能仍然可以通过一些启发式改进。">
+<meta name="twitter:image" content="http://ormnbkvfv.bkt.clouddn.com/18-5-4/67603747.jpg">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> 增强RANSAC——Adaptive Parameter Calculatio · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          增强RANSAC——Adaptive Parameter Calculatio
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018年5月4日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/算法/">算法</a>
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/Ransac/">Ransac</a>
+            
+              <a href="/tags/随机采样一致/">随机采样一致</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#adaptive-parameter-calculation"><span class="toc-number">1.</span> <span class="toc-text"> Adaptive Parameter Calculation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#adaptive-parameter-calculation自适应参数计算"><span class="toc-number">1.1.</span> <span class="toc-text"> Adaptive Parameter Calculation（自适应参数计算）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#basic-flow"><span class="toc-number">1.2.</span> <span class="toc-text"> Basic Flow</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#python-实现"><span class="toc-number">1.3.</span> <span class="toc-text"> Python 实现</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-number">2.</span> <span class="toc-text"> Reference</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p>因为RANSAC不考虑所有可能的样本子集，RANSAC比确定算法运行速度更快，但是它的性能仍然可以通过一些启发式改进。这里我们采用Adaptive Parameter Calculation（自适应参数计算）来增强RANSAC算法。</p>
+<p>关于RANSAC可以参考我的<a href="https://sikasjc.github.io/2018/04/21/Ransac/">这篇文章</a>。</p>
+<h2 id="adaptive-parameter-calculation"><a class="markdownIt-Anchor" href="#adaptive-parameter-calculation"></a> Adaptive Parameter Calculation</h2>
+<h3 id="adaptive-parameter-calculation自适应参数计算"><a class="markdownIt-Anchor" href="#adaptive-parameter-calculation自适应参数计算"></a> Adaptive Parameter Calculation（自适应参数计算）</h3>
+<p>自适应参数计算的主要思想是在运行时，计算内群（inliers）<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>w</mi></mrow><annotation encoding="application/x-tex">w</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02691em;">w</span></span></span></span> 的比例，然后根据新的 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>w</mi></mrow><annotation encoding="application/x-tex">w</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02691em;">w</span></span></span></span> 的值修改其他参数。</p>
+<p>它不仅可以用于降低计算的复杂性，而且可以用于当数据集没有关于 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>w</mi></mrow><annotation encoding="application/x-tex">w</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02691em;">w</span></span></span></span> 的信息时。</p>
+<p>自适应参数计算从最坏的情况开始计算 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>w</mi></mrow><annotation encoding="application/x-tex">w</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02691em;">w</span></span></span></span>，当找到一致集（consensus set）的数据样本在整个数据集中的比例高于当前 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>w</mi></mrow><annotation encoding="application/x-tex">w</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02691em;">w</span></span></span></span> 时，重新分配更好的值给 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>w</mi></mrow><annotation encoding="application/x-tex">w</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02691em;">w</span></span></span></span>。之后用新的 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>w</mi></mrow><annotation encoding="application/x-tex">w</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02691em;">w</span></span></span></span> 来更新迭代次数 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.03148em;">k</span></span></span></span> 和最小一致阈值 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>d</mi></mrow><annotation encoding="application/x-tex">d</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base"><span class="mord mathit">d</span></span></span></span> 。</p>
+<p>例如，我们可以选择 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>w</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">w=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.64444em;"></span><span class="strut bottom" style="height:0.64444em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">0</span></span></span></span>，这样迭代次数 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.03148em;">k</span></span></span></span> 为 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi mathvariant="normal">∞</mi></mrow><annotation encoding="application/x-tex">\infty</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord">∞</span></span></span></span> ，最小一致阈值自然为 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>0</mn></mrow><annotation encoding="application/x-tex">0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.64444em;"></span><span class="strut bottom" style="height:0.64444em;vertical-align:0em;"></span><span class="base"><span class="mord">0</span></span></span></span>。</p>
+<p>让我们考虑一个问题，当找到一个一致集具有一半的数据集样本时，这样此时的 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>w</mi></mrow><annotation encoding="application/x-tex">w</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02691em;">w</span></span></span></span> 比开始对 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>w</mi></mrow><annotation encoding="application/x-tex">w</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02691em;">w</span></span></span></span> 的估计要好，所以将 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>w</mi></mrow><annotation encoding="application/x-tex">w</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02691em;">w</span></span></span></span> 更新为0.5，并重新计算 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.03148em;">k</span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>d</mi></mrow><annotation encoding="application/x-tex">d</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base"><span class="mord mathit">d</span></span></span></span> 的值。同时由于 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>w</mi></mrow><annotation encoding="application/x-tex">w</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02691em;">w</span></span></span></span> 的值较高，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.03148em;">k</span></span></span></span> 肯定会减少，所以改进后的RANSAC算法会在不失去其原有可靠性的前提下，提前结束。</p>
+<p>此外，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>d</mi></mrow><annotation encoding="application/x-tex">d</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base"><span class="mord mathit">d</span></span></span></span> 被更新，并且会变为一个更大的值，这将会使用更少的一致集来拟合我们的模型。 因此，它隐含地降低了复杂性。</p>
+<h3 id="basic-flow"><a class="markdownIt-Anchor" href="#basic-flow"></a> Basic Flow</h3>
+<p>以下是RANSAC的自适应参数计算的基本流程：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">k = infinity , i = 0</span><br><span class="line">while k &gt; i</span><br><span class="line">	RANSAC()</span><br><span class="line">	v = proportion of inliers found</span><br><span class="line">	if v &gt; w</span><br><span class="line">		w = v</span><br><span class="line">		update k and d</span><br><span class="line">	increment i by 1</span><br></pre></td></tr></table></figure>
+<h3 id="python-实现"><a class="markdownIt-Anchor" href="#python-实现"></a> Python 实现</h3>
+<p>这里实现的时候要略微修改下原有的RANSAC代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">Created on Fri May  4 00:31:43 2018</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">@author: Sikasjc</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> random, sys</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Model</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">fit</span><span class="params">(self, data)</span>:</span></span><br><span class="line">        <span class="keyword">raise</span> NotImplementedError</span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">distance</span><span class="params">(self, data)</span>:</span></span><br><span class="line">        <span class="keyword">raise</span> NotImplementedError</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LineModel</span><span class="params">(Model)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    A 2D line model.</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.params = <span class="keyword">None</span></span><br><span class="line">        self.dists = <span class="keyword">None</span></span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">fit</span><span class="params">(self, data)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        Fits the model to the data, minimizing the sum of absolute errors.</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        X = data[:,<span class="number">0</span>]</span><br><span class="line">        Y = data[:,<span class="number">1</span>]</span><br><span class="line"><span class="comment">#        denom = (X[-1] - X[0])</span></span><br><span class="line"><span class="comment">#        if denom == 0:</span></span><br><span class="line"><span class="comment">#            raise ZeroDivisionError</span></span><br><span class="line"><span class="comment">#        k = (Y[-1] - Y[0]) / denom</span></span><br><span class="line"><span class="comment">#        m = Y[0] - k * X[0]</span></span><br><span class="line">        A = np.vstack([X, np.ones(len(X))]).T</span><br><span class="line">        k, m = np.linalg.lstsq(A, Y, <span class="keyword">None</span>)[<span class="number">0</span>]</span><br><span class="line">        X_ = np.mean(X)</span><br><span class="line">        Y_ = np.mean(Y)</span><br><span class="line">        self.params = [k, m]</span><br><span class="line">        self.residual = abs(k * X_ + m - Y_)</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">distance</span><span class="params">(self, samples)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        Calculates the vertical distances from the samples to the model.</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        X = samples[:,<span class="number">0</span>]</span><br><span class="line">        Y = samples[:,<span class="number">1</span>]</span><br><span class="line">        k = self.params[<span class="number">0</span>]</span><br><span class="line">        m = self.params[<span class="number">1</span>]</span><br><span class="line">        dists = abs(k * X + m - Y)</span><br><span class="line"><span class="comment">#        dists = abs(-k * X + Y - m) / math.sqrt(k**2 + 1)</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> dists</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ransac_APC</span><span class="params">(data, model, min_samples, min_inliers, eps=<span class="number">1e-10</span>, P = <span class="number">0.99</span>, random_seed=<span class="number">42</span>)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Fits a model to observed data.</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Uses the RANSC iterative method of fitting a model to observed data.</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    random.seed(random_seed)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> len(data) &lt;= min_samples:</span><br><span class="line">        <span class="keyword">raise</span> ValueError(<span class="string">"Not enough input data to fit the model."</span>)</span><br><span class="line">        </span><br><span class="line">    iterations = sys.maxsize</span><br><span class="line">    count = <span class="number">0</span></span><br><span class="line">    min_inliers = <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">    best_params = <span class="keyword">None</span></span><br><span class="line">    best_inliers = <span class="keyword">None</span></span><br><span class="line">    best_residual = np.inf</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> iterations &gt; count: </span><br><span class="line">        <span class="keyword">if</span> <span class="number">0</span> &lt; min_inliers <span class="keyword">and</span> min_inliers &lt; <span class="number">1</span>:</span><br><span class="line">            min_inliers = int(min_inliers * len(data))</span><br><span class="line">        </span><br><span class="line">        indices = list(range(len(data)))</span><br><span class="line">        random.shuffle(indices)</span><br><span class="line">        inliers = np.asarray([data[i] <span class="keyword">for</span> i <span class="keyword">in</span> indices[:min_samples]])</span><br><span class="line">        shuffled_data = np.asarray([data[i] <span class="keyword">for</span> i <span class="keyword">in</span> indices[min_samples:]])</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            model.fit(inliers)</span><br><span class="line">            dists = model.distance(shuffled_data)</span><br><span class="line">            more_inliers = shuffled_data[np.where(dists &lt;= eps)[<span class="number">0</span>]]</span><br><span class="line">            inliers = np.concatenate((inliers, more_inliers))</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> len(inliers) &gt;= min_inliers:</span><br><span class="line">                model.fit(inliers)</span><br><span class="line">                <span class="keyword">if</span> model.residual &lt; best_residual:</span><br><span class="line">                    best_params = model.params</span><br><span class="line">                    best_inliers = inliers</span><br><span class="line">                    best_residual = model.residual</span><br><span class="line">                                        </span><br><span class="line">        <span class="keyword">except</span> ZeroDivisionError <span class="keyword">as</span> e:</span><br><span class="line">            print(e)</span><br><span class="line">            </span><br><span class="line">        ratio = len(inliers) / len(data)</span><br><span class="line">        <span class="keyword">if</span> min_inliers/len(data) &lt; ratio:</span><br><span class="line">            best_residual = np.inf</span><br><span class="line">            min_inliers = ratio</span><br><span class="line">            iterations = int(np.log(<span class="number">1</span> - P) / np.log(<span class="number">1</span> - min_inliers**min_samples)) + <span class="number">1</span> </span><br><span class="line">        count += <span class="number">1</span> </span><br><span class="line">        </span><br><span class="line">    <span class="keyword">if</span> best_params <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">        <span class="keyword">raise</span> ValueError(<span class="string">"RANSAC failed to find a sufficiently good fit for the data."</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> (best_params, best_inliers, best_residual, count)</span><br></pre></td></tr></table></figure>
+<p>测试一下，我们实现的自适应参数的RANSAC效果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">Created on Fri May  4 00:17:50 2018</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">@author: Sikasjc</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">import</span> ransac_APC</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">num_samples = <span class="number">1000</span></span><br><span class="line">noise_ratio = <span class="number">0.8</span></span><br><span class="line">num_noise = int(noise_ratio * num_samples)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">setup</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">global</span> ax1</span><br><span class="line">    X = np.asarray(range(num_samples))</span><br><span class="line">    Y = <span class="number">0.5</span> * X</span><br><span class="line">    noise = [random.randint(<span class="number">0</span>, <span class="number">2</span> * (num_samples - <span class="number">1</span>)) <span class="keyword">for</span> i <span class="keyword">in</span> range(num_noise)]</span><br><span class="line">    Y[random.sample(range(len(Y)), num_noise)] = noise</span><br><span class="line">    data = np.asarray([X, Y]).T</span><br><span class="line">    model = ransac_APC.LineModel()</span><br><span class="line">    plt.figure(figsize=(<span class="number">10</span>,<span class="number">5</span>))</span><br><span class="line">    ax1 = plt.subplot(<span class="number">1</span>,<span class="number">2</span>,<span class="number">1</span>)</span><br><span class="line">    plt.plot(X, Y, <span class="string">'bx'</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> data, model</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(data, model)</span>:</span></span><br><span class="line">    random_seed = random.randint(<span class="number">0</span>,<span class="number">100</span>)</span><br><span class="line">    start_time = time.time()</span><br><span class="line">    (params, inliers, residual, iterations) = ransac_APC.ransac_APC(data, model, <span class="number">2</span>, min_inliers = <span class="number">0.1</span>, eps=<span class="number">1e-10</span>, P=<span class="number">0.99</span>, random_seed=random_seed)</span><br><span class="line">    end_time = time.time()</span><br><span class="line">    mean_time = (end_time - start_time) / iterations</span><br><span class="line">    <span class="keyword">return</span> params, residual, mean_time, iterations</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">summary</span><span class="params">(params, residual, mean_time, iterations)</span>:</span></span><br><span class="line">    print(<span class="string">" Paramters "</span>.center(<span class="number">40</span>, <span class="string">'='</span>))</span><br><span class="line">    print(params)</span><br><span class="line">    print(<span class="string">" Residual "</span>.center(<span class="number">40</span>, <span class="string">'='</span>))</span><br><span class="line">    print(residual)</span><br><span class="line">    print(<span class="string">" Iteration "</span>.center(<span class="number">40</span>, <span class="string">'='</span>))</span><br><span class="line">    print(iterations, <span class="string">"the number of iterations in the running"</span>)</span><br><span class="line">    print(<span class="string">" Time "</span>.center(<span class="number">40</span>, <span class="string">'='</span>))</span><br><span class="line">    print(<span class="string">"%.1f msecs mean time spent per iteration"</span> % (<span class="number">1000</span> * mean_time))</span><br><span class="line">    X = np.asanyarray([<span class="number">0</span>, num_samples - <span class="number">1</span>])</span><br><span class="line">    Y = params[<span class="number">0</span>] * X + params[<span class="number">1</span>]</span><br><span class="line">    plt.subplot(<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>, sharey = ax1)</span><br><span class="line">    plt.plot(X, Y, <span class="string">'g-'</span>, linewidth=<span class="number">2</span>)</span><br><span class="line">    </span><br><span class="line">    plt.show()</span><br><span class="line">    </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    data, model = setup()</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        params, residual, mean_time, iterations = run(data, model)</span><br><span class="line">        summary(params, residual, mean_time, iterations)</span><br><span class="line">    <span class="keyword">except</span> ValueError <span class="keyword">as</span> e:</span><br><span class="line">       print(e)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">============== Paramters ===============</span><br><span class="line">[0.5000000000000001, -1.4098251542937202e-15]</span><br><span class="line">=============== Residual ===============</span><br><span class="line">1.135175287103607e-14</span><br><span class="line">============== Iteration ===============</span><br><span class="line">113 the number of iterations in the running</span><br><span class="line">================= Time =================</span><br><span class="line">2.4 msecs mean time spent per iteration</span><br></pre></td></tr></table></figure>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-5-4/67603747.jpg" alt="1"></p>
+<p>从迭代次数中，可以看出RANSAC的运行速度有了明显的提升</p>
+<h2 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> Reference</h2>
+<p>Wang, H., and D. Suter. “Robust Adaptive-Scale Parametric Model Estimation for Computer Vision.” <em>IEEE Transactions on Pattern Analysis and Machine Intelligence</em> 26, no. 11 (November 2004): 1459–74. <a href="https://doi.org/10.1109/TPAMI.2004.109" target="_blank" rel="noopener">https://doi.org/10.1109/TPAMI.2004.109</a>.</p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2018/05/04/APC_ransac/">http://sikasjc.github.io/2018/05/04/APC_ransac/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/算法/">算法</a>
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/Ransac/">Ransac</a>
+            
+              <a href="/tags/随机采样一致/">随机采样一致</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2018/04/28/weighted_GN/">
+        <span class="next-text nav-default">针对加权网络的Girvan-Newman(GN)算法</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMzQzMy85OTg5">
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>  
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/u/5605720030" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/si-qia-sika" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  
+
+  
+   <script type="text/javascript">
+	(function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>

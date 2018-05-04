@@ -17,7 +17,7 @@
 
 
 
-  <meta name="keywords" content="算法,python,复杂网络,社区发现," />
+  <meta name="keywords" content="复杂网络,社区发现,算法,python," />
 
 
 
@@ -35,7 +35,7 @@
 
 
 <meta name="description" content="一般意义上讲，一个社区也可以被称为群、聚类或模块，是网络中一群阶段或边的集合，其内部的节点间连接较为紧密，而社区间的连接却相对稀疏。那么，社区发现就是在复杂网络中发现这些连接紧密的社区结构。社区发现可以理解为网络中的结点聚类...">
-<meta name="keywords" content="算法,python,复杂网络,社区发现">
+<meta name="keywords" content="复杂网络,社区发现,算法,python">
 <meta property="og:type" content="article">
 <meta property="og:title" content="GN算法--复杂网络中社区发现与Python实现">
 <meta property="og:url" content="http://sikasjc.github.io/2017/12/20/GN/index.html">
@@ -50,7 +50,7 @@
 <meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-1-21/17264809.jpg">
 <meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-1-21/24362381.jpg">
 <meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-1-21/55901962.jpg">
-<meta property="og:updated_time" content="2018-04-27T05:00:44.288Z">
+<meta property="og:updated_time" content="2018-04-27T05:03:44.121Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GN算法--复杂网络中社区发现与Python实现">
 <meta name="twitter:description" content="一般意义上讲，一个社区也可以被称为群、聚类或模块，是网络中一群阶段或边的集合，其内部的节点间连接较为紧密，而社区间的连接却相对稀疏。那么，社区发现就是在复杂网络中发现这些连接紧密的社区结构。社区发现可以理解为网络中的结点聚类...">
@@ -228,13 +228,13 @@
         
           <div class="post-tags">
             
-              <a href="/tags/算法/">算法</a>
-            
-              <a href="/tags/python/">python</a>
-            
               <a href="/tags/复杂网络/">复杂网络</a>
             
               <a href="/tags/社区发现/">社区发现</a>
+            
+              <a href="/tags/算法/">算法</a>
+            
+              <a href="/tags/python/">python</a>
             
           </div>
         
@@ -301,14 +301,14 @@
 [32, 33, 34, 9, 10, 15, 16, 19, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31]]
 </code></pre>
 <p><img src="http://ormnbkvfv.bkt.clouddn.com/18-1-21/79561109.jpg" alt="Zachary's karate club"></p>
-<p>这里使用Python的NetworkX包以及Matplotlib包来完成对于Girvan-Newman算法的演示，以及Gephi，一个基于JVM的可视化平台。</p>
+<p>这里使用 Python 的 NetworkX 包以及 Matplotlib 包来完成对于 Girvan-Newman 算法的演示，以及Gephi，一个基于JVM的可视化平台。</p>
 <p>NetworkX是一个用于创建，操作和研究复杂网络的结构、动态和功能的Python包。Matplotlib是一个Python 2D绘图库，利用它完成模块化函数Q与划分社区数目的关系曲线，之后使用Gephi作为网络的可视化工具，将GML文件中的图中划分的社区表示出来。</p>
 <pre><code>Python环境需求：
 1. Python-3.6.3
 2. NetworkX-2.0
 3. Matplotlib-2.1.0
 </code></pre>
-<p>安装好Python环境需求后，<a href="http://xn--Girvan-Newman-vd8vz73owtwdvv1cqj2a.py" target="_blank" rel="noopener">可直接运行Girvan-Newman.py</a>，输出格式为GML的文件，以及其他信息。获得基于Girvan-Newman算法的社区发现的一些特性。Zachary’s karate club网络Girvan-Newman算法划分社区数与Q值的关系（如下图所示）。</p>
+<p>安装好Python环境需求后，可直接运行<a href="https://github.com/sikasjc/CommunityDetection/blob/master/algorithm/Girvan-Newman.py" target="_blank" rel="noopener">Girvan-Newman.py</a>，输出格式为GML的文件，以及其他信息。获得基于Girvan-Newman算法的社区发现的一些特性。Zachary’s karate club网络Girvan-Newman算法划分社区数与Q值的关系（如下图所示）。</p>
 <p><img src="http://ormnbkvfv.bkt.clouddn.com/18-1-21/21607724.jpg" alt="划分社区数与Q值"></p>
 <p>我们可以看到，当我们已知应该划分社区的个数，即2个社区时，Girvan-Newman算法的模块度函数Q值到达极大值，为0.35996055226824464，将输出的GML文件用Gephi打开。这时的社区划分结果如下所示，除了节点3以外,其它节点都被正确归类，如下图所示。</p>
 <p><img src="http://ormnbkvfv.bkt.clouddn.com/18-1-21/17264809.jpg" alt="划分结果"></p>
@@ -383,13 +383,13 @@ Max_Q: 0.40129848783694944
         
           <div class="post-tags">
             
-              <a href="/tags/算法/">算法</a>
-            
-              <a href="/tags/python/">python</a>
-            
               <a href="/tags/复杂网络/">复杂网络</a>
             
               <a href="/tags/社区发现/">社区发现</a>
+            
+              <a href="/tags/算法/">算法</a>
+            
+              <a href="/tags/python/">python</a>
             
           </div>
         
