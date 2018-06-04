@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="根据车道线本身形状和颜色特点，利用 Hat-like Filter进行低级别的特征提取"/>
+
+
+
+
+  <meta name="keywords" content="算法,python,车道线检测," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2018/05/30/Hat-like-Filter/"/>
+
+
+<meta name="description" content="根据车道线本身形状和颜色特点，利用 Hat-like Filter进行低级别的特征提取">
+<meta name="keywords" content="算法,python,车道线检测">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hat-like Filter">
+<meta property="og:url" content="http://sikasjc.github.io/2018/05/30/Hat-like-Filter/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="根据车道线本身形状和颜色特点，利用 Hat-like Filter进行低级别的特征提取">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-6-3/31862304.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-6-3/24318262.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-6-4/78661610.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-6-4/16779194.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-6-4/71298031.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-6-4/23237167.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-6-4/48552394.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-6-4/27754292.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-6-4/99391723.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-6-4/98052334.jpg">
+<meta property="og:updated_time" content="2018-06-04T03:58:29.778Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hat-like Filter">
+<meta name="twitter:description" content="根据车道线本身形状和颜色特点，利用 Hat-like Filter进行低级别的特征提取">
+<meta name="twitter:image" content="http://ormnbkvfv.bkt.clouddn.com/18-6-3/31862304.jpg">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> Hat-like Filter · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Hat-like Filter
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018年5月30日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/算法/">算法</a>
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/车道线检测/">车道线检测</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#introduction"><span class="toc-number">1.</span> <span class="toc-text"> Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#weighted-hat-like-filter"><span class="toc-number">2.</span> <span class="toc-text"> Weighted Hat-like Filter</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#python实现并比较"><span class="toc-number">2.1.</span> <span class="toc-text"> Python实现并比较</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-number">3.</span> <span class="toc-text"> Reference</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h2 id="introduction"><a class="markdownIt-Anchor" href="#introduction"></a> Introduction</h2>
+<p>在车道线检测当中，核心一步自然是的是抽取车道线的特征得到车道线检测的初步结果。实际操作中有很多方法，例如：</p>
+<ul>
+<li>利用Canny算子或Sobel算子等做边缘检测</li>
+<li>因为车道线主要是黄色或白色，可以利用不同的颜色空间（LAB、RGB、HSV等颜色空间），从颜色的值域中划分出车道线</li>
+<li>车道线中心亮度比边缘都要高，因此可以利用 Hat-like Filter</li>
+<li>…</li>
+</ul>
+<p>以上方法大多利用车道线的低级别特征（low level feature），得到的结果需要利用Hough Transform、Ransac、sliding windows、band search等方法做进一步处理。</p>
+<p>现在因为CNN在计算机视觉的惊人效果，所以也有人利用卷积神经网络得到 End-to-End 的车道线检测结果</p>
+<ul>
+<li>利用神经网络语义分割–(SCNN)Spatial As Deep: Spatial CNN for Traffic Scene Understanding</li>
+</ul>
+<p>这里主要介绍 Hat-like Filter来对车道线进行low level processing。</p>
+<p>##Hat-like Filter</p>
+<p>Hat-like Filter 也可以称为 Hat-shape Filter ，目的是利用车道线中心亮度比边缘都要高从鸟瞰图（bird’s view image)中过滤出我们想要的车道线[1]。车道线实际是边缘的一种，因此 Hat-like Filter 也是一种边缘检测方法。</p>
+<p>Hat-like Filter 可以简单用下图表示：</p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-6-3/31862304.jpg" alt="Hat-like Filter"></p>
+<p>对于鸟瞰图像中的每个像素，计算一个特殊值 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>b</mi><mo>(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">b(x,y)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mord mathit">b</span><span class="mopen">(</span><span class="mord mathit">x</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="mclose">)</span></span></span></span> 与其水平左右像素的值 b(x-m，y) 和 b(x + m，y) 进行比较，可以用如下公式表示：</p>
+B_{+m}(x,y)=b(x,y)-b(x+m,y)\\
+B_{-m}(x,y)=b(x,y)-b(x-m,y)
+
+<p>之后使用阈值对图像进行二值化处理：</p>
+r(x,y)=\left\{\begin{matrix}
+\begin{align*}
+& 1, \mathrm{if}\; B_{+m} \geq 0, B_{-m} \geq 0 \;\mathrm{and} \; B_{+m}+B_{-m}\geq T\\ 
+& 0,\mathrm{otherwise}
+\end{align*}
+\end{matrix}\right.
+
+<p>该边缘检测方法具有以下特性:</p>
+<ul>
+<li>可以调整 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit">m</span></span></span></span> 以适应不同宽度的车道线。</li>
+<li>车道线内的像素全部标记为边缘像素，这不同于基于梯度的边缘算子（例如Sobel、Canny），可以很好地提高了车道线检测的鲁棒性</li>
+<li>不会检测到水平边缘</li>
+<li>对一些渐变纹理也会加强（Weighted Hat-like Filter）</li>
+</ul>
+<p>如图所示，Hat-like Filter的效果要比canny边缘检测要好。</p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-6-3/24318262.jpg" alt="compare"></p>
+<h2 id="weighted-hat-like-filter"><a class="markdownIt-Anchor" href="#weighted-hat-like-filter"></a> Weighted Hat-like Filter</h2>
+<p><span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>I</mi><mi>f</mi></msub></mrow><annotation encoding="application/x-tex">I_f</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="base"><span class="mord"><span class="mord mathit" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathit mtight" style="margin-right:0.10764em;">f</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"></span></span></span></span></span></span></span></span>，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>I</mi><mi>g</mi></msub></mrow><annotation encoding="application/x-tex">I_g</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="base"><span class="mord"><span class="mord mathit" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.15139200000000003em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathit mtight" style="margin-right:0.03588em;">g</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"></span></span></span></span></span></span></span></span> 分别表示过滤后的图像和灰度图，我们将过滤器定义为[2]：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>I</mi><mi>f</mi></msub><mo>(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo>)</mo><mo>=</mo><mi>δ</mi><mo>(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo>)</mo><mo>⋅</mo><mrow><mo fence="true">{</mo><mn>2</mn><mo>⋅</mo><mi>B</mi><mi>l</mi><mi>o</mi><mi>c</mi><msub><mi>k</mi><mrow><mi>m</mi><mi>i</mi><mi>d</mi><mi>d</mi><mi>l</mi><mi>e</mi></mrow></msub><mo>−</mo><mi>B</mi><mi>l</mi><mi>o</mi><mi>c</mi><msub><mi>k</mi><mrow><mi>l</mi><mi>e</mi><mi>f</mi><mi>t</mi></mrow></msub><mo>−</mo><mi>B</mi><mi>l</mi><mi>o</mi><mi>c</mi><msub><mi>k</mi><mrow><mi>r</mi><mi>i</mi><mi>g</mi><mi>h</mi><mi>t</mi></mrow></msub><mo fence="true">}</mo></mrow></mrow><annotation encoding="application/x-tex">I_f(x,y)=\delta(x,y)\cdot \left \{ 2\cdot Block_{middle}- Block_{left}-Block_{right}\right \}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1.036108em;vertical-align:-0.286108em;"></span><span class="base"><span class="mord"><span class="mord mathit" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathit mtight" style="margin-right:0.10764em;">f</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"></span></span></span></span></span><span class="mopen">(</span><span class="mord mathit">x</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="mclose">)</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit" style="margin-right:0.03785em;">δ</span><span class="mopen">(</span><span class="mord mathit">x</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="mclose">)</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">{</span><span class="mord">2</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit" style="margin-right:0.05017em;">B</span><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathit">o</span><span class="mord mathit">c</span><span class="mord"><span class="mord mathit" style="margin-right:0.03148em;">k</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.03148em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight">m</span><span class="mord mathit mtight">i</span><span class="mord mathit mtight">d</span><span class="mord mathit mtight">d</span><span class="mord mathit mtight" style="margin-right:0.01968em;">l</span><span class="mord mathit mtight">e</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"></span></span></span></span></span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit" style="margin-right:0.05017em;">B</span><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathit">o</span><span class="mord mathit">c</span><span class="mord"><span class="mord mathit" style="margin-right:0.03148em;">k</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.03148em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight" style="margin-right:0.01968em;">l</span><span class="mord mathit mtight">e</span><span class="mord mathit mtight" style="margin-right:0.10764em;">f</span><span class="mord mathit mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"></span></span></span></span></span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit" style="margin-right:0.05017em;">B</span><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathit">o</span><span class="mord mathit">c</span><span class="mord"><span class="mord mathit" style="margin-right:0.03148em;">k</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.03148em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight" style="margin-right:0.02778em;">r</span><span class="mord mathit mtight">i</span><span class="mord mathit mtight" style="margin-right:0.03588em;">g</span><span class="mord mathit mtight">h</span><span class="mord mathit mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;">}</span></span></span></span></span></span></p>
+<p>其中 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>B</mi><mi>l</mi><mi>o</mi><mi>c</mi><msub><mi>k</mi><mrow><mi>m</mi><mi>i</mi><mi>d</mi><mi>d</mi><mi>l</mi><mi>e</mi></mrow></msub><mo>=</mo><mi>B</mi><mi>l</mi><mi>o</mi><mi>c</mi><mi>k</mi><mo>(</mo><mi>x</mi><mo>−</mo><mi>w</mi><mi mathvariant="normal">/</mi><mn>2</mn><mo separator="true">,</mo><mi>y</mi><mo>−</mo><mi>h</mi><mi mathvariant="normal">/</mi><mn>2</mn><mo separator="true">,</mo><mi>w</mi><mo separator="true">,</mo><mi>h</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">Block_{middle}= Block(x-w/2,y-h/2,w,h)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.05017em;">B</span><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathit">o</span><span class="mord mathit">c</span><span class="mord"><span class="mord mathit" style="margin-right:0.03148em;">k</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.03148em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight">m</span><span class="mord mathit mtight">i</span><span class="mord mathit mtight">d</span><span class="mord mathit mtight">d</span><span class="mord mathit mtight" style="margin-right:0.01968em;">l</span><span class="mord mathit mtight">e</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"></span></span></span></span></span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit" style="margin-right:0.05017em;">B</span><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathit">o</span><span class="mord mathit">c</span><span class="mord mathit" style="margin-right:0.03148em;">k</span><span class="mopen">(</span><span class="mord mathit">x</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="mord">/</span><span class="mord">2</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit">h</span><span class="mord">/</span><span class="mord">2</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit">h</span><span class="mclose">)</span></span></span></span> ， <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>B</mi><mi>l</mi><mi>o</mi><mi>c</mi><msub><mi>k</mi><mrow><mi>l</mi><mi>e</mi><mi>f</mi><mi>t</mi></mrow></msub><mo>=</mo><mi>B</mi><mi>l</mi><mi>o</mi><mi>c</mi><mi>k</mi><mo>(</mo><mi>x</mi><mo>−</mo><mn>3</mn><mi>w</mi><mi mathvariant="normal">/</mi><mn>2</mn><mo separator="true">,</mo><mi>y</mi><mo>−</mo><mn>3</mn><mi>h</mi><mi mathvariant="normal">/</mi><mn>2</mn><mo separator="true">,</mo><mi>w</mi><mo separator="true">,</mo><mi>h</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">Block_{left}=Block(x-3w/2,y-3h/2,w,h)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1.036108em;vertical-align:-0.286108em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.05017em;">B</span><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathit">o</span><span class="mord mathit">c</span><span class="mord"><span class="mord mathit" style="margin-right:0.03148em;">k</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.03148em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight" style="margin-right:0.01968em;">l</span><span class="mord mathit mtight">e</span><span class="mord mathit mtight" style="margin-right:0.10764em;">f</span><span class="mord mathit mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"></span></span></span></span></span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit" style="margin-right:0.05017em;">B</span><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathit">o</span><span class="mord mathit">c</span><span class="mord mathit" style="margin-right:0.03148em;">k</span><span class="mopen">(</span><span class="mord mathit">x</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord">3</span><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="mord">/</span><span class="mord">2</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord">3</span><span class="mord mathit">h</span><span class="mord">/</span><span class="mord">2</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit">h</span><span class="mclose">)</span></span></span></span>，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>B</mi><mi>l</mi><mi>o</mi><mi>c</mi><msub><mi>k</mi><mrow><mi>r</mi><mi>i</mi><mi>g</mi><mi>h</mi><mi>t</mi></mrow></msub><mo>=</mo><mi>B</mi><mi>l</mi><mi>o</mi><mi>c</mi><mi>k</mi><mo>(</mo><mi>x</mi><mo>+</mo><mi>w</mi><mi mathvariant="normal">/</mi><mn>2</mn><mo separator="true">,</mo><mi>y</mi><mo>+</mo><mi>h</mi><mi mathvariant="normal">/</mi><mn>2</mn><mo separator="true">,</mo><mi>w</mi><mo separator="true">,</mo><mi>h</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">Block_{right}=Block(x+w/2, y+h/2, w,h)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1.036108em;vertical-align:-0.286108em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.05017em;">B</span><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathit">o</span><span class="mord mathit">c</span><span class="mord"><span class="mord mathit" style="margin-right:0.03148em;">k</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.03148em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight" style="margin-right:0.02778em;">r</span><span class="mord mathit mtight">i</span><span class="mord mathit mtight" style="margin-right:0.03588em;">g</span><span class="mord mathit mtight">h</span><span class="mord mathit mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"></span></span></span></span></span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit" style="margin-right:0.05017em;">B</span><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathit">o</span><span class="mord mathit">c</span><span class="mord mathit" style="margin-right:0.03148em;">k</span><span class="mopen">(</span><span class="mord mathit">x</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="mord">/</span><span class="mord">2</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit">h</span><span class="mord">/</span><span class="mord">2</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit">h</span><span class="mclose">)</span></span></span></span>.</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>B</mi><mi>l</mi><mi>o</mi><mi>c</mi><mi>k</mi><mo>(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo separator="true">,</mo><mi>w</mi><mo separator="true">,</mo><mi>h</mi><mo>)</mo><mo>=</mo><munder><mo>∑</mo><mrow><mo>(</mo><mi>r</mi><mo separator="true">,</mo><mi>c</mi><mo>)</mo><mo>∈</mo><mrow><mo fence="true">[</mo><mi>x</mi><mo separator="true">,</mo><mi>x</mi><mo>+</mo><mi>w</mi><mo fence="true">]</mo></mrow><mo>×</mo><mrow><mo fence="true">[</mo><mi>y</mi><mo separator="true">,</mo><mi>y</mi><mo>+</mo><mi>h</mi><mo fence="true">]</mo></mrow></mrow></munder><mrow><msub><mi>I</mi><mi>g</mi></msub><mo>(</mo><mi>r</mi><mo separator="true">,</mo><mi>c</mi><mo>)</mo></mrow></mrow><annotation encoding="application/x-tex">Block(x,y,w,h)=\sum_{(r,c)\in \left [ x,x+w \right ] \times \left [ y,y+h \right ]}{I_g(r,c)}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:1.050005em;"></span><span class="strut bottom" style="height:2.5660100000000003em;vertical-align:-1.516005em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.05017em;">B</span><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathit">o</span><span class="mord mathit">c</span><span class="mord mathit" style="margin-right:0.03148em;">k</span><span class="mopen">(</span><span class="mord mathit">x</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit">h</span><span class="mclose">)</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.050005em;"><span style="top:-1.808995em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mopen mtight">(</span><span class="mord mathit mtight" style="margin-right:0.02778em;">r</span><span class="mpunct mtight">,</span><span class="mord mathit mtight">c</span><span class="mclose mtight">)</span><span class="mrel mtight">∈</span><span class="minner mtight"><span class="mopen mtight delimcenter" style="top:0em;"><span class="mtight">[</span></span><span class="mord mathit mtight">x</span><span class="mpunct mtight">,</span><span class="mord mathit mtight">x</span><span class="mbin mtight">+</span><span class="mord mathit mtight" style="margin-right:0.02691em;">w</span><span class="mclose mtight delimcenter" style="top:0em;"><span class="mtight">]</span></span></span><span class="mbin mtight">×</span><span class="minner mtight"><span class="mopen mtight delimcenter" style="top:0em;"><span class="mtight">[</span></span><span class="mord mathit mtight" style="margin-right:0.03588em;">y</span><span class="mpunct mtight">,</span><span class="mord mathit mtight" style="margin-right:0.03588em;">y</span><span class="mbin mtight">+</span><span class="mord mathit mtight">h</span><span class="mclose mtight delimcenter" style="top:0em;"><span class="mtight">]</span></span></span></span></span></span><span style="top:-3.0500049999999996em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∑</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.516005em;"></span></span></span></span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord"><span class="mord mathit" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.15139200000000003em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathit mtight" style="margin-right:0.03588em;">g</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"></span></span></span></span></span><span class="mopen">(</span><span class="mord mathit" style="margin-right:0.02778em;">r</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit">c</span><span class="mclose">)</span></span></span></span></span></span></p>
+<p>这里w和h表示该块的宽度和高度。由于车道线是长条形，所以Hat-like Filter可以加强车道线区域的响应。然而，同Hat-like Filter一样，渐变纹理也被加强，这会破坏之后的二值化结果并带来许多错误检测区域。</p>
+<p>为了克服这个问题，我们为在 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">(x, y)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mopen">(</span><span class="mord mathit">x</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="mclose">)</span></span></span></span> 点的像素，添加一个自适应权重 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>δ</mi><mo>(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">\delta(x,y)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.03785em;">δ</span><span class="mopen">(</span><span class="mord mathit">x</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="mclose">)</span></span></span></span>。</p>
+r(x,y)=\left\{\begin{matrix}
+\begin{align*}
+& 0, \mathrm{if} \; Block_{middle} < Block_{left}, \mathrm{or} \; Block_{middle} < Block_{right}\\ 
+& 1,\mathrm{otherwise}
+\end{align*}
+\end{matrix}\right.
+
+<p>对于每个像素，如果 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>B</mi><mi>l</mi><mi>o</mi><mi>c</mi><msub><mi>k</mi><mrow><mi>m</mi><mi>i</mi><mi>d</mi><mi>d</mi><mi>l</mi><mi>e</mi></mrow></msub></mrow><annotation encoding="application/x-tex">Block_{middle}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.05017em;">B</span><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathit">o</span><span class="mord mathit">c</span><span class="mord"><span class="mord mathit" style="margin-right:0.03148em;">k</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.03148em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight">m</span><span class="mord mathit mtight">i</span><span class="mord mathit mtight">d</span><span class="mord mathit mtight">d</span><span class="mord mathit mtight" style="margin-right:0.01968em;">l</span><span class="mord mathit mtight">e</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"></span></span></span></span></span></span></span></span> 不大于 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>B</mi><mi>l</mi><mi>o</mi><mi>c</mi><msub><mi>k</mi><mrow><mi>l</mi><mi>e</mi><mi>f</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">Block_{left}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.980548em;vertical-align:-0.286108em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.05017em;">B</span><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathit">o</span><span class="mord mathit">c</span><span class="mord"><span class="mord mathit" style="margin-right:0.03148em;">k</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.03148em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight" style="margin-right:0.01968em;">l</span><span class="mord mathit mtight">e</span><span class="mord mathit mtight" style="margin-right:0.10764em;">f</span><span class="mord mathit mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"></span></span></span></span></span></span></span></span> 或 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>B</mi><mi>l</mi><mi>o</mi><mi>c</mi><msub><mi>k</mi><mrow><mi>r</mi><mi>i</mi><mi>g</mi><mi>h</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">Block_{right}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.980548em;vertical-align:-0.286108em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.05017em;">B</span><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathit">o</span><span class="mord mathit">c</span><span class="mord"><span class="mord mathit" style="margin-right:0.03148em;">k</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.03148em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight" style="margin-right:0.02778em;">r</span><span class="mord mathit mtight">i</span><span class="mord mathit mtight" style="margin-right:0.03588em;">g</span><span class="mord mathit mtight">h</span><span class="mord mathit mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"></span></span></span></span></span></span></span></span>，那么将会抑制此像素。 因此，通过分配的权重可以显著减轻梯度纹理的影响。</p>
+<p>如下图所示，由绿色圆圈标记的像素属于渐变纹理。 使用Hat-like Filter，一些噪声的峰值被保留了下来，而我们的加权值可以显著抑制这一点。 从图中还可以看出，Weighted Hat-like Filter减少了大量的错误检测。之后进行二值化等进一步操作。</p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-6-4/78661610.jpg" alt="Weighted Hat-like Filter"></p>
+<p>这里注意到[2]中的 Weighted Hat-like Filter 是一个方向的，我们可以通过加入与另一个方向的与and 操作，这样的效果会更加明显。</p>
+<h3 id="python实现并比较"><a class="markdownIt-Anchor" href="#python实现并比较"></a> Python实现并比较</h3>
+<p>加载图片，并转为灰度图</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.image <span class="keyword">as</span> mplimg</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> cv2</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">img = cv2.imread(<span class="string">'1.png'</span>)</span><br><span class="line">gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)</span><br><span class="line">plt.figure(figsize=(<span class="number">15</span>,<span class="number">10</span>))</span><br><span class="line">plt.imshow(gray,cmap=<span class="string">'gray'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-6-4/16779194.jpg" alt="original"></p>
+<p>利用IPM，计算出转换矩阵，并将图片转为鸟瞰图（Bird’s view image)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">img_size = (<span class="number">1200</span>, <span class="number">600</span>)</span><br><span class="line">blur_ksize = <span class="number">5</span></span><br><span class="line">src = np.float32([[<span class="number">435</span>, <span class="number">375</span>],[<span class="number">775</span>, <span class="number">375</span>],[<span class="number">500</span>, <span class="number">300</span>],[<span class="number">710</span>, <span class="number">300</span>]])</span><br><span class="line">dst = np.float32([[<span class="number">500</span>, <span class="number">600</span>],[<span class="number">700</span>, <span class="number">600</span>],[<span class="number">500</span>, <span class="number">500</span>],[<span class="number">700</span>, <span class="number">500</span>]])</span><br><span class="line">M = cv2.getPerspectiveTransform(src, dst)</span><br><span class="line">warped = cv2.warpPerspective(gray, M, img_size)</span><br><span class="line">warped = cv2.GaussianBlur(warped, (blur_ksize, blur_ksize), <span class="number">0</span>, <span class="number">0</span>)</span><br><span class="line">plt.figure(figsize=(<span class="number">15</span>,<span class="number">10</span>))</span><br><span class="line">plt.title(<span class="string">'Original'</span>)</span><br><span class="line">plt.imshow(warped,cmap=<span class="string">'gray'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-6-4/71298031.jpg" alt="Bird's view"></p>
+<p><strong>Canny边缘检测</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">low_threshold = <span class="number">50</span> <span class="comment"># Canny edge detection low threshold</span></span><br><span class="line">high_threshold = <span class="number">120</span>  <span class="comment"># Canny edge detection high threshold</span></span><br><span class="line">canny = cv2.Canny(warped, low_threshold, high_threshold)</span><br><span class="line">plt.figure(figsize=(<span class="number">15</span>,<span class="number">10</span>))</span><br><span class="line">plt.title(<span class="string">'Canny'</span>)</span><br><span class="line">plt.imshow(canny,cmap = <span class="string">'gray'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-6-4/23237167.jpg" alt="Canny"></p>
+<p><strong>Sobel算子</strong>，这里使用的是x方向</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">sobelx = cv2.Sobel(warped,cv2.CV_16S,<span class="number">1</span>,<span class="number">0</span>,ksize=<span class="number">5</span>)</span><br><span class="line">sobely = cv2.Sobel(warped,cv2.CV_16S,<span class="number">0</span>,<span class="number">1</span>,ksize=<span class="number">5</span>)</span><br><span class="line"></span><br><span class="line">sobelx = np.absolute(sobelx)</span><br><span class="line">sobely = np.absolute(sobely)</span><br><span class="line"></span><br><span class="line">plt.figure(figsize=(<span class="number">15</span>,<span class="number">10</span>))</span><br><span class="line">plt.imshow(sobelx,cmap = <span class="string">'gray'</span>)</span><br><span class="line">plt.title(<span class="string">'Sobel X'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-6-4/48552394.jpg" alt="Sobel"></p>
+<p><strong>Hat-like Filter</strong></p>
+<p>这里实现的比较繁琐，已经经过了二值化处理</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hat_like</span><span class="params">(img, m, T)</span>:</span></span><br><span class="line">    left_mat = np.ones((<span class="number">1</span>, m)) * <span class="number">-1</span></span><br><span class="line">    right_mat = np.ones((<span class="number">1</span>, m)) * <span class="number">-1</span></span><br><span class="line">    center_mat = np.ones((<span class="number">1</span>, m))</span><br><span class="line"></span><br><span class="line">    conv_mat1 = np.column_stack((left_mat, center_mat, np.zeros((<span class="number">1</span>, m))))</span><br><span class="line">    conv_mat2 = np.column_stack((np.zeros((<span class="number">1</span>, m)), center_mat, right_mat))</span><br><span class="line">    conv1 = cv2.filter2D(img, cv2.CV_16S, conv_mat1)</span><br><span class="line">    conv2 = cv2.filter2D(img, cv2.CV_16S, conv_mat2)</span><br><span class="line">    conv1[conv1&lt;<span class="number">0</span>]=<span class="number">0</span></span><br><span class="line">    conv2[conv2&lt;<span class="number">0</span>]=<span class="number">0</span></span><br><span class="line">    </span><br><span class="line">    res = np.logical_and(conv1,conv2)</span><br><span class="line">    </span><br><span class="line">    conv_mat3 = np.column_stack((left_mat, center_mat*<span class="number">2</span>, right_mat))</span><br><span class="line">    conv3 = cv2.filter2D(img, cv2.CV_16S, conv_mat3)</span><br><span class="line">    conv3[conv3&lt;T]=<span class="number">0</span></span><br><span class="line">    </span><br><span class="line">    res = np.logical_and(res,conv3)</span><br><span class="line">    res[res&lt;<span class="number">0</span>]=<span class="number">0</span></span><br><span class="line">    <span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line">plt.figure(figsize=(<span class="number">15</span>,<span class="number">10</span>))</span><br><span class="line">plt.imshow(hat_like_conv_y(warped, <span class="number">5</span>, <span class="number">50</span>), cmap=<span class="string">'gray'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-6-4/27754292.jpg" alt="Hat-like Filter"></p>
+<p><strong>Weighted Hat-like Filter</strong></p>
+<p>因为车道线检测中，对于图片边缘是可以忽视的，这里没有对图片边缘的卷积做太多处理。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">weighted_hat_like_conv</span><span class="params">(img, w, h, T)</span>:</span></span><br><span class="line">    left_upper_mat = np.ones((h, w)) * <span class="number">-1</span></span><br><span class="line">    right_bottom_mat = np.ones((h, w)) * <span class="number">-1</span></span><br><span class="line">    center_mat = np.ones((h, w)) * <span class="number">2</span></span><br><span class="line"></span><br><span class="line">    top = np.column_stack((left_upper_mat, np.zeros((h,w*<span class="number">2</span>))))</span><br><span class="line">    middle = np.column_stack((np.zeros((h,w)), center_mat, np.zeros((h, w))))</span><br><span class="line">    bottom = np.column_stack((np.zeros((h,w*<span class="number">2</span>)), right_bottom_mat))</span><br><span class="line"></span><br><span class="line">    conv_mat = np.row_stack((top, middle, bottom))</span><br><span class="line">    res = cv2.filter2D(img, cv2.CV_16S, conv_mat)</span><br><span class="line">    </span><br><span class="line">    res[res&lt;=T] = <span class="number">0</span></span><br><span class="line">    res[res&gt;T] = <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line">plt.figure(figsize=(<span class="number">15</span>,<span class="number">10</span>))</span><br><span class="line">plt.imshow(weighted_hat_like_conv(warped, <span class="number">7</span>, <span class="number">3</span>, <span class="number">1000</span>), cmap=<span class="string">'gray'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-6-4/99391723.jpg" alt="Weighted Hat-like Filter"></p>
+<p><strong>两方向相与的Weighted Hat-like Filter</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">weighted_hat_like_conv_and</span><span class="params">(img, w, h, T)</span>:</span></span><br><span class="line">    left_upper_mat = np.ones((h, w)) * <span class="number">-1</span></span><br><span class="line">    right_bottom_mat = np.ones((h, w)) * <span class="number">-1</span></span><br><span class="line">    center_mat = np.ones((h, w)) * <span class="number">2</span></span><br><span class="line"></span><br><span class="line">    top = np.column_stack((left_upper_mat, np.zeros((h,w*<span class="number">2</span>))))</span><br><span class="line">    middle = np.column_stack((np.zeros((h,w)), center_mat, np.zeros((h, w))))</span><br><span class="line">    bottom = np.column_stack((np.zeros((h,w*<span class="number">2</span>)), right_bottom_mat))</span><br><span class="line"></span><br><span class="line">    conv_mat1 = np.row_stack((top, middle, bottom))</span><br><span class="line">    conv_mat2 = np.row_stack((bottom, middle, top))</span><br><span class="line">    </span><br><span class="line">    res1 = cv2.filter2D(img, cv2.CV_16S, conv_mat1)</span><br><span class="line">    res1[res1 &lt; T] = <span class="number">0</span></span><br><span class="line">    res2 = cv2.filter2D(img, cv2.CV_16S, conv_mat2)</span><br><span class="line">    res2[res2 &lt; T] = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#res = np.bitwise_and(res1, res2)</span></span><br><span class="line">    res = np.logical_and(res1, res2)</span><br><span class="line">    <span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line">plt.figure(figsize=(<span class="number">15</span>,<span class="number">10</span>))</span><br><span class="line">plt.imshow(weighted_hat_like_conv_and(warped, <span class="number">7</span>, <span class="number">3</span>, <span class="number">1000</span>), cmap=<span class="string">'gray'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-6-4/98052334.jpg" alt="and"></p>
+<h2 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> Reference</h2>
+<p>[1] R. Jiang, M. Terauchi, R. Klette, S. Wang, and T. Vaudrey, “Low-Level Image Processing for Lane Detection and Tracking,” in <em>Arts and Technology</em>, vol. 30, F. Huang and R.-C. Wang, Eds. Berlin, Heidelberg: Springer Berlin Heidelberg, 2010, pp. 190–197.</p>
+<p>[2] Bei He, Rui Ai, Yang Yan, and Xianpeng Lang, “Accurate and robust lane detection based on Dual-View Convolutional Neutral Network,” 2016, pp. 1041–1046.</p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2018/05/30/Hat-like-Filter/">http://sikasjc.github.io/2018/05/30/Hat-like-Filter/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/算法/">算法</a>
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/车道线检测/">车道线检测</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2018/05/08/kalman_filter/">
+        <span class="next-text nav-default">Kalman Filter 卡尔曼滤波</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMzQzMy85OTg5">
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>  
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/u/5605720030" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/si-qia-sika" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  
+
+  
+   <script type="text/javascript">
+	(function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>
