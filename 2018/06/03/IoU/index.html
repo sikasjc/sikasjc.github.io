@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="在目标检测中，我们需要定位出目标的位置，而我们的算法不可能百分百跟人工标注的数据完全匹配，因此需要一种衡量目标定位精度的标准......"/>
+
+
+
+
+  <meta name="keywords" content="python,目标检测," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2018/06/03/IoU/"/>
+
+
+<meta name="description" content="在目标检测中，我们需要定位出目标的位置，而我们的算法不可能百分百跟人工标注的数据完全匹配，因此需要一种衡量目标定位精度的标准......">
+<meta name="keywords" content="python,目标检测">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IoU（Intersection over Union）">
+<meta property="og:url" content="http://sikasjc.github.io/2018/06/03/IoU/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="在目标检测中，我们需要定位出目标的位置，而我们的算法不可能百分百跟人工标注的数据完全匹配，因此需要一种衡量目标定位精度的标准......">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-6-12/99671635.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-6-12/43523808.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-6-12/60294496.jpg">
+<meta property="og:updated_time" content="2018-06-12T10:40:17.627Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="IoU（Intersection over Union）">
+<meta name="twitter:description" content="在目标检测中，我们需要定位出目标的位置，而我们的算法不可能百分百跟人工标注的数据完全匹配，因此需要一种衡量目标定位精度的标准......">
+<meta name="twitter:image" content="http://ormnbkvfv.bkt.clouddn.com/18-6-12/99671635.jpg">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> IoU（Intersection over Union） · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          IoU（Intersection over Union）
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018年6月3日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/目标检测/">目标检测</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#introduction"><span class="toc-number">1.</span> <span class="toc-text"> Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现"><span class="toc-number">2.</span> <span class="toc-text"> 实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-number">3.</span> <span class="toc-text"> Reference</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h2 id="introduction"><a class="markdownIt-Anchor" href="#introduction"></a> Introduction</h2>
+<p>在目标检测中，我们需要定位出目标的位置，而我们的算法不可能百分百跟人工标注的数据完全匹配，因此需要一种衡量目标定位精度的标准。</p>
+<p>IoU（Intersection over Union）是一种常见的用于衡量目标定位精度的标准，可以理解为重叠度，是一种简单的测量标准，只要是在输出中得出一个预测范围(bounding box)的任务都可以用IoU来进行测量。</p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-6-12/99671635.jpg" alt="IoU"></p>
+<p>如上图所示，ground-truth和predicted的存在误差，绿色框是人为标记的正确结果，红色框是算法预测出来的结果，IoU要做的就是在这两个结果中测量算法的准确度，它定义了两个bounding box的重叠度 ，如下图所示：</p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-6-12/43523808.jpg" alt="IoU"></p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>I</mi><mi>o</mi><mi>U</mi><mo>=</mo><mfrac><mrow><mi>A</mi><mo>⋂</mo><mi>B</mi></mrow><mrow><mi>A</mi><mo>⋃</mo><mi>B</mi></mrow></mfrac><mo>=</mo><mfrac><mrow><mi>A</mi><mo>⋂</mo><mi>B</mi></mrow><mrow><mi>A</mi><mo>+</mo><mi>B</mi><mo>−</mo><mi>A</mi><mo>⋂</mo><mi>B</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">IoU = \frac {A\bigcap B}{A\bigcup B}=\frac{A\bigcap B}{A+B-A\bigcap B}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:1.427em;"></span><span class="strut bottom" style="height:2.36301em;vertical-align:-0.93601em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.07847em;">I</span><span class="mord mathit">o</span><span class="mord mathit" style="margin-right:0.10903em;">U</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathit">A</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mop op-symbol small-op" style="position:relative;top:-0.0000050000000000050004em;">⋃</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit" style="margin-right:0.05017em;">B</span></span></span><span style="top:-3.15em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.2em;"><svg width="400em" height="0.2em" viewbox="0 0 400000 200" preserveaspectratio="xMinYMin slice"><path d="M0 80H400000 v40H0z M0 80H400000 v40H0z"/></svg></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathit">A</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mop op-symbol small-op" style="position:relative;top:-0.0000050000000000050004em;">⋂</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit" style="margin-right:0.05017em;">B</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.93601em;"></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathit">A</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit" style="margin-right:0.05017em;">B</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit">A</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mop op-symbol small-op" style="position:relative;top:-0.0000050000000000050004em;">⋂</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit" style="margin-right:0.05017em;">B</span></span></span><span style="top:-3.15em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.2em;"><svg width="400em" height="0.2em" viewbox="0 0 400000 200" preserveaspectratio="xMinYMin slice"><path d="M0 80H400000 v40H0z M0 80H400000 v40H0z"/></svg></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathit">A</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mop op-symbol small-op" style="position:relative;top:-0.0000050000000000050004em;">⋂</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit" style="margin-right:0.05017em;">B</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.93601em;"></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<p>就是矩形框A、B的重叠面积，占 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>A</mi><mo>⋃</mo><mi>B</mi></mrow><annotation encoding="application/x-tex">A\bigcup B</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1.00001em;vertical-align:-0.25001em;"></span><span class="base"><span class="mord mathit">A</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mop op-symbol small-op" style="position:relative;top:-0.0000050000000000050004em;">⋃</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit" style="margin-right:0.05017em;">B</span></span></span></span> 的面积比例。</p>
+<p><strong>一般来说，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>I</mi><mi>o</mi><mi>U</mi><mo>&gt;</mo><mn>0</mn><mi mathvariant="normal">.</mi><mn>5</mn></mrow><annotation encoding="application/x-tex">IoU&gt;0.5</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.72243em;vertical-align:-0.0391em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.07847em;">I</span><span class="mord mathit">o</span><span class="mord mathit" style="margin-right:0.10903em;">U</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">0</span><span class="mord">.</span><span class="mord">5</span></span></span></span> 就可以被认为一个不错的结果，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>I</mi><mi>o</mi><mi>U</mi><mo>&gt;</mo><mn>0</mn><mi mathvariant="normal">.</mi><mn>7</mn></mrow><annotation encoding="application/x-tex">IoU&gt;0.7</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.72243em;vertical-align:-0.0391em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.07847em;">I</span><span class="mord mathit">o</span><span class="mord mathit" style="margin-right:0.10903em;">U</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">0</span><span class="mord">.</span><span class="mord">7</span></span></span></span> 结果就非常不错了，可以参见下图</strong></p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-6-12/60294496.jpg" alt="IoU examples"></p>
+<h2 id="实现"><a class="markdownIt-Anchor" href="#实现"></a> 实现</h2>
+<p>因为IoU的思想很简单，Python实现可以参考[1]：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bb_intersection_over_union</span><span class="params">(boxA, boxB)</span>:</span></span><br><span class="line">	<span class="comment"># determine the (x, y)-coordinates of the intersection rectangle</span></span><br><span class="line">	xA = max(boxA[<span class="number">0</span>], boxB[<span class="number">0</span>])</span><br><span class="line">	yA = max(boxA[<span class="number">1</span>], boxB[<span class="number">1</span>])</span><br><span class="line">	xB = min(boxA[<span class="number">2</span>], boxB[<span class="number">2</span>])</span><br><span class="line">	yB = min(boxA[<span class="number">3</span>], boxB[<span class="number">3</span>])</span><br><span class="line"> </span><br><span class="line">	<span class="comment"># compute the area of intersection rectangle</span></span><br><span class="line">	interArea = (xB - xA + <span class="number">1</span>) * (yB - yA + <span class="number">1</span>)</span><br><span class="line"> </span><br><span class="line">	<span class="comment"># compute the area of both the prediction and ground-truth</span></span><br><span class="line">	<span class="comment"># rectangles</span></span><br><span class="line">	boxAArea = (boxA[<span class="number">2</span>] - boxA[<span class="number">0</span>] + <span class="number">1</span>) * (boxA[<span class="number">3</span>] - boxA[<span class="number">1</span>] + <span class="number">1</span>)</span><br><span class="line">	boxBArea = (boxB[<span class="number">2</span>] - boxB[<span class="number">0</span>] + <span class="number">1</span>) * (boxB[<span class="number">3</span>] - boxB[<span class="number">1</span>] + <span class="number">1</span>)</span><br><span class="line"> </span><br><span class="line">	<span class="comment"># compute the intersection over union by taking the intersection</span></span><br><span class="line">	<span class="comment"># area and dividing it by the sum of prediction + ground-truth</span></span><br><span class="line">	<span class="comment"># areas - the interesection area</span></span><br><span class="line">	iou = interArea / float(boxAArea + boxBArea - interArea)</span><br><span class="line"> </span><br><span class="line">	<span class="comment"># return the intersection over union value</span></span><br><span class="line">	<span class="keyword">return</span> iou</span><br></pre></td></tr></table></figure>
+<p>在Pytorch中，可以写成如下形式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bbox_iou</span><span class="params">(box1, box2)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Returns the IoU of two bounding boxes </span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="comment">#Get the coordinates of bounding boxes</span></span><br><span class="line">    b1_x1, b1_y1, b1_x2, b1_y2 = box1[:,<span class="number">0</span>], box1[:,<span class="number">1</span>], box1[:,<span class="number">2</span>], box1[:,<span class="number">3</span>]</span><br><span class="line">    b2_x1, b2_y1, b2_x2, b2_y2 = box2[:,<span class="number">0</span>], box2[:,<span class="number">1</span>], box2[:,<span class="number">2</span>], box2[:,<span class="number">3</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="comment">#get the corrdinates of the intersection rectangle</span></span><br><span class="line">    inter_rect_x1 =  torch.max(b1_x1, b2_x1)</span><br><span class="line">    inter_rect_y1 =  torch.max(b1_y1, b2_y1)</span><br><span class="line">    inter_rect_x2 =  torch.min(b1_x2, b2_x2)</span><br><span class="line">    inter_rect_y2 =  torch.min(b1_y2, b2_y2)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">#Intersection area</span></span><br><span class="line">    inter_area = torch.clamp(inter_rect_x2 - inter_rect_x1 + <span class="number">1</span>, min=<span class="number">0</span>) * torch.clamp(inter_rect_y2 - inter_rect_y1 + <span class="number">1</span>, min=<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">#Union Area</span></span><br><span class="line">    b1_area = (b1_x2 - b1_x1 + <span class="number">1</span>)*(b1_y2 - b1_y1 + <span class="number">1</span>)</span><br><span class="line">    b2_area = (b2_x2 - b2_x1 + <span class="number">1</span>)*(b2_y2 - b2_y1 + <span class="number">1</span>)</span><br><span class="line">    </span><br><span class="line">    iou = inter_area / (b1_area + b2_area - inter_area)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> iou</span><br></pre></td></tr></table></figure>
+<h2 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> Reference</h2>
+<p>[1]<a href="https://www.pyimagesearch.com/2016/11/07/intersection-over-union-iou-for-object-detection" target="_blank" rel="noopener">Intersection over Union (IoU) for object detection</a></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2018/06/03/IoU/">http://sikasjc.github.io/2018/06/03/IoU/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/目标检测/">目标检测</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2018/05/30/Hat-like-Filter/">
+        <span class="next-text nav-default">Hat-like Filter</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMzQzMy85OTg5">
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>  
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/u/5605720030" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/si-qia-sika" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  
+
+  
+   <script type="text/javascript">
+	(function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>
