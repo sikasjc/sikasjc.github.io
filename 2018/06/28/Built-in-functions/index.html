@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="Python HOWTOS学习，函数式编程（一）"/>
+
+
+
+
+  <meta name="keywords" content="python,函数式编程," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2018/06/28/Built-in-functions/"/>
+
+
+<meta name="description" content="前一部分讲了什么是函数式编程（Functional Programming），函数式编程特点和Python语言特性中的迭代器Iterator，列表生成式list comprehensive以及生成器Generator，可以参见此处。">
+<meta name="keywords" content="python,函数式编程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python HOWTOS学习，函数式编程（一）">
+<meta property="og:url" content="http://sikasjc.github.io/2018/06/28/Built-in-functions/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="前一部分讲了什么是函数式编程（Functional Programming），函数式编程特点和Python语言特性中的迭代器Iterator，列表生成式list comprehensive以及生成器Generator，可以参见此处。">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2018-07-08T08:33:45.712Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python HOWTOS学习，函数式编程（一）">
+<meta name="twitter:description" content="前一部分讲了什么是函数式编程（Functional Programming），函数式编程特点和Python语言特性中的迭代器Iterator，列表生成式list comprehensive以及生成器Generator，可以参见此处。">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> Python HOWTOS学习，函数式编程（一） · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Python HOWTOS学习，函数式编程（一）
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018年6月28日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/函数式编程/">函数式编程</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#built-in-functions"><span class="toc-number">1.</span> <span class="toc-text"> Built-in functions</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#map"><span class="toc-number">1.1.</span> <span class="toc-text"> map</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#filter"><span class="toc-number">1.2.</span> <span class="toc-text"> filter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#enumerate"><span class="toc-number">1.3.</span> <span class="toc-text"> enumerate</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sorted"><span class="toc-number">1.4.</span> <span class="toc-text"> sorted</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#any-和-all"><span class="toc-number">1.5.</span> <span class="toc-text"> any 和 all</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#zip"><span class="toc-number">1.6.</span> <span class="toc-text"> zip</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#itertools模块"><span class="toc-number">2.</span> <span class="toc-text"> itertools模块</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#创建一个新的迭代器"><span class="toc-number">2.1.</span> <span class="toc-text"> 创建一个新的迭代器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#函数应用于元素"><span class="toc-number">2.2.</span> <span class="toc-text"> 函数应用于元素</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#选择元素"><span class="toc-number">2.3.</span> <span class="toc-text"> 选择元素</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#组合排列"><span class="toc-number">2.4.</span> <span class="toc-text"> 组合排列</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#元素分组"><span class="toc-number">2.5.</span> <span class="toc-text"> 元素分组</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#functools模块"><span class="toc-number">3.</span> <span class="toc-text"> functools模块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#operator模块"><span class="toc-number">4.</span> <span class="toc-text"> operator模块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#lambda表达式"><span class="toc-number">5.</span> <span class="toc-text"> Lambda表达式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#references"><span class="toc-number">6.</span> <span class="toc-text"> References</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p>前一部分讲了什么是函数式编程（Functional Programming），函数式编程特点和Python语言特性中的迭代器<code>Iterator</code>，列表生成式list comprehensive以及生成器<code>Generator</code>，可以参见<a href="https://sikasjc.github.io/2018/06/15/iterator-generator/">此处</a>。</p>
+<a id="more"></a>
+<p>这一部分主要为一些与迭代器配合使用的Python内置函数，还有一些Python的标准库，以及lambda表达式。</p>
+<h2 id="built-in-functions"><a class="markdownIt-Anchor" href="#built-in-functions"></a> Built-in functions</h2>
+<p>让我们更详细地看看经常与迭代器配合的内置函数：</p>
+<ul>
+<li><code>map(f, iterA, iterB, ...)</code></li>
+<li><code>filter(predicate, iter)</code></li>
+<li><code>enumerate(iter, start=0)</code></li>
+<li><code>sorted(iter, key=None, reverse=False)</code></li>
+<li><code>any(iter)</code></li>
+<li><code>all(iter)</code></li>
+<li><code>zip(iterA, iterB, ...)</code></li>
+</ul>
+<h3 id="map"><a class="markdownIt-Anchor" href="#map"></a> map</h3>
+<p><code>map(f, iterA, iterB, ...)</code>在序列f(iterA[0], iterB[0], …)，f(iterA[1], iterB[1], …)，f(iterA[2], iterB[2], …)，…上返回一个迭代器。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">upper</span><span class="params">(s)</span>:</span></span><br><span class="line"><span class="meta">... </span>    <span class="keyword">return</span> s.upper()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>list(map(upper, [<span class="string">'sentence'</span>, <span class="string">'fragment'</span>]))</span><br><span class="line">[<span class="string">'SENTENCE'</span>, <span class="string">'FRAGMENT'</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>[upper(s) <span class="keyword">for</span> s <span class="keyword">in</span> [<span class="string">'sentence'</span>, <span class="string">'fragment'</span>]]</span><br><span class="line">[<span class="string">'SENTENCE'</span>, <span class="string">'FRAGMENT'</span>]</span><br></pre></td></tr></table></figure>
+<p>当然可以通过列表生成式达到同样的效果。</p>
+<h3 id="filter"><a class="markdownIt-Anchor" href="#filter"></a> filter</h3>
+<p><code>filter(predicate, iter)</code>返回满足一定条件的所有序列元素的迭代器，类似于通过列表生成式复制。一个<code>predicate</code>是一个函数，返回某个条件的真值。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">is_even</span><span class="params">(x)</span>:</span></span><br><span class="line"><span class="meta">... </span>    <span class="keyword">return</span> (x % <span class="number">2</span>) == <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>list(filter(is_even, range(<span class="number">10</span>)))</span><br><span class="line">[<span class="number">0</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">8</span>]</span><br></pre></td></tr></table></figure>
+<p>这也可以写成列表生成式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>list(x <span class="keyword">for</span> x <span class="keyword">in</span> range(<span class="number">10</span>) <span class="keyword">if</span> is_even(x))</span><br><span class="line">[<span class="number">0</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">8</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="enumerate"><a class="markdownIt-Anchor" href="#enumerate"></a> enumerate</h3>
+<p><code>enumerate(iter, start=0)</code>返回一个可迭代的<code>2-tuples</code>，容纳了count（从start开始）和<code>iter</code>中的每个元素。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">for</span> item <span class="keyword">in</span> enumerate([<span class="string">'subject'</span>, <span class="string">'verb'</span>, <span class="string">'object'</span>]):</span><br><span class="line"><span class="meta">... </span>    print(item)</span><br><span class="line">(<span class="number">0</span>, <span class="string">'subject'</span>)</span><br><span class="line">(<span class="number">1</span>, <span class="string">'verb'</span>)</span><br><span class="line">(<span class="number">2</span>, <span class="string">'object'</span>)</span><br></pre></td></tr></table></figure>
+<p>在循环列表并记录符合某些条件的索引时，通常使用<code>enumerate()</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">f = open(<span class="string">'data.txt'</span>, <span class="string">'r'</span>)</span><br><span class="line"><span class="keyword">for</span> i, line <span class="keyword">in</span> enumerate(f):</span><br><span class="line">    <span class="keyword">if</span> line.strip() == <span class="string">''</span>:</span><br><span class="line">        print(<span class="string">'Blank line at line #%i'</span> % i)</span><br></pre></td></tr></table></figure>
+<h3 id="sorted"><a class="markdownIt-Anchor" href="#sorted"></a> sorted</h3>
+<p><code>sorted(iterable, key=None, reverse=False)</code>将迭代器的所有元素收集到<code>list</code>中，对<code>list</code>进行排序并返回排序的结果。<code>key</code>和<code>reverse</code>被传递给构造<code>list</code>的<code>sort()</code>方法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> random</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="comment"># Generate 8 random numbers between [0, 10000)</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>rand_list = random.sample(range(<span class="number">10000</span>), <span class="number">8</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>rand_list  </span><br><span class="line">[<span class="number">769</span>, <span class="number">7953</span>, <span class="number">9828</span>, <span class="number">6431</span>, <span class="number">8442</span>, <span class="number">9878</span>, <span class="number">6213</span>, <span class="number">2207</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>sorted(rand_list)  </span><br><span class="line">[<span class="number">769</span>, <span class="number">2207</span>, <span class="number">6213</span>, <span class="number">6431</span>, <span class="number">7953</span>, <span class="number">8442</span>, <span class="number">9828</span>, <span class="number">9878</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>sorted(rand_list, reverse=<span class="keyword">True</span>)  </span><br><span class="line">[<span class="number">9878</span>, <span class="number">9828</span>, <span class="number">8442</span>, <span class="number">7953</span>, <span class="number">6431</span>, <span class="number">6213</span>, <span class="number">2207</span>, <span class="number">769</span>]</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>有关排序的更详细讨论，请参阅<a href="https://docs.python.org/3/howto/sorting.html#sortinghowto" target="_blank" rel="noopener">Sorting HOW TO</a>.</p>
+</blockquote>
+<h3 id="any-和-all"><a class="markdownIt-Anchor" href="#any-和-all"></a> any 和 all</h3>
+<p><code>any(iter)</code>和<code>all(iter)</code>都会茶轴<code>iterable</code>中的真值。如果<code>iterable</code>中的存在任何一个元素为真，则<code>any()</code>返回<code>True</code>，如果所有元素均为真，则<code>all()</code>返回<code>True</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>any([<span class="number">0</span>,<span class="number">1</span>,<span class="number">0</span>])</span><br><span class="line"><span class="keyword">True</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>any([<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>])</span><br><span class="line"><span class="keyword">False</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>any([<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>])</span><br><span class="line"><span class="keyword">True</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>all([<span class="number">0</span>,<span class="number">1</span>,<span class="number">0</span>])</span><br><span class="line"><span class="keyword">False</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>all([<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>])</span><br><span class="line"><span class="keyword">False</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>all([<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>])</span><br><span class="line"><span class="keyword">True</span></span><br></pre></td></tr></table></figure>
+<h3 id="zip"><a class="markdownIt-Anchor" href="#zip"></a> zip</h3>
+<p><code>zip(iterA, iterB, ...)</code>从每个<code>iterable</code>中提取一个元素，并将它们返回到一个<code>tuple</code>中：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">for</span> i <span class="keyword">in</span> zip([<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>], (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)):</span><br><span class="line"><span class="meta">... </span>    print(i)</span><br><span class="line">(<span class="string">'a'</span>, <span class="number">1</span>)</span><br><span class="line">(<span class="string">'b'</span>, <span class="number">2</span>)</span><br><span class="line">(<span class="string">'c'</span>, <span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+<p><code>tuple</code>只有在被请求时才被构造和返回，即为惰性的，与迭代器，生成器类似。</p>
+<p>如果<code>iterable</code>的长度不同，结果流的长度将与最短的<code>iterable</code>长度相同。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">for</span> i <span class="keyword">in</span> zip([<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>], (<span class="number">1</span>, <span class="number">2</span>)):</span><br><span class="line"><span class="meta">... </span>    print(i)</span><br><span class="line">(<span class="string">'a'</span>, <span class="number">1</span>)</span><br><span class="line">(<span class="string">'b'</span>, <span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="itertools模块"><a class="markdownIt-Anchor" href="#itertools模块"></a> itertools模块</h2>
+<p>itertools模块包含许多常用的迭代器以及用于组合多个迭代器的函数。</p>
+<p>该模块的函数分为几个大类：</p>
+<ul>
+<li>用现有迭代器创建新迭代器的函数</li>
+<li>将迭代器的元素视为函数参数的函数</li>
+<li>选择迭代器的输出的函数</li>
+<li>分组迭代器的输出的函数</li>
+</ul>
+<h3 id="创建一个新的迭代器"><a class="markdownIt-Anchor" href="#创建一个新的迭代器"></a> 创建一个新的迭代器</h3>
+<p><code>itertools.count(start, step)</code>返回一个具有均匀间隔的无限数据流的迭代器。<code>start</code>为起始，默认为1，<code>step</code>为步长，默认为1。通常用做参数传递给<code>map()</code>来生成连续的数据点。另外，可以使用<code>zip()</code>添加序列号。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">itertools.count() =&gt;</span><br><span class="line">  <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, ...</span><br><span class="line">itertools.count(10) =&gt;</span><br><span class="line">  <span class="number">10</span>, <span class="number">11</span>, <span class="number">12</span>, <span class="number">13</span>, <span class="number">14</span>, <span class="number">15</span>, <span class="number">16</span>, <span class="number">17</span>, <span class="number">18</span>, <span class="number">19</span>, ...</span><br><span class="line">itertools.count(10, 5) =&gt;</span><br><span class="line">  <span class="number">10</span>, <span class="number">15</span>, <span class="number">20</span>, <span class="number">25</span>, <span class="number">30</span>, <span class="number">35</span>, <span class="number">40</span>, <span class="number">45</span>, <span class="number">50</span>, <span class="number">55</span>, ...</span><br></pre></td></tr></table></figure>
+<p>大致相当于：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">count</span><span class="params">(start=<span class="number">0</span>, step=<span class="number">1</span>)</span>:</span></span><br><span class="line">    <span class="comment"># count(10) --&gt; 10 11 12 13 14 ...</span></span><br><span class="line">    <span class="comment"># count(2.5, 0.5) -&gt; 2.5 3.0 3.5 ...</span></span><br><span class="line">    n = start</span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">        <span class="keyword">yield</span> n</span><br><span class="line">        n += step</span><br></pre></td></tr></table></figure>
+<p><code>itertools.cycle(iter)</code>保存提供的<code>iterable</code>的内容，并返回一个新的迭代器，新的迭代器将无限重复这些元素。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">itertools.cycle([1,2,3,4,5]) =&gt;</span><br><span class="line">  <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, ...</span><br></pre></td></tr></table></figure>
+<p>类似于：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cycle</span><span class="params">(iterable)</span>:</span></span><br><span class="line">    <span class="comment"># cycle('ABCD') --&gt; A B C D A B C D A B C D ...</span></span><br><span class="line">    saved = []</span><br><span class="line">    <span class="keyword">for</span> element <span class="keyword">in</span> iterable:</span><br><span class="line">        <span class="keyword">yield</span> element</span><br><span class="line">        saved.append(element)</span><br><span class="line">    <span class="keyword">while</span> saved:</span><br><span class="line">        <span class="keyword">for</span> element <span class="keyword">in</span> saved:</span><br><span class="line">              <span class="keyword">yield</span> element</span><br></pre></td></tr></table></figure>
+<p><code>itertools.repeat(elem, [n])</code>返回一个重复提供的<code>elem</code>n次的迭代器，或者如果没有提供n，则无限循环返回<code>elem</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">itertools.repeat('abc') =&gt;</span><br><span class="line">  abc, abc, abc, abc, abc, abc, abc, abc, abc, abc, ...</span><br><span class="line">itertools.repeat('abc', 5) =&gt;</span><br><span class="line">  abc, abc, abc, abc, abc</span><br></pre></td></tr></table></figure>
+<p>大致相当于：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">repeat</span><span class="params">(object, times=None)</span>:</span></span><br><span class="line">    <span class="comment"># repeat(10, 3) --&gt; 10 10 10</span></span><br><span class="line">    <span class="keyword">if</span> times <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">        <span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">            <span class="keyword">yield</span> object</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(times):</span><br><span class="line">            <span class="keyword">yield</span> object</span><br></pre></td></tr></table></figure>
+<p><code>itertools.chain(iterA, iterB ,...)</code>将任意数量的<code>iterable</code>作为输入，并返回一个迭代器，该迭代器先第一个<code>iterable</code>的所有元素，然后返回第二个<code>iterable</code>的所有元素，依此类推。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">itertools.chain(['a', 'b', 'c'], (1, 2, 3)) =&gt;</span><br><span class="line">  a, b, c, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span></span><br></pre></td></tr></table></figure>
+<p>大致相当于：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">chain</span><span class="params">(*iterables)</span>:</span></span><br><span class="line">    <span class="comment"># chain('ABC', 'DEF') --&gt; A B C D E F</span></span><br><span class="line">    <span class="keyword">for</span> it <span class="keyword">in</span> iterables:</span><br><span class="line">        <span class="keyword">for</span> element <span class="keyword">in</span> it:</span><br><span class="line">            <span class="keyword">yield</span> element</span><br></pre></td></tr></table></figure>
+<p><code>itertools.islice(iter, [start], stop, [step])</code>返回一个迭代器片段的数据流。</p>
+<p>如果<code>start</code>为None，则迭代从<code>0</code>开始。如果<code>step</code>为<code>None</code>，则<code>step</code>默认为<code>1</code>。使用单个<code>stop</code>参数，它将返回第一个<code>stop</code>元素。如果提供起始索引，则会获得<code>stop</code>到<code>start</code>元素，如果为<code>step</code>提供值，则会相应跳过元素。与Python的字符串和列表切片不同，<code>start</code>，<code>stop</code>或<code>step</code>不能负值。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">itertools.islice(range(10), 8) =&gt;</span><br><span class="line">  <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span></span><br><span class="line">itertools.islice(range(10), 2, 8) =&gt;</span><br><span class="line">  <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span></span><br><span class="line">itertools.islice(range(10), 2, 8, 2) =&gt;</span><br><span class="line">  <span class="number">2</span>, <span class="number">4</span>, <span class="number">6</span></span><br></pre></td></tr></table></figure>
+<p>类似于：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">islice</span><span class="params">(iterable, *args)</span>:</span></span><br><span class="line">    <span class="comment"># islice('ABCDEFG', 2) --&gt; A B</span></span><br><span class="line">    <span class="comment"># islice('ABCDEFG', 2, 4) --&gt; C D</span></span><br><span class="line">    <span class="comment"># islice('ABCDEFG', 2, None) --&gt; C D E F G</span></span><br><span class="line">    <span class="comment"># islice('ABCDEFG', 0, None, 2) --&gt; A C E G</span></span><br><span class="line">    s = slice(*args)</span><br><span class="line">    start, stop, step = s.start <span class="keyword">or</span> <span class="number">0</span>, s.stop <span class="keyword">or</span> sys.maxsize, s.step <span class="keyword">or</span> <span class="number">1</span></span><br><span class="line">    it = iter(range(start, stop, step))</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        nexti = next(it)</span><br><span class="line">    <span class="keyword">except</span> StopIteration:</span><br><span class="line">        <span class="comment"># Consume *iterable* up to the *start* position.</span></span><br><span class="line">        <span class="keyword">for</span> i, element <span class="keyword">in</span> zip(range(start), iterable):</span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">for</span> i, element <span class="keyword">in</span> enumerate(iterable):</span><br><span class="line">            <span class="keyword">if</span> i == nexti:</span><br><span class="line">                <span class="keyword">yield</span> element</span><br><span class="line">                nexti = next(it)</span><br><span class="line">    <span class="keyword">except</span> StopIteration:</span><br><span class="line">        <span class="comment"># Consume to *stop*.</span></span><br><span class="line">        <span class="keyword">for</span> i, element <span class="keyword">in</span> zip(range(i + <span class="number">1</span>, stop), iterable):</span><br><span class="line">            <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<p><code>itertools.tee(iter, [n])</code>复制一个迭代器，并返回<code>n</code>个独立的迭代器，它们都将返回源迭代器的内容。如果没有为<code>n</code>提供值，则默认值为<code>2</code>。<code>tee</code>可能占据大量的内存（取决于需要存储多少临时数据）。一般来说，如果一个迭代器在另一个迭代器启动之前使用大部分或全部数据，则使用更快的<code>list()</code>而不是<code>tee()</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">itertools.tee( itertools.count() ) =&gt;</span><br><span class="line">   iterA, iterB</span><br><span class="line"></span><br><span class="line">where iterA -&gt;</span><br><span class="line">   <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, ...</span><br><span class="line"></span><br><span class="line">and   iterB -&gt;</span><br><span class="line">   <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, ...</span><br></pre></td></tr></table></figure>
+<h3 id="函数应用于元素"><a class="markdownIt-Anchor" href="#函数应用于元素"></a> 函数应用于元素</h3>
+<p><code>operator</code>库包含一系列对应于python操作符的函数。例如<code>operator.add(a, b)</code>(a + b), <code>operator.ne(a, b)</code>(a != b)等。<code>operator.attrgetter('id')</code>返回一个获取<code>id</code>属性的函数，<code>f = operator.attrgetter('name')</code>，调用<code>f(b)</code>返回<code>b.name</code>; <code>f = operator.attrgetter('name', 'date')</code>，调用<code>f(b)</code>返回<code>(b.name, b.date)</code>。</p>
+<p><code>itertools.starmap(func，iter)</code>假定这个<code>iter</code>将返回一个元组流，并使用这些元组作为参数调用<code>func</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">itertools.starmap(os.path.join,</span><br><span class="line">                  [(<span class="string">'/bin'</span>, <span class="string">'python'</span>), (<span class="string">'/usr'</span>, <span class="string">'bin'</span>, <span class="string">'java'</span>),</span><br><span class="line">                   (<span class="string">'/usr'</span>, <span class="string">'bin'</span>, <span class="string">'perl'</span>), (<span class="string">'/usr'</span>, <span class="string">'bin'</span>, <span class="string">'ruby'</span>)])</span><br><span class="line">=&gt;</span><br><span class="line">  /bin/python, /usr/bin/java, /usr/bin/perl, /usr/bin/ruby</span><br></pre></td></tr></table></figure>
+<h3 id="选择元素"><a class="markdownIt-Anchor" href="#选择元素"></a> 选择元素</h3>
+<p>还有另一组函数，根据<code>predicate</code>选择迭代器元素的子集。</p>
+<p><code>itertools.filterfalse(predicate, iter)</code>与<code>filter()</code>相反，返回所有的那些<code>predicate</code>返回<code>false</code>的元素：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">itertools.filterfalse(is_even, itertools.count()) =&gt;</span><br><span class="line">  <span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>, <span class="number">11</span>, <span class="number">13</span>, <span class="number">15</span>, ...</span><br></pre></td></tr></table></figure>
+<p><code>itertools.takewhile(predicate, iter)</code>只要<code>predicate</code>返回<code>true</code>，就返回元素。一旦<code>predicate</code>返回<code>false</code>，迭代器就会结束。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">less_than_10</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> x &lt; <span class="number">10</span></span><br><span class="line"></span><br><span class="line">itertools.takewhile(less_than_10, itertools.count()) =&gt;</span><br><span class="line">  <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span></span><br><span class="line"></span><br><span class="line">itertools.takewhile(is_even, itertools.count()) =&gt;</span><br><span class="line">  <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<p><code>itertools.dropwhile(predicate，iter)</code>在<code>predicate</code>返回<code>true</code>时丢弃元素，然后返回迭代结果的其余部分。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">itertools.dropwhile(less_than_10, itertools.count()) =&gt;</span><br><span class="line">  <span class="number">10</span>, <span class="number">11</span>, <span class="number">12</span>, <span class="number">13</span>, <span class="number">14</span>, <span class="number">15</span>, <span class="number">16</span>, <span class="number">17</span>, <span class="number">18</span>, <span class="number">19</span>, ...</span><br><span class="line"></span><br><span class="line">itertools.dropwhile(is_even, itertools.count()) =&gt;</span><br><span class="line">  <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>, ...</span><br></pre></td></tr></table></figure>
+<p><code>itertools.compress(data，selectors)</code>接受两个迭代器，只返回<code>data</code>中与<code>selectors</code>相应元素为<code>true</code>的数据元素，当其中一个迭代器元素耗尽时停止：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">itertools.compress([1,2,3,4,5], [True, True, False, False, True]) =&gt;</span><br><span class="line">   <span class="number">1</span>, <span class="number">2</span>, <span class="number">5</span></span><br></pre></td></tr></table></figure>
+<h3 id="组合排列"><a class="markdownIt-Anchor" href="#组合排列"></a> 组合排列</h3>
+<p><code>itertools.combinations(iterable，r)</code>返回一个迭代器，给出<code>iterable</code>中包含的元素的所有可能的以<code>r</code>大小的tuple组合。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">itertools.combinations([1, 2, 3, 4, 5], 2) =&gt;</span><br><span class="line">  (<span class="number">1</span>, <span class="number">2</span>), (<span class="number">1</span>, <span class="number">3</span>), (<span class="number">1</span>, <span class="number">4</span>), (<span class="number">1</span>, <span class="number">5</span>),</span><br><span class="line">  (<span class="number">2</span>, <span class="number">3</span>), (<span class="number">2</span>, <span class="number">4</span>), (<span class="number">2</span>, <span class="number">5</span>),</span><br><span class="line">  (<span class="number">3</span>, <span class="number">4</span>), (<span class="number">3</span>, <span class="number">5</span>),</span><br><span class="line">  (<span class="number">4</span>, <span class="number">5</span>)</span><br><span class="line"></span><br><span class="line">itertools.combinations([1, 2, 3, 4, 5], 3) =&gt;</span><br><span class="line">  (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>), (<span class="number">1</span>, <span class="number">2</span>, <span class="number">4</span>), (<span class="number">1</span>, <span class="number">2</span>, <span class="number">5</span>), (<span class="number">1</span>, <span class="number">3</span>, <span class="number">4</span>), (<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>), (<span class="number">1</span>, <span class="number">4</span>, <span class="number">5</span>),</span><br><span class="line">  (<span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>), (<span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>), (<span class="number">2</span>, <span class="number">4</span>, <span class="number">5</span>),</span><br><span class="line">  (<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+<p>每个tuple中的元素保持与<code>iterable</code>的顺序相同。 例如，在上面的示例中，数字1总是在2, 3, 4或5之前。 类似的函数<code>itertools.permutations(iterable，r = None)</code>删除了顺序这个约束，返回了长度为r的所有可能的排列：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">itertools.permutations([1, 2, 3, 4, 5], 2) =&gt;</span><br><span class="line">  (<span class="number">1</span>, <span class="number">2</span>), (<span class="number">1</span>, <span class="number">3</span>), (<span class="number">1</span>, <span class="number">4</span>), (<span class="number">1</span>, <span class="number">5</span>),</span><br><span class="line">  (<span class="number">2</span>, <span class="number">1</span>), (<span class="number">2</span>, <span class="number">3</span>), (<span class="number">2</span>, <span class="number">4</span>), (<span class="number">2</span>, <span class="number">5</span>),</span><br><span class="line">  (<span class="number">3</span>, <span class="number">1</span>), (<span class="number">3</span>, <span class="number">2</span>), (<span class="number">3</span>, <span class="number">4</span>), (<span class="number">3</span>, <span class="number">5</span>),</span><br><span class="line">  (<span class="number">4</span>, <span class="number">1</span>), (<span class="number">4</span>, <span class="number">2</span>), (<span class="number">4</span>, <span class="number">3</span>), (<span class="number">4</span>, <span class="number">5</span>),</span><br><span class="line">  (<span class="number">5</span>, <span class="number">1</span>), (<span class="number">5</span>, <span class="number">2</span>), (<span class="number">5</span>, <span class="number">3</span>), (<span class="number">5</span>, <span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">itertools.permutations([1, 2, 3, 4, 5]) =&gt;</span><br><span class="line">  (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>), (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">4</span>), (<span class="number">1</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">3</span>, <span class="number">5</span>),</span><br><span class="line">  ...</span><br><span class="line">  (<span class="number">5</span>, <span class="number">4</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>如果没有为<code>r</code>提供值，则使用<code>iterable</code>的长度。</p>
+<p>这些函数按位置生成所有可能的组合，并且不要求<code>iterable</code>的内容是唯一的：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">itertools.permutations('aba', 3) =&gt;</span><br><span class="line">  (<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'a'</span>), (<span class="string">'a'</span>, <span class="string">'a'</span>, <span class="string">'b'</span>), (<span class="string">'b'</span>, <span class="string">'a'</span>, <span class="string">'a'</span>),</span><br><span class="line">  (<span class="string">'b'</span>, <span class="string">'a'</span>, <span class="string">'a'</span>), (<span class="string">'a'</span>, <span class="string">'a'</span>, <span class="string">'b'</span>), (<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'a'</span>)</span><br></pre></td></tr></table></figure>
+<p><code>itertools.combinations_with_replacement(iterable，r)</code>函数松弛了另一个的约束：元素可以在单个tuple中重复。 从概念上讲，为每个tuple的第一个位置选择一个元素，然后在选择第二个元素之前替换该元素。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">itertools.combinations_with_replacement([1, 2, 3, 4, 5], 2) =&gt;</span><br><span class="line">  (<span class="number">1</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">2</span>), (<span class="number">1</span>, <span class="number">3</span>), (<span class="number">1</span>, <span class="number">4</span>), (<span class="number">1</span>, <span class="number">5</span>),</span><br><span class="line">  (<span class="number">2</span>, <span class="number">2</span>), (<span class="number">2</span>, <span class="number">3</span>), (<span class="number">2</span>, <span class="number">4</span>), (<span class="number">2</span>, <span class="number">5</span>),</span><br><span class="line">  (<span class="number">3</span>, <span class="number">3</span>), (<span class="number">3</span>, <span class="number">4</span>), (<span class="number">3</span>, <span class="number">5</span>),</span><br><span class="line">  (<span class="number">4</span>, <span class="number">4</span>), (<span class="number">4</span>, <span class="number">5</span>),</span><br><span class="line">  (<span class="number">5</span>, <span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="元素分组"><a class="markdownIt-Anchor" href="#元素分组"></a> 元素分组</h3>
+<p>这里讨论的<code>itertools.groupby(iter，key_func = None)</code>是最复杂的。 <code>key_func(elem)</code>是一个可以计算<code>iterable</code>返回的每个元素键值的函数。如果不提供<code>key_func</code>，则键值只是每个元素本身。</p>
+<p><code>groupby()</code>从<code>iterable</code>中收集具有相同键值的所有连续元素，并返回一个包含键值的2-tuple的流和具有该键值的元素的迭代器。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">city_list = [(<span class="string">'Decatur'</span>, <span class="string">'AL'</span>), (<span class="string">'Huntsville'</span>, <span class="string">'AL'</span>), (<span class="string">'Selma'</span>, <span class="string">'AL'</span>),</span><br><span class="line">             (<span class="string">'Anchorage'</span>, <span class="string">'AK'</span>), (<span class="string">'Nome'</span>, <span class="string">'AK'</span>),</span><br><span class="line">             (<span class="string">'Flagstaff'</span>, <span class="string">'AZ'</span>), (<span class="string">'Phoenix'</span>, <span class="string">'AZ'</span>), (<span class="string">'Tucson'</span>, <span class="string">'AZ'</span>),</span><br><span class="line">             ...</span><br><span class="line">            ]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_state</span><span class="params">(city_state)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> city_state[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">itertools.groupby(city_list, get_state) =&gt;</span><br><span class="line">  (<span class="string">'AL'</span>, iterator<span class="number">-1</span>),</span><br><span class="line">  (<span class="string">'AK'</span>, iterator<span class="number">-2</span>),</span><br><span class="line">  (<span class="string">'AZ'</span>, iterator<span class="number">-3</span>), ...</span><br><span class="line"></span><br><span class="line">where</span><br><span class="line">iterator-1 =&gt;</span><br><span class="line">  (<span class="string">'Decatur'</span>, <span class="string">'AL'</span>), (<span class="string">'Huntsville'</span>, <span class="string">'AL'</span>), (<span class="string">'Selma'</span>, <span class="string">'AL'</span>)</span><br><span class="line">iterator-2 =&gt;</span><br><span class="line">  (<span class="string">'Anchorage'</span>, <span class="string">'AK'</span>), (<span class="string">'Nome'</span>, <span class="string">'AK'</span>)</span><br><span class="line">iterator-3 =&gt;</span><br><span class="line">  (<span class="string">'Flagstaff'</span>, <span class="string">'AZ'</span>), (<span class="string">'Phoenix'</span>, <span class="string">'AZ'</span>), (<span class="string">'Tucson'</span>, <span class="string">'AZ'</span>)</span><br></pre></td></tr></table></figure>
+<p><code>groupby()</code>假定<code>iterable</code>的内容已经根据键进行排序。 注意，返回的迭代器也使用<code>iterable</code>，因此在请求iterator-2及其相应的键之前，需要消耗iterator-1的结果。</p>
+<h2 id="functools模块"><a class="markdownIt-Anchor" href="#functools模块"></a> functools模块</h2>
+<p><code>functools</code>模块包含一些高阶函数。高阶函数将一个或多个函数作为输入并返回一个新函数。这个模块中最有用的工具是<code>functools.partial()</code>函数。</p>
+<p>对于以函数式编写的程序，有时需要构造填充了一些参数的现有函数的变体。</p>
+<p>考虑一个函数<code>f(a，b，c)</code>， 你可能希望创建一个等于<code>f(1，b，c)</code>的新函数<code>g(b，c)</code>。这称为&quot;partial function application&quot;。</p>
+<p><code>partial()</code>的构造函数接受参数<code>(function，arg1，arg2，...，kwarg1 = value1，kwarg2 = value2)</code>。 生成的对象是可调用的，因此您可以调用它来调用已经填充过参数的函数。</p>
+<p>例如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> functools</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">log</span><span class="params">(message, subsystem)</span>:</span></span><br><span class="line">    <span class="string">"""Write the contents of 'message' to the specified subsystem."""</span></span><br><span class="line">    print(<span class="string">'%s: %s'</span> % (subsystem, message))</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">server_log = functools.partial(log, subsystem=<span class="string">'server'</span>)</span><br><span class="line">server_log(<span class="string">'Unable to open socket'</span>)</span><br></pre></td></tr></table></figure>
+<p><code>functools.reduce(func，iter，[initial_value])</code>累加对所有iterable元素执行的操作，因此不能应用于无限的可迭代对象。</p>
+<p><code>func</code>必须是一个带有两个元素并返回单个值的函数。<code>functools.reduce()</code>获取迭代器返回的前两个元素A和B，并计算<code>func(A，B)</code>。然后它请求第三个元素C计算<code>func(func(A，B)，C)</code>，将此结果与返回的第四个元素组合，并继续直到迭代结束。如果<code>iterable</code>没有返回值，则引发<code>TypeError</code>异常。如果提供了初始值，则将其用作起点，即<code>func(initial_value，A)</code>是第一次计算。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> operator, functools</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>functools.reduce(operator.concat, [<span class="string">'A'</span>, <span class="string">'BB'</span>, <span class="string">'C'</span>])</span><br><span class="line"><span class="string">'ABBC'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>functools.reduce(operator.concat, [])</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  ...</span><br><span class="line">TypeError: reduce() of empty sequence <span class="keyword">with</span> no initial value</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>functools.reduce(operator.mul, [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>], <span class="number">1</span>)</span><br><span class="line"><span class="number">6</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>functools.reduce(operator.mul, [], <span class="number">1</span>)</span><br><span class="line"><span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>如果将<code>operator.add()</code>与<code>functools.reduce()</code>一起使用，则会累加<code>iterable</code>的所有元素。 更常见的则是用内置函数<code>sum()</code>来计算：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> functools, operator</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>functools.reduce(operator.add, [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>], <span class="number">0</span>)</span><br><span class="line"><span class="number">10</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>sum([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>])</span><br><span class="line"><span class="number">10</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>sum([])</span><br><span class="line"><span class="number">0</span></span><br></pre></td></tr></table></figure>
+<p>虽然<code>functools.reduce()</code>还有很多用途，但是，编写for循环可以更清楚：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> functools</span><br><span class="line"><span class="comment"># Instead of:</span></span><br><span class="line">product = functools.reduce(operator.mul, [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>], <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># You can write:</span></span><br><span class="line">product = <span class="number">1</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]:</span><br><span class="line">    product *= i</span><br></pre></td></tr></table></figure>
+<p>另一个相关函数是<code>itertools.accumulate(iterable，func = operator.add)</code>。它执行相同的计算，但不是仅返回最终结果，<code>accumulate()</code>返回一个迭代器，它也产生每一步的结果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">itertools.accumulate([1,2,3,4,5]) =&gt;</span><br><span class="line">  <span class="number">1</span>, <span class="number">3</span>, <span class="number">6</span>, <span class="number">10</span>, <span class="number">15</span></span><br><span class="line"></span><br><span class="line">itertools.accumulate([1,2,3,4,5], operator.mul) =&gt;</span><br><span class="line">  <span class="number">1</span>, <span class="number">2</span>, <span class="number">6</span>, <span class="number">24</span>, <span class="number">120</span></span><br></pre></td></tr></table></figure>
+<h2 id="operator模块"><a class="markdownIt-Anchor" href="#operator模块"></a> operator模块</h2>
+<p>之前提到过<code>operator</code>模块。它包含一系列与Python运算符相对应的函数。这些函数通常在函数式代码中很有用，因为它们可以避免编写执行单个操作的简单函数。</p>
+<p>该模块中的一些函数有：</p>
+<ul>
+<li>数学运算符：<code>add()</code>, <code>sub()</code>, <code>mul()</code>, <code>floordiv()</code>, <code>abs()</code>, …</li>
+<li>逻辑运算符：<code>not_()</code>, <code>truth()</code>.</li>
+<li>位操作符：<code>and_()</code>, <code>or_()</code>, <code>invert()</code>.</li>
+<li>比较：<code>eq()</code>, <code>ne()</code>, <code>lt()</code>, <code>le()</code>, <code>gt()</code>, 和 <code>ge()</code>.</li>
+<li>Object identity：<code>is_()</code>, <code>is_not()</code>.</li>
+</ul>
+<p>完整列表，请参阅Python文档。</p>
+<h2 id="lambda表达式"><a class="markdownIt-Anchor" href="#lambda表达式"></a> Lambda表达式</h2>
+<p>在编写函数式程序时，经常需要很少的函数作为<code>predicate</code>或以某种方式组合元素。</p>
+<p>如果有内置的Python或适合的模块函数，则不需要定义新函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">stripped_lines = [line.strip() <span class="keyword">for</span> line <span class="keyword">in</span> lines]</span><br><span class="line">existing_files = filter(os.path.exists, file_list)</span><br></pre></td></tr></table></figure>
+<p>如果不存在，则需要编写它。一种方法是使用lambda语句。lambda接受许多参数和一个组合这些参数的表达式，并创建一个返回表达式值的匿名函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">adder = <span class="keyword">lambda</span> x, y: x+y</span><br><span class="line"></span><br><span class="line">print_assign = <span class="keyword">lambda</span> name, value: name + <span class="string">'='</span> + str(value)</span><br></pre></td></tr></table></figure>
+<p>等价于：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">adder</span><span class="params">(x, y)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> x + y</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">print_assign</span><span class="params">(name, value)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> name + <span class="string">'='</span> + str(value)</span><br></pre></td></tr></table></figure>
+<p>哪种方案更可取？ 这是一个风格问题，因人而异。</p>
+<p>例如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> functools</span><br><span class="line">total = functools.reduce(<span class="keyword">lambda</span> a, b: (<span class="number">0</span>, a[<span class="number">1</span>] + b[<span class="number">1</span>]), items)[<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<p>需要时间来解开表达式来弄清楚发生了什么。使用简短的嵌套def语句可以使事情变得更好：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> functools</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">combine</span><span class="params">(a, b)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>, a[<span class="number">1</span>] + b[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">total = functools.reduce(combine, items)[<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<p>使用for循环实现，则更加清晰：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">total = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> a, b <span class="keyword">in</span> items:</span><br><span class="line">    total += b</span><br></pre></td></tr></table></figure>
+<p>也可以使用<code>sum()</code>与生成器表达式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">total = sum(b <span class="keyword">for</span> a,b <span class="keyword">in</span> items)</span><br></pre></td></tr></table></figure>
+<p>实际上<code>functools.reduce()</code>的许多用法，使用for循环时都更清晰。</p>
+<p>Fredrik Lundh曾经为重构lambda表达式提出了以下一套规则：</p>
+<ul>
+<li>写一个lambda函数。</li>
+<li>写评论，解释lambda的作用。</li>
+<li>研究评论一段时间，并想一个捕捉评论本质的名称。</li>
+<li>使用该名称将lambda转换为def语句。</li>
+<li>删除评论。</li>
+</ul>
+<p>但终究使用与风格因人而异。</p>
+<h2 id="references"><a class="markdownIt-Anchor" href="#references"></a> References</h2>
+<p>Python官方文档：<a href="https://docs.python.org/3/howto/index.html" target="_blank" rel="noopener">Python HOWTOs</a></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2018/06/28/Built-in-functions/">http://sikasjc.github.io/2018/06/28/Built-in-functions/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/函数式编程/">函数式编程</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2018/06/20/list-and-tuple/">
+        <span class="next-text nav-default">Python数据类型：list 与 tuple 的区别</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMzQzMy85OTg5">
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>  
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/u/5605720030" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/si-qia-sika" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  
+
+  
+   <script type="text/javascript">
+	(function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>

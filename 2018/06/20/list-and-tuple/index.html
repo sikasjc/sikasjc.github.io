@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="Python数据类型：list 与 tuple 的区别"/>
+
+
+
+
+  <meta name="keywords" content="python," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2018/06/20/list-and-tuple/"/>
+
+
+<meta name="description" content="Introduction Python有两个相似的序列类型，元组 tuples 和列表 lists。它们之间最显著的区别是 tuples 是不可变的（immutable），也就是说，你不能改变它们的大小以及它们的不变对象（immutable objects）。">
+<meta name="keywords" content="python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python数据类型：list 与 tuple 的区别">
+<meta property="og:url" content="http://sikasjc.github.io/2018/06/20/list-and-tuple/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="Introduction Python有两个相似的序列类型，元组 tuples 和列表 lists。它们之间最显著的区别是 tuples 是不可变的（immutable），也就是说，你不能改变它们的大小以及它们的不变对象（immutable objects）。">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2018-07-08T08:32:25.837Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python数据类型：list 与 tuple 的区别">
+<meta name="twitter:description" content="Introduction Python有两个相似的序列类型，元组 tuples 和列表 lists。它们之间最显著的区别是 tuples 是不可变的（immutable），也就是说，你不能改变它们的大小以及它们的不变对象（immutable objects）。">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> Python数据类型：list 与 tuple 的区别 · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Python数据类型：list 与 tuple 的区别
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018年6月20日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#introduction"><span class="toc-number">1.</span> <span class="toc-text"> Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#tuples"><span class="toc-number">2.</span> <span class="toc-text"> Tuples</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#empty-lists-vs-empty-tuples"><span class="toc-number">2.1.</span> <span class="toc-text"> Empty lists vs empty tuples</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#allocation-optimization"><span class="toc-number">3.</span> <span class="toc-text"> Allocation optimization</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#allocation-optimization-for-small-tuples"><span class="toc-number">3.1.</span> <span class="toc-text"> Allocation optimization for small tuples</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#allocation-optimization-for-lists"><span class="toc-number">3.2.</span> <span class="toc-text"> Allocation optimization for lists</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#list-resizing"><span class="toc-number">3.3.</span> <span class="toc-text"> List resizing</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#performance-summary"><span class="toc-number">4.</span> <span class="toc-text"> Performance Summary</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#tuples可以常数折叠"><span class="toc-number">4.1.</span> <span class="toc-text"> tuples可以常数折叠</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tuples可以重用"><span class="toc-number">4.2.</span> <span class="toc-text"> tuples可以重用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tuples不会over-allocate"><span class="toc-number">4.3.</span> <span class="toc-text"> tuples不会over-allocate</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tuples-直接引用它们的元素"><span class="toc-number">4.4.</span> <span class="toc-text"> tuples 直接引用它们的元素</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-number">5.</span> <span class="toc-text"> Reference</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h2 id="introduction"><a class="markdownIt-Anchor" href="#introduction"></a> Introduction</h2>
+<p>Python有两个相似的序列类型，元组 tuples 和列表 lists。它们之间最显著的区别是 tuples 是不可变的（immutable），也就是说，你不能改变它们的大小以及它们的不变对象（immutable objects）。</p>
+<a id="more"></a>
+<p>不能更改 tuple 中的元素：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = (<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a[<span class="number">0</span>] = <span class="number">10</span></span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">"&lt;stdin&gt;"</span>, line <span class="number">1</span>, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">TypeError: <span class="string">'tuple'</span> object does <span class="keyword">not</span> support item assignment</span><br></pre></td></tr></table></figure>
+<p>但是可以改变其中的可变对象：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = (<span class="number">1</span>,[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>],<span class="number">3</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b[<span class="number">1</span>]</span><br><span class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b[<span class="number">1</span>].append(<span class="number">4</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b</span><br><span class="line">(<span class="number">1</span>, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>], <span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+<p>在python中，lists 和 tuples 都是作为Python Objects（items）的指针列表实现的。从列表中删除元素时，对元素的引用将被销毁。但如果程序中有其他对此元素的引用时，则删除的元素保持活动状态。</p>
+<h2 id="tuples"><a class="markdownIt-Anchor" href="#tuples"></a> Tuples</h2>
+<p>尽管一般情况下 tuples 的使用没有 lists多，但它是一种基本数据类型，在 Python 内部和实际使用中也是应用很多的。</p>
+<p>你可能没注意到，但是会在以下情况下使用元组：</p>
+<ul>
+<li>使用 arguments 和 parameters</li>
+<li>从函数返回2个或更多元素</li>
+<li>迭代一个字典的键值对</li>
+<li>使用字符串格式</li>
+<li>…</li>
+</ul>
+<p>通常，正在运行的程序具有数千个分配的 tuples。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> gc</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">type_stats</span><span class="params">(type_obj)</span>:</span></span><br><span class="line"><span class="meta">... </span>    count = <span class="number">0</span></span><br><span class="line"><span class="meta">... </span>    <span class="keyword">for</span> obj <span class="keyword">in</span> gc.get_objects():</span><br><span class="line"><span class="meta">... </span>        <span class="keyword">if</span> type(obj) == type_obj:</span><br><span class="line"><span class="meta">... </span>            count += <span class="number">1</span></span><br><span class="line"><span class="meta">... </span>    <span class="keyword">return</span> count</span><br><span class="line">...</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>type_stats(tuple)</span><br><span class="line"><span class="number">3136</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>type_stats(list)</span><br><span class="line"><span class="number">659</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> pandas</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>type_stats(tuple)</span><br><span class="line"><span class="number">6953</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>type_stats(list)</span><br><span class="line"><span class="number">2455</span></span><br></pre></td></tr></table></figure>
+<h3 id="empty-lists-vs-empty-tuples"><a class="markdownIt-Anchor" href="#empty-lists-vs-empty-tuples"></a> Empty lists vs empty tuples</h3>
+<p>一个空的元组（Empty tuple）饰演着一个单例（singleton），也就是说，始终只有一个长度为零的 tuple 。 当创建一个空元组时，Python 指向一个已预先分配的空元组，这样任何空元组在内存中都具有相同的地址。因为tuples 是不可变的，有时可以节省大量内存。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = ()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = ()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a <span class="keyword">is</span> b</span><br><span class="line"><span class="keyword">True</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>id(a)</span><br><span class="line"><span class="number">4409020488</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>id(b)</span><br><span class="line"><span class="number">4409020488</span></span><br></pre></td></tr></table></figure>
+<p>这不适用于 lists，因为它们可以被修改。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = []</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = []</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a <span class="keyword">is</span> b</span><br><span class="line"><span class="keyword">False</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>id(a)</span><br><span class="line"><span class="number">4465566920</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>id(b)</span><br><span class="line"><span class="number">4465370632</span></span><br></pre></td></tr></table></figure>
+<h2 id="allocation-optimization"><a class="markdownIt-Anchor" href="#allocation-optimization"></a> Allocation optimization</h2>
+<h3 id="allocation-optimization-for-small-tuples"><a class="markdownIt-Anchor" href="#allocation-optimization-for-small-tuples"></a> Allocation optimization for small tuples</h3>
+<p>为了减少内存碎片并加速分配，Python重用（reuse）了旧元组。 如果一个元组不再需要并且少于20个项，则Python会将其移动到 free list 中，而不是永久删除它。</p>
+<p>一个 free list 分为20组，其中每组代表长度 n 为 0 到 20 之间的 tuples。每个组最多可存储2000个 tuple，第一个（零）组只包含1个元素并表示一个空元组。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = (<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>id(a)</span><br><span class="line"><span class="number">4427578104</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">del</span> a</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = (<span class="number">1</span>,<span class="number">2</span>,<span class="number">4</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>id(b)</span><br><span class="line"><span class="number">4427578104</span></span><br></pre></td></tr></table></figure>
+<p>在上面的例子中，我们可以看到 a 和 b 具有相同的 id。这是因为我们立即占用了一个被销毁的位于 free list中的 tuple。</p>
+<h3 id="allocation-optimization-for-lists"><a class="markdownIt-Anchor" href="#allocation-optimization-for-lists"></a> Allocation optimization for lists</h3>
+<p>由于 lists 可以修改，因此 Python 不使用与 tuples 中相同的优化。Python的 lists 也有一个 free list，但它仅用于空对象。 如果一个empty list被GC删除或收集，则可以在之后重用。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = []</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>id(a)</span><br><span class="line"><span class="number">4465566792</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">del</span> a</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = []</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>id(b)</span><br><span class="line"><span class="number">4465566792</span></span><br></pre></td></tr></table></figure>
+<h3 id="list-resizing"><a class="markdownIt-Anchor" href="#list-resizing"></a> List resizing</h3>
+<p>为避免调整 lists 大小的成本，Python不会在每次需要向 lists 中添加或删除元素时，调整 lists 大小。相反，每个 lists 都有许多空的位置。这些空位置对用户是隐藏的，但可用于新的元素。如果位置都被占用，Python会为 lists 分配额外的空间。新加位置的数量根据 lists 当前大小进行选择。即 <strong>over-allocate</strong></p>
+<p>开发者文档描述如下：</p>
+<blockquote>
+<p>This over-allocates proportional to the list size, making room for additional growth. The over-allocation is mild but is enough to give linear-time amortized behavior over a long sequence of appends() in the presence of a poorly-performing system realloc().</p>
+<p>The growth pattern is: 0, 4, 8, 16, 25, 35, 46, 58, 72, 88, …</p>
+<p>Note: new_allocated won’t overflow because the largest possible value is PY_SSIZE_T_MAX * (9 / 8) + 6 which always fits in a size_t.</p>
+</blockquote>
+<p>例如，如果想将一个元素追加到长度为8的 lists 中，Python会将其大小调整为16，并添加新元素为第9个元素。其余的位置将隐藏并保留为新的元素。</p>
+<p>增长方式如下所示：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">get_new_size</span><span class="params">(n_items)</span>:</span></span><br><span class="line"><span class="meta">... </span>    new_size = n_items + (n_items // <span class="number">2</span> ** <span class="number">3</span>)</span><br><span class="line"><span class="meta">... </span>    <span class="keyword">if</span> n_items &lt; <span class="number">9</span>:</span><br><span class="line"><span class="meta">... </span>            new_size += <span class="number">3</span></span><br><span class="line"><span class="meta">... </span>    <span class="keyword">else</span>:</span><br><span class="line"><span class="meta">... </span>            new_size += <span class="number">6</span></span><br><span class="line">...</span><br><span class="line"><span class="meta">... </span>    <span class="keyword">return</span> new_size</span><br><span class="line">...</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>get_new_size(<span class="number">9</span>)</span><br><span class="line"><span class="number">16</span></span><br></pre></td></tr></table></figure>
+<h2 id="performance-summary"><a class="markdownIt-Anchor" href="#performance-summary"></a> Performance Summary</h2>
+<p>tuples 几乎在每个类别中，都比 lists 表现更好：</p>
+<ul>
+<li>
+<p>tuples 可以常数折叠（<a href="https://en.wikipedia.org/wiki/Constant_folding" target="_blank" rel="noopener">constant folded</a>）。</p>
+</li>
+<li>
+<p>tuples 可以重用，而不是复制一个新的。</p>
+</li>
+<li>
+<p>tuples 是紧凑的，不会像 lists 那样 over-allocate。</p>
+</li>
+<li>
+<p>tuples 直接引用它们的元素。</p>
+</li>
+</ul>
+<h3 id="tuples可以常数折叠"><a class="markdownIt-Anchor" href="#tuples可以常数折叠"></a> tuples可以常数折叠</h3>
+<p>常量元组（Tuples of constants）可以通过Python的窥孔优化器（peephole optimizer）或AST优化器（AST-optimizer ）进行预先计算。 而另一方面，lists 从头开始构建：</p>
+<p>dis模块反汇编函数的字节代码，有助于查看 tuples 和 lists 之间的区别。在这种情况下，可以看到访问元素会生成相同的代码，但分配 tuples 要比分配 lists 快得多。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">a</span><span class="params">()</span>:</span></span><br><span class="line"><span class="meta">... </span>    x=[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>]</span><br><span class="line"><span class="meta">... </span>    y=x[<span class="number">2</span>]</span><br><span class="line">...</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">b</span><span class="params">()</span>:</span></span><br><span class="line"><span class="meta">... </span>    x=(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>)</span><br><span class="line"><span class="meta">... </span>    y=x[<span class="number">2</span>]</span><br><span class="line">...</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> dis</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>dis.dis(a)</span><br><span class="line">  <span class="number">2</span>           <span class="number">0</span> LOAD_CONST               <span class="number">1</span> (<span class="number">1</span>)</span><br><span class="line">              <span class="number">3</span> LOAD_CONST               <span class="number">2</span> (<span class="number">2</span>)</span><br><span class="line">              <span class="number">6</span> LOAD_CONST               <span class="number">3</span> (<span class="number">3</span>)</span><br><span class="line">              <span class="number">9</span> LOAD_CONST               <span class="number">4</span> (<span class="number">4</span>)</span><br><span class="line">             <span class="number">12</span> LOAD_CONST               <span class="number">5</span> (<span class="number">5</span>)</span><br><span class="line">             <span class="number">15</span> BUILD_LIST               <span class="number">5</span></span><br><span class="line">             <span class="number">18</span> STORE_FAST               <span class="number">0</span> (x)</span><br><span class="line"></span><br><span class="line">  <span class="number">3</span>          <span class="number">21</span> LOAD_FAST                <span class="number">0</span> (x)</span><br><span class="line">             <span class="number">24</span> LOAD_CONST               <span class="number">2</span> (<span class="number">2</span>)</span><br><span class="line">             <span class="number">27</span> BINARY_SUBSCR</span><br><span class="line">             <span class="number">28</span> STORE_FAST               <span class="number">1</span> (y)</span><br><span class="line">             <span class="number">31</span> LOAD_CONST               <span class="number">0</span> (<span class="keyword">None</span>)</span><br><span class="line">             <span class="number">34</span> RETURN_VALUE</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>dis.dis(b)</span><br><span class="line">  <span class="number">2</span>           <span class="number">0</span> LOAD_CONST               <span class="number">6</span> ((<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>))</span><br><span class="line">              <span class="number">3</span> STORE_FAST               <span class="number">0</span> (x)</span><br><span class="line"></span><br><span class="line">  <span class="number">3</span>           <span class="number">6</span> LOAD_FAST                <span class="number">0</span> (x)</span><br><span class="line">              <span class="number">9</span> LOAD_CONST               <span class="number">2</span> (<span class="number">2</span>)</span><br><span class="line">             <span class="number">12</span> BINARY_SUBSCR</span><br><span class="line">             <span class="number">13</span> STORE_FAST               <span class="number">1</span> (y)</span><br><span class="line">             <span class="number">16</span> LOAD_CONST               <span class="number">0</span> (<span class="keyword">None</span>)</span><br><span class="line">             <span class="number">19</span> RETURN_VALUE</span><br></pre></td></tr></table></figure>
+<h3 id="tuples可以重用"><a class="markdownIt-Anchor" href="#tuples可以重用"></a> tuples可以重用</h3>
+<p>运行<code>tuple(some_tuple)</code>会立即返回<code>some_tuple</code>自身。由于 tuples 是不可变的，因此不必复制它们：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = (<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = tuple(a)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a <span class="keyword">is</span> b</span><br><span class="line"><span class="keyword">True</span></span><br></pre></td></tr></table></figure>
+<p>相比之下，<code>list(some_list)</code>将所有数据复制到一个新的 lists 中：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = [<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = list(a)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a <span class="keyword">is</span> b</span><br><span class="line"><span class="keyword">False</span></span><br></pre></td></tr></table></figure>
+<h3 id="tuples不会over-allocate"><a class="markdownIt-Anchor" href="#tuples不会over-allocate"></a> tuples不会over-allocate</h3>
+<p>由于 tuples 的大小是固定的，因此它可以比需要over-allocate以使<code>append()</code>操作有效 的lists 更紧凑地存储元素。</p>
+<p>这为 tuples 提供了一个很好的空间优势：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> sys</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>sys.getsizeof(tuple(iter(range(<span class="number">10</span>))))</span><br><span class="line"><span class="number">128</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>sys.getsizeof(list(iter(range(<span class="number">10</span>))))</span><br><span class="line"><span class="number">200</span></span><br></pre></td></tr></table></figure>
+<h3 id="tuples-直接引用它们的元素"><a class="markdownIt-Anchor" href="#tuples-直接引用它们的元素"></a> tuples 直接引用它们的元素</h3>
+<p>对象的引用直接包含在 tuples 对象中。相比之下，lists 有一个额外的间接层指向外部指针数组。</p>
+<p>这为 tuples 提供了实例化、索引查找和解包的一些速度优势：</p>
+<p>使用 Python timeit来帮助我们量化 tuples 的速度优势：</p>
+<p><strong>tuples 实例化的速度优势</strong>，几乎快了一个数量级：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ python -m timeit <span class="string">"x=(1,2,3,4,5,6,7,8)"</span></span><br><span class="line"><span class="number">10000000</span> loops, best of <span class="number">3</span>: <span class="number">0.0388</span> usec per loop</span><br><span class="line"></span><br><span class="line">$ python -m timeit <span class="string">"x=[1,2,3,4,5,6,7,8]"</span></span><br><span class="line"><span class="number">1000000</span> loops, best of <span class="number">3</span>: <span class="number">0.363</span> usec per loop</span><br></pre></td></tr></table></figure>
+<p><strong>tuples 索引查找和解包的速度优势：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ python -m timeit -s <span class="string">'a = (10, 20, 30)'</span> <span class="string">'a[1]'</span></span><br><span class="line"><span class="number">10000000</span> loops, best of <span class="number">3</span>: <span class="number">0.0304</span> usec per loop</span><br><span class="line">$ python -m timeit -s <span class="string">'a = [10, 20, 30]'</span> <span class="string">'a[1]'</span></span><br><span class="line"><span class="number">10000000</span> loops, best of <span class="number">3</span>: <span class="number">0.0309</span> usec per loop</span><br><span class="line"></span><br><span class="line">$ python -m timeit -s <span class="string">'a = (10, 20, 30)'</span> <span class="string">'x, y, z = a'</span></span><br><span class="line"><span class="number">10000000</span> loops, best of <span class="number">3</span>: <span class="number">0.0249</span> usec per loop</span><br><span class="line">$ python -m timeit -s <span class="string">'a = [10, 20, 30]'</span> <span class="string">'x, y, z = a'</span></span><br><span class="line"><span class="number">10000000</span> loops, best of <span class="number">3</span>: <span class="number">0.0251</span> usec per loop</span><br></pre></td></tr></table></figure>
+<p>从<a href="https://github.com/python/cpython/blob/master/Include/tupleobject.h" target="_blank" rel="noopener">这里</a>我们可以看到 tuple <code>(10, 20)</code>如何存储：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    Py_ssize_t ob_refcnt;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> _<span class="title">typeobject</span> *<span class="title">ob_type</span>;</span></span><br><span class="line">    Py_ssize_t ob_size;</span><br><span class="line">    PyObject *ob_item[<span class="number">2</span>];     <span class="comment">/* store a pointer to 10 and a pointer to 20 */</span></span><br><span class="line">&#125; PyTupleObject;</span><br></pre></td></tr></table></figure>
+<p>从<a href="https://github.com/python/cpython/blob/master/Include/listobject.h" target="_blank" rel="noopener">这里</a>我们可以看到 list <code>[10, 20]</code>如何存储：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">PyObject arr[<span class="number">2</span>];              <span class="comment">/* store a pointer to 10 and a pointer to 20 */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    Py_ssize_t ob_refcnt;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> _<span class="title">typeobject</span> *<span class="title">ob_type</span>;</span></span><br><span class="line">    Py_ssize_t ob_size;</span><br><span class="line">    PyObject **ob_item = arr; <span class="comment">/* store a pointer to the two-pointer array */</span></span><br><span class="line">    Py_ssize_t allocated;</span><br><span class="line">&#125; PyListObject;</span><br></pre></td></tr></table></figure>
+<p>注意到 tuples 对象直接包含两个数据指针，而 lists 对象具有一个间接的附加层来指向包含两个数据指针的外部数组。</p>
+<h2 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> Reference</h2>
+<ol>
+<li><a href="https://rushter.com/blog/python-lists-and-tuples/" target="_blank" rel="noopener">Optimization tricks in Python: lists and tuples</a></li>
+<li><a href="https://stackoverflow.com/questions/68630/are-tuples-more-efficient-than-lists-in-python" target="_blank" rel="noopener">Are tuples more efficient than lists in Python?</a></li>
+</ol>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2018/06/20/list-and-tuple/">http://sikasjc.github.io/2018/06/20/list-and-tuple/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2018/06/28/Built-in-functions/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Python HOWTOS学习，函数式编程（一）</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2018/06/15/iterator-generator/">
+        <span class="next-text nav-default">Python HOWTOS学习，函数式编程（一）</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMzQzMy85OTg5">
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>  
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/u/5605720030" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/si-qia-sika" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  
+
+  
+   <script type="text/javascript">
+	(function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>
