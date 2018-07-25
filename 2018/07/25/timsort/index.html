@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="2002年Tim Peters为Python编程语言创建了Timsort。自从Python 2.3开始，Timsort一直是Python的标准排序算法。如今，Timsort 已是是 Python、 Java、  Android平台 和 GNU Octave 的默认排序算法。Timsort 本质上利用了归并排序与插入排序，是一种经过优化的归并排序算法。"/>
+
+
+
+
+  <meta name="keywords" content="python,算法," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2018/07/25/timsort/"/>
+
+
+<meta name="description" content="2002年Tim Peters为Python编程语言创建了Timsort。自从Python 2.3开始，Timsort一直是Python的标准排序算法。如今，Timsort 已是是 Python、 Java、  Android平台 和 GNU Octave 的默认排序算法。Timsort 本质上利用了归并排序与插入排序，是一种经过优化的归并排序算法。">
+<meta name="keywords" content="python,算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Timsort原理学习">
+<meta property="og:url" content="http://sikasjc.github.io/2018/07/25/timsort/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="2002年Tim Peters为Python编程语言创建了Timsort。自从Python 2.3开始，Timsort一直是Python的标准排序算法。如今，Timsort 已是是 Python、 Java、  Android平台 和 GNU Octave 的默认排序算法。Timsort 本质上利用了归并排序与插入排序，是一种经过优化的归并排序算法。">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-7-24/32474840.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-7-24/5147842.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-7-24/92306265.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-7-24/82639566.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-7-24/74313660.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-7-25/43860277.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-7-25/97473261.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-7-25/93379912.jpg">
+<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-7-25/31968999.jpg">
+<meta property="og:updated_time" content="2018-07-25T15:39:28.057Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Timsort原理学习">
+<meta name="twitter:description" content="2002年Tim Peters为Python编程语言创建了Timsort。自从Python 2.3开始，Timsort一直是Python的标准排序算法。如今，Timsort 已是是 Python、 Java、  Android平台 和 GNU Octave 的默认排序算法。Timsort 本质上利用了归并排序与插入排序，是一种经过优化的归并排序算法。">
+<meta name="twitter:image" content="http://ormnbkvfv.bkt.clouddn.com/18-7-24/32474840.jpg">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> Timsort原理学习 · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Timsort原理学习
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018年7月25日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/算法/">算法</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#introduction"><span class="toc-number">1.</span> <span class="toc-text"> Introduction</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#timsort"><span class="toc-number">2.</span> <span class="toc-text"> Timsort</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#概述"><span class="toc-number">2.1.</span> <span class="toc-text"> 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#思想"><span class="toc-number">2.2.</span> <span class="toc-text"> 思想</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#细节"><span class="toc-number">2.3.</span> <span class="toc-text"> 细节</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#数组元素小于64个"><span class="toc-number">2.3.1.</span> <span class="toc-text"> 数组元素小于64个</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数组元素大于64个"><span class="toc-number">2.3.2.</span> <span class="toc-text"> 数组元素大于64个</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#minimum-size-minrun"><span class="toc-number">2.3.3.</span> <span class="toc-text"> Minimum size (minrun)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#merging"><span class="toc-number">2.3.4.</span> <span class="toc-text"> Merging</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分析"><span class="toc-number">2.4.</span> <span class="toc-text"> 分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#code"><span class="toc-number">2.5.</span> <span class="toc-text"> Code</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#reference"><span class="toc-number">3.</span> <span class="toc-text"> Reference</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h1 id="introduction"><a class="markdownIt-Anchor" href="#introduction"></a> Introduction</h1>
+<p>Timsort是一种混合稳定排序算法，源自归并排序（merge sort）和插入排序（insertion sort）。它使用的技术来自于</p>
+<blockquote>
+<p><a href="https://en.wikipedia.org/w/index.php?title=Peter_McIlroy&amp;action=edit&amp;redlink=1" target="_blank" rel="noopener">Peter McIlroy</a>’s “Optimistic Sorting and Information Theoretic Complexity”, in Proceedings of the Fourth Annual ACM-SIAM Symposium on Discrete Algorithms, pp. 467–474, January 1993.</p>
+</blockquote>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-7-24/32474840.jpg" alt="tim-peters"></p>
+<blockquote>
+<p>Tim Peters，图片来自 <a href="https://www.youtube.com/watch?v=1wAOy88WxmY" target="_blank" rel="noopener">youtube</a></p>
+</blockquote>
+<p>2002年Tim Peters为Python编程语言创建了Timsort。自从Python 2.3开始，Timsort一直是Python的标准排序算法。如今，Timsort 已是是 Python、 <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6804124" target="_blank" rel="noopener">Java</a>、  <a href="http://www.kiwidoc.com/java/l/x/android/android/5/p/java.util/c/TimSort" target="_blank" rel="noopener">Android</a>平台 和 GNU Octave 的默认排序算法。</p>
+<h1 id="timsort"><a class="markdownIt-Anchor" href="#timsort"></a> Timsort</h1>
+<h2 id="概述"><a class="markdownIt-Anchor" href="#概述"></a> 概述</h2>
+<p>Timsort的时间复杂度为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>O</mi><mo>(</mo><mi>n</mi><mi>l</mi><mi>g</mi><mi>n</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">O(nlgn)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathit">n</span><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathit" style="margin-right:0.03588em;">g</span><span class="mord mathit">n</span><span class="mclose">)</span></span></span></span>，比较一下它与归并排序以及快速排序：</p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-7-24/5147842.jpg" alt="rank"></p>
+<blockquote>
+<p>图片来自 <a href="http://bigocheatsheet.com/" target="_blank" rel="noopener">bigocheatsheet</a>，里面有常见数据结构操作及排序算法的复杂度比较</p>
+</blockquote>
+<p>Timsort 的运行时间实际与归并排序相似的，本质上利用了归并排序与插入排序，是一种经过优化的归并排序算法。归并排序自身已经到达了比较排序算法时间复杂度的下界，因此优化过的 Timsort 可以认为是目前最快的比较排序算法之一。</p>
+<h2 id="思想"><a class="markdownIt-Anchor" href="#思想"></a> 思想</h2>
+<p>现实中的大多数据通常是有部分已经排好序的数据块，Timsort 就利用了这一特点。Timsort 称这些已经排好序的数据块们为 “natural  runs”，我们可以将其视为一个一个的“分区”。在排序时，Timsort迭代数据元素，将其放到不同的 run 里，同时针对这些 run ，按规则进行合并至只剩一个，则这个仅剩的 run 即为排好序的结果。</p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-7-24/92306265.jpg" alt="run"></p>
+<p>也就是说，Timsort 的大致思想是先采用插入排序将非常小的 run 扩充为较大的 run ，然后再采用归并排序来合并多个 run，所以说 Timsort 实际为归并排序。具体来说，我们需要定义一个参数 minrun ，当 run 长度小于 minrun 时，我们认为它是非常小的 run ，否则认为它是较大的 run 。</p>
+<p>综上，Timsort 的过程为：</p>
+<ol>
+<li>找到小的 run 扩充为较大的 run</li>
+<li>按规则合并 run</li>
+</ol>
+<p>下面我们分别描述 Timsort 是如何完成扩充和归并这两个步骤的。</p>
+<p><strong>扩充</strong></p>
+<p>我们从左到右处理待排序序列，将其划分为若干个 run 。我们从第1个尚未处理的对象开始，找到一个尽可能长的连续严格递减（严格降序）或连续非递减（升序）序列，如果是连续严格递减序列，则可以通过一个简单的“翻转操作”在线性时间内将其变为严格递增序列。</p>
+<p><strong>升序:</strong>   <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>a</mi><mo>[</mo><mi>i</mi><mo>−</mo><mn>1</mn><mo>]</mo><mo>≤</mo><mi>a</mi><mo>[</mo><mi>i</mi><mo>]</mo><mo>≤</mo><mi>a</mi><mo>[</mo><mi>i</mi><mo>+</mo><mn>1</mn><mo>]</mo></mrow><annotation encoding="application/x-tex">a[i-1]\leq a[i] \leq a[i+1]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mord mathit">a</span><span class="mopen">[</span><span class="mord mathit">i</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord">1</span><span class="mclose">]</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≤</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit">a</span><span class="mopen">[</span><span class="mord mathit">i</span><span class="mclose">]</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≤</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit">a</span><span class="mopen">[</span><span class="mord mathit">i</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord">1</span><span class="mclose">]</span></span></span></span></p>
+<p><strong>严格降序:</strong>  <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>a</mi><mo>[</mo><mi>i</mi><mo>−</mo><mn>1</mn><mo>]</mo><mo>&gt;</mo><mi>a</mi><mo>[</mo><mi>i</mi><mo>]</mo><mo>&gt;</mo><mi>a</mi><mo>[</mo><mi>i</mi><mo>+</mo><mn>1</mn><mo>]</mo></mrow><annotation encoding="application/x-tex">a[i-1] &gt; a[i] &gt; a[i+1]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mord mathit">a</span><span class="mopen">[</span><span class="mord mathit">i</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord">1</span><span class="mclose">]</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit">a</span><span class="mopen">[</span><span class="mord mathit">i</span><span class="mclose">]</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit">a</span><span class="mopen">[</span><span class="mord mathit">i</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord">1</span><span class="mclose">]</span></span></span></span></p>
+<p>如果这样得到的序列长度等于 minrun ，则我们将其作为一个完整的 run ，继续生成下一 run ；否则我们用插入排序将后面的元素添加进来，直至其长度达到 minrun 为止。我们考虑两个简单的例子：</p>
+<ul>
+<li>
+<p>待排序序列的前4个数是 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>3</mn><mo separator="true">,</mo><mn>6</mn><mo separator="true">,</mo><mn>7</mn><mo separator="true">,</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">3,6,7,5</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.64444em;"></span><span class="strut bottom" style="height:0.8388800000000001em;vertical-align:-0.19444em;"></span><span class="base"><span class="mord">3</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">6</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">7</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">5</span></span></span></span>，minrun  = 4，则尽可能长的连续非递减序列为 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>3</mn><mo separator="true">,</mo><mn>6</mn><mo separator="true">,</mo><mn>7</mn></mrow><annotation encoding="application/x-tex">3,6,7</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.64444em;"></span><span class="strut bottom" style="height:0.8388800000000001em;vertical-align:-0.19444em;"></span><span class="base"><span class="mord">3</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">6</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">7</span></span></span></span>，其长度没有达到4。于是我们将后面的5插入进来，得到长度为4的 run <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>3</mn><mo separator="true">,</mo><mn>5</mn><mo separator="true">,</mo><mn>6</mn><mo separator="true">,</mo><mn>7</mn></mrow><annotation encoding="application/x-tex">3,5,6,7</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.64444em;"></span><span class="strut bottom" style="height:0.8388800000000001em;vertical-align:-0.19444em;"></span><span class="base"><span class="mord">3</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">5</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">6</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">7</span></span></span></span>。</p>
+</li>
+<li>
+<p>待排序序列的前4个数是 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>9</mn><mo separator="true">,</mo><mn>1</mn><mo separator="true">,</mo><mn>2</mn><mo separator="true">,</mo><mn>7</mn></mrow><annotation encoding="application/x-tex">9,1,2,7</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.64444em;"></span><span class="strut bottom" style="height:0.8388800000000001em;vertical-align:-0.19444em;"></span><span class="base"><span class="mord">9</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">2</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">7</span></span></span></span>，minrun  = 4，则尽可能长的连续递减序列为 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>9</mn><mo separator="true">,</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">9,1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.64444em;"></span><span class="strut bottom" style="height:0.8388800000000001em;vertical-align:-0.19444em;"></span><span class="base"><span class="mord">9</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">1</span></span></span></span>，其长度没有达到4。于是我们依次将后面的2和7插入进来，得到长度为4的 run <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>1</mn><mo separator="true">,</mo><mn>2</mn><mo separator="true">,</mo><mn>7</mn><mo separator="true">,</mo><mn>9</mn></mrow><annotation encoding="application/x-tex">1,2,7,9</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.64444em;"></span><span class="strut bottom" style="height:0.8388800000000001em;vertical-align:-0.19444em;"></span><span class="base"><span class="mord">1</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">2</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">7</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">9</span></span></span></span>。</p>
+</li>
+</ul>
+<p>如下图所示，如果 run 是依次减小的，我们反转 run （ run 为图中加粗部分）</p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-7-24/82639566.jpg" alt="reverse"></p>
+<p><strong>合并</strong></p>
+<p>我们再来考虑如何合并 run 。</p>
+<p>在理想情况下我们应当尽量合并长度相近的 run，这样可以节约计算时间。使用霍夫曼树的归并策略虽然可行，但我们不应该花费太多时间在选择优先合并的 run 上。Timsort 选择了一种折中的方案，它要求最右边的三个 run 的长度尽量满足两个条件。我们记最右边的三个 run 的长度从左到右分别是<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>A</mi><mo separator="true">,</mo><mi>B</mi><mo separator="true">,</mo><mi>C</mi></mrow><annotation encoding="application/x-tex">A,B,C</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="base"><span class="mord mathit">A</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit" style="margin-right:0.05017em;">B</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit" style="margin-right:0.07153em;">C</span></span></span></span>，则 Timsort 要求：</p>
+<ul>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>A</mi><mo>&gt;</mo><mi>B</mi><mo>+</mo><mi>C</mi></mrow><annotation encoding="application/x-tex">A &gt; B + C</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.76666em;vertical-align:-0.08333em;"></span><span class="base"><span class="mord mathit">A</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit" style="margin-right:0.05017em;">B</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit" style="margin-right:0.07153em;">C</span></span></span></span></li>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>B</mi><mo>&gt;</mo><mi>C</mi></mrow><annotation encoding="application/x-tex">B &gt; C</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.72243em;vertical-align:-0.0391em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.05017em;">B</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit" style="margin-right:0.07153em;">C</span></span></span></span></li>
+</ul>
+<p>这样做的目的是让合并后的 run 长度从右至左以指数量级递增，这样我们只需从右至左依次进行合并就可以使每次合并的两个 run 的长度大致相同，实现了平衡。在具体实现上，如果<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>A</mi><mo>≤</mo><mi>B</mi><mo>+</mo><mi>C</mi></mrow><annotation encoding="application/x-tex">A\leq B+C</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.8193em;vertical-align:-0.13597em;"></span><span class="base"><span class="mord mathit">A</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≤</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit" style="margin-right:0.05017em;">B</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit" style="margin-right:0.07153em;">C</span></span></span></span>，则我们合并A,B或者<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>B</mi><mo separator="true">,</mo><mi>C</mi></mrow><annotation encoding="application/x-tex">B,C</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.05017em;">B</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit" style="margin-right:0.07153em;">C</span></span></span></span>，这取决于哪一种合并方式生成的新 run 更短。如果<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>A</mi><mo>&gt;</mo><mi>B</mi><mo>+</mo><mi>C</mi></mrow><annotation encoding="application/x-tex">A&gt;B+C</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.76666em;vertical-align:-0.08333em;"></span><span class="base"><span class="mord mathit">A</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit" style="margin-right:0.05017em;">B</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit" style="margin-right:0.07153em;">C</span></span></span></span>或者<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>B</mi><mo>≤</mo><mi>C</mi></mrow><annotation encoding="application/x-tex">B\leq C</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.8193em;vertical-align:-0.13597em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.05017em;">B</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≤</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit" style="margin-right:0.07153em;">C</span></span></span></span>，则我们合并<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>B</mi><mo separator="true">,</mo><mi>C</mi></mrow><annotation encoding="application/x-tex">B,C</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.05017em;">B</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit" style="margin-right:0.07153em;">C</span></span></span></span>。</p>
+<p>我们可以每生成一个新的 run 都试图进行合并。在算法结束后，有可能会出现有剩余 run 没有合并的情况。这时我们采用强制合并，直至最终仅剩一个 run ，即排序结果。</p>
+<p>我们来看一个具体的例子，考虑待排序序列</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>3</mn><mo separator="true">,</mo><mn>6</mn><mo separator="true">,</mo><mn>7</mn><mo separator="true">,</mo><mn>5</mn><mo separator="true">,</mo><mn>3</mn><mo separator="true">,</mo><mn>5</mn><mo separator="true">,</mo><mn>6</mn><mo separator="true">,</mo><mn>2</mn><mo separator="true">,</mo><mn>9</mn><mo separator="true">,</mo><mn>1</mn><mo separator="true">,</mo><mn>2</mn><mo separator="true">,</mo><mn>7</mn><mo separator="true">,</mo><mn>0</mn><mo separator="true">,</mo><mn>9</mn><mo separator="true">,</mo><mn>3</mn><mo separator="true">,</mo><mn>6</mn><mo separator="true">,</mo><mn>0</mn><mo separator="true">,</mo><mn>6</mn><mo separator="true">,</mo><mn>2</mn><mo separator="true">,</mo><mn>6</mn><mo separator="true">,</mo><mn>1</mn><mo separator="true">,</mo><mn>8</mn></mrow><annotation encoding="application/x-tex">3,6,7,5,3,5,6,2,9,1,2,7,0,9,3,6,0,6,2,6,1,8
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.64444em;"></span><span class="strut bottom" style="height:0.8388800000000001em;vertical-align:-0.19444em;"></span><span class="base"><span class="mord">3</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">6</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">7</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">5</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">3</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">5</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">6</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">2</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">9</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">2</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">7</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">0</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">9</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">3</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">6</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">0</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">6</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">2</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">6</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">8</span></span></span></span></span></p>
+<p>及 minrun  = 4，则排序步骤如下所示。其中每一行代表 Timsort 的一个步骤。方块上括号表示在最初生成 run 时首先找到的尽可能长的连续严格递减序列或连续非递减序列，下方括号表示扩充后或者合并的 run 。</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mtable><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mn>3</mn><mspace width="0.277778em"></mspace><mn>6</mn><mspace width="0.277778em"></mspace><mn>7</mn><mspace width="0.277778em"></mspace><mn>5</mn><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>5</mn><mspace width="0.277778em"></mspace><mn>6</mn><mspace width="0.277778em"></mspace><mn>2</mn><mspace width="0.277778em"></mspace><mn>9</mn><mspace width="0.277778em"></mspace><mn>1</mn><mspace width="0.277778em"></mspace><mn>2</mn><mspace width="0.277778em"></mspace><mn>7</mn><mspace width="0.277778em"></mspace><mn>0</mn><mspace width="0.277778em"></mspace><mn>9</mn><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>6</mn></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mover><mrow><mn>3</mn><mspace width="0.277778em"></mspace><mn>6</mn><mspace width="0.277778em"></mspace><mn>7</mn></mrow><mo stretchy="true">⏞</mo></mover><mspace width="0.277778em"></mspace><mn>5</mn><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>5</mn><mspace width="0.277778em"></mspace><mn>6</mn><mspace width="0.277778em"></mspace><mn>2</mn><mspace width="0.277778em"></mspace><mn>9</mn><mspace width="0.277778em"></mspace><mn>1</mn><mspace width="0.277778em"></mspace><mn>2</mn><mspace width="0.277778em"></mspace><mn>7</mn><mspace width="0.277778em"></mspace><mn>0</mn><mspace width="0.277778em"></mspace><mn>9</mn><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>6</mn></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><munder><mrow><mn>3</mn><mspace width="0.277778em"></mspace><mn>5</mn><mspace width="0.277778em"></mspace><mn>6</mn><mspace width="0.277778em"></mspace><mn>7</mn></mrow><mo stretchy="true">⎵</mo></munder><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>5</mn><mo separator="true">;</mo><mn>6</mn><mspace width="0.277778em"></mspace><mn>2</mn><mspace width="0.277778em"></mspace><mn>9</mn><mspace width="0.277778em"></mspace><mn>1</mn><mspace width="0.277778em"></mspace><mn>2</mn><mspace width="0.277778em"></mspace><mn>7</mn><mspace width="0.277778em"></mspace><mn>0</mn><mspace width="0.277778em"></mspace><mn>9</mn><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>6</mn></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><munder><mrow><mn>3</mn><mspace width="0.277778em"></mspace><mn>5</mn><mspace width="0.277778em"></mspace><mn>6</mn><mspace width="0.277778em"></mspace><mn>7</mn></mrow><mo stretchy="true">⎵</mo></munder><mspace width="0.277778em"></mspace><mover><mrow><mn>3</mn><mspace width="0.277778em"></mspace><mn>5</mn><mspace width="0.277778em"></mspace><mn>6</mn></mrow><mo stretchy="true">⏞</mo></mover><mspace width="0.277778em"></mspace><mn>2</mn><mspace width="0.277778em"></mspace><mn>9</mn><mspace width="0.277778em"></mspace><mn>1</mn><mspace width="0.277778em"></mspace><mn>2</mn><mspace width="0.277778em"></mspace><mn>7</mn><mspace width="0.277778em"></mspace><mn>0</mn><mspace width="0.277778em"></mspace><mn>9</mn><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>6</mn></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><munder><mrow><mn>3</mn><mspace width="0.277778em"></mspace><mn>5</mn><mspace width="0.277778em"></mspace><mn>6</mn><mspace width="0.277778em"></mspace><mn>7</mn></mrow><mo stretchy="true">⎵</mo></munder><mspace width="0.277778em"></mspace><munder><mrow><mn>2</mn><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>5</mn><mspace width="0.277778em"></mspace><mn>6</mn></mrow><mo stretchy="true">⎵</mo></munder><mspace width="0.277778em"></mspace><mn>9</mn><mspace width="0.277778em"></mspace><mn>1</mn><mspace width="0.277778em"></mspace><mn>2</mn><mspace width="0.277778em"></mspace><mn>7</mn><mspace width="0.277778em"></mspace><mn>0</mn><mspace width="0.277778em"></mspace><mn>9</mn><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>6</mn></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><munder><mrow><mn>2</mn><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>5</mn><mspace width="0.277778em"></mspace><mn>5</mn><mspace width="0.277778em"></mspace><mn>6</mn><mspace width="0.277778em"></mspace><mn>6</mn><mspace width="0.277778em"></mspace><mn>7</mn></mrow><mo stretchy="true">⎵</mo></munder><mspace width="0.277778em"></mspace><mn>9</mn><mspace width="0.277778em"></mspace><mn>1</mn><mspace width="0.277778em"></mspace><mn>2</mn><mspace width="0.277778em"></mspace><mn>7</mn><mspace width="0.277778em"></mspace><mn>0</mn><mspace width="0.277778em"></mspace><mn>9</mn><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>6</mn></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><munder><mrow><mn>2</mn><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>5</mn><mspace width="0.277778em"></mspace><mn>5</mn><mspace width="0.277778em"></mspace><mn>6</mn><mspace width="0.277778em"></mspace><mn>6</mn><mspace width="0.277778em"></mspace><mn>7</mn></mrow><mo stretchy="true">⎵</mo></munder><mspace width="0.277778em"></mspace><mover><mrow><mn>9</mn><mspace width="0.277778em"></mspace><mn>1</mn></mrow><mo stretchy="true">⏞</mo></mover><mspace width="0.277778em"></mspace><mn>2</mn><mspace width="0.277778em"></mspace><mn>7</mn><mspace width="0.277778em"></mspace><mn>0</mn><mspace width="0.277778em"></mspace><mn>9</mn><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>6</mn></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><munder><mrow><mn>2</mn><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>5</mn><mspace width="0.277778em"></mspace><mn>5</mn><mspace width="0.277778em"></mspace><mn>6</mn><mspace width="0.277778em"></mspace><mn>6</mn><mspace width="0.277778em"></mspace><mn>7</mn></mrow><mo stretchy="true">⎵</mo></munder><mspace width="0.277778em"></mspace><munder><mrow><mn>1</mn><mspace width="0.277778em"></mspace><mn>2</mn><mspace width="0.277778em"></mspace><mn>7</mn><mspace width="0.277778em"></mspace><mn>9</mn></mrow><mo stretchy="true">⎵</mo></munder><mspace width="0.277778em"></mspace><mn>0</mn><mspace width="0.277778em"></mspace><mn>9</mn><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>6</mn></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><munder><mrow><mn>2</mn><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>5</mn><mspace width="0.277778em"></mspace><mn>5</mn><mspace width="0.277778em"></mspace><mn>6</mn><mspace width="0.277778em"></mspace><mn>6</mn><mspace width="0.277778em"></mspace><mn>7</mn></mrow><mo stretchy="true">⎵</mo></munder><mspace width="0.277778em"></mspace><munder><mrow><mn>1</mn><mspace width="0.277778em"></mspace><mn>2</mn><mspace width="0.277778em"></mspace><mn>7</mn><mspace width="0.277778em"></mspace><mn>9</mn></mrow><mo stretchy="true">⎵</mo></munder><mspace width="0.277778em"></mspace><mover><mrow><mn>0</mn><mspace width="0.277778em"></mspace><mn>9</mn></mrow><mo stretchy="true">⏞</mo></mover><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>6</mn></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><munder><mrow><mn>2</mn><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>5</mn><mspace width="0.277778em"></mspace><mn>5</mn><mspace width="0.277778em"></mspace><mn>6</mn><mspace width="0.277778em"></mspace><mn>6</mn><mspace width="0.277778em"></mspace><mn>7</mn></mrow><mo stretchy="true">⎵</mo></munder><mspace width="0.277778em"></mspace><munder><mrow><mn>1</mn><mspace width="0.277778em"></mspace><mn>2</mn><mspace width="0.277778em"></mspace><mn>7</mn><mspace width="0.277778em"></mspace><mn>9</mn></mrow><mo stretchy="true">⎵</mo></munder><mspace width="0.277778em"></mspace><munder><mrow><mn>0</mn><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>6</mn><mspace width="0.277778em"></mspace><mn>9</mn></mrow><mo stretchy="true">⎵</mo></munder></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><munder><mrow><mn>2</mn><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>5</mn><mspace width="0.277778em"></mspace><mn>5</mn><mspace width="0.277778em"></mspace><mn>6</mn><mspace width="0.277778em"></mspace><mn>6</mn><mspace width="0.277778em"></mspace><mn>7</mn></mrow><mo stretchy="true">⎵</mo></munder><mspace width="0.277778em"></mspace><munder><mrow><mn>0</mn><mspace width="0.277778em"></mspace><mn>1</mn><mspace width="0.277778em"></mspace><mn>2</mn><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>6</mn><mspace width="0.277778em"></mspace><mn>7</mn><mspace width="0.277778em"></mspace><mn>9</mn><mspace width="0.277778em"></mspace><mn>9</mn></mrow><mo stretchy="true">⎵</mo></munder></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><munder><mrow><mn>0</mn><mspace width="0.277778em"></mspace><mn>1</mn><mspace width="0.277778em"></mspace><mn>2</mn><mspace width="0.277778em"></mspace><mn>2</mn><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>3</mn><mspace width="0.277778em"></mspace><mn>5</mn><mspace width="0.277778em"></mspace><mn>5</mn><mspace width="0.277778em"></mspace><mn>6</mn><mspace width="0.277778em"></mspace><mn>6</mn><mspace width="0.277778em"></mspace><mn>6</mn><mspace width="0.277778em"></mspace><mn>7</mn><mspace width="0.277778em"></mspace><mn>7</mn><mspace width="0.277778em"></mspace><mn>9</mn><mspace width="0.277778em"></mspace><mn>9</mn></mrow><mo stretchy="true">⎵</mo></munder></mrow></mstyle></mtd></mtr></mtable></mrow><annotation encoding="application/x-tex">\begin{matrix}
+\\ 3\; 6\; 7\; 5\; 3\; 5\; 6\; 2\; 9\; 1\; 2\; 7\; 0\; 9\; 3\; 6
+\\ \overbrace{3\; 6\; 7}\; 5\; 3\; 5\; 6\; 2\; 9\; 1\; 2\; 7\; 0\; 9\; 3\; 6
+\\ \underbrace{3\; 5\; 6\; 7}\; 3\; 5; 6\; 2\; 9\; 1\; 2\; 7\; 0\; 9\; 3\; 6 
+\\ \underbrace{3\; 5\; 6\; 7}\; \overbrace{3\; 5\; 6}\; 2\; 9\; 1\; 2\; 7\; 0\; 9\; 3\; 6
+\\ \underbrace{3\; 5\; 6\; 7}\; \underbrace{2\; 3\; 5\; 6}\; 9\; 1\; 2\; 7\; 0\; 9\; 3\; 6
+\\ \underbrace{2\; 3\; 3\; 5\; 5\; 6\; 6\; 7}\; 9\; 1\; 2\; 7\; 0\; 9\; 3\; 6
+\\ \underbrace{2\; 3\; 3\; 5\; 5\; 6\; 6\; 7}\; \overbrace{9\; 1}\; 2\; 7\; 0\; 9\; 3\; 6
+\\ \underbrace{2\; 3\; 3\; 5\; 5\; 6\; 6\; 7}\; \underbrace{1\; 2\; 7\; 9}\; 0\; 9\; 3\; 6
+\\ \underbrace{2\; 3\; 3\; 5\; 5\; 6\; 6\; 7}\; \underbrace{1\; 2\; 7\; 9}\; \overbrace{0\; 9}\; 3\; 6
+\\ \underbrace{2\; 3\; 3\; 5\; 5\; 6\; 6\; 7}\; \underbrace{1\; 2\; 7\; 9}\; \underbrace{0\; 3\; 6\; 9}
+\\ \underbrace{2\; 3\; 3\; 5\; 5\; 6\; 6\; 7}\; \underbrace{0\; 1\; 2\; 3\; 6\; 7\; 9\; 9}
+\\ \underbrace{0\; 1\; 2\; 2\; 3\; 3\; 3\; 5\; 5\; 6\; 6\; 6\; 7\; 7\; 9\; 9}
+\end{matrix}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:10.394879999999997em;"></span><span class="strut bottom" style="height:20.289759999999994em;vertical-align:-9.894879999999997em;"></span><span class="base"><span class="mord"><span class="mtable"><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:10.394879999999997em;"><span style="top:-12.847319999999996em;"><span class="pstrut" style="height:3.29244em;"></span><span class="mord"></span></span><span style="top:-11.647319999999997em;"><span class="pstrut" style="height:3.29244em;"></span><span class="mord"><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">6</span><span class="mspace thickspace"></span><span class="mord">7</span><span class="mspace thickspace"></span><span class="mord">5</span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">5</span><span class="mspace thickspace"></span><span class="mord">6</span><span class="mspace thickspace"></span><span class="mord">2</span><span class="mspace thickspace"></span><span class="mord">9</span><span class="mspace thickspace"></span><span class="mord">1</span><span class="mspace thickspace"></span><span class="mord">2</span><span class="mspace thickspace"></span><span class="mord">7</span><span class="mspace thickspace"></span><span class="mord">0</span><span class="mspace thickspace"></span><span class="mord">9</span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">6</span></span></span><span style="top:-9.994879999999997em;"><span class="pstrut" style="height:3.29244em;"></span><span class="mord"><span class="mord mover"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:1.29244em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">6</span><span class="mspace thickspace"></span><span class="mord">7</span></span></span><span class="svg-align" style="top:-3.74444em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.548em;min-width:1.6em;"><span class="brace-left" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMinYMin slice"><path d="M6 548l-6-6v-35l6-11c56-104 135.3-181.3 238-232 57.3-28.7 117
+-45 179-50h399577v120H403c-43.3 7-81 15-113 26-100.7 33-179.7 91-237 174-2.7
+ 5-6 9-10 13-.7 1-7.3 1-20 1H6z"/></svg></span><span class="brace-center" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMidYMin slice"><path d="M200428 334
+c-100.7-8.3-195.3-44-280-108-55.3-42-101.7-93-139-153l-9-14c-2.7 4-5.7 8.7-9 14
+-53.3 86.7-123.7 153-211 199-66.7 36-137.3 56.3-212 62H0V214h199568c178.3-11.7
+ 311.7-78.3 403-201 6-8 9.7-12 11-12 .7-.7 6.7-1 18-1s17.3.3 18 1c1.3 0 5 4 11
+ 12 44.7 59.3 101.3 106.3 170 141s145.3 54.3 229 60h199572v120z"/></svg></span><span class="brace-right" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMaxYMin slice"><path d="M400000 542l
+-6 6h-17c-12.7 0-19.3-.3-20-1-4-4-7.3-8.3-10-13-35.3-51.3-80.8-93.8-136.5-127.5
+s-117.2-55.8-184.5-66.5c-.7 0-2-.3-4-1-18.7-2.7-76-4.3-172-5H0V214h399571l6 1
+c124.7 8 235 61.7 331 161 31.3 33.3 59.7 72.7 85 118l7 13v35z"/></svg></span></span></span></span></span></span></span><span class="mspace thickspace"></span><span class="mord">5</span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">5</span><span class="mspace thickspace"></span><span class="mord">6</span><span class="mspace thickspace"></span><span class="mord">2</span><span class="mspace thickspace"></span><span class="mord">9</span><span class="mspace thickspace"></span><span class="mord">1</span><span class="mspace thickspace"></span><span class="mord">2</span><span class="mspace thickspace"></span><span class="mord">7</span><span class="mspace thickspace"></span><span class="mord">0</span><span class="mspace thickspace"></span><span class="mord">9</span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">6</span></span></span><span style="top:-8.794879999999997em;"><span class="pstrut" style="height:3.29244em;"></span><span class="mord"><span class="mord munder"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.64444em;"><span class="svg-align" style="top:-2.352em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.548em;min-width:1.6em;"><span class="brace-left" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMinYMin slice"><path d="M0 6l6-6h17c12.688 0 19.313.3 20 1 4 4 7.313 8.3 10 13
+ 35.313 51.3 80.813 93.8 136.5 127.5 55.688 33.7 117.188 55.8 184.5 66.5.688
+ 0 2 .3 4 1 18.688 2.7 76 4.3 172 5h399450v120H429l-6-1c-124.688-8-235-61.7
+-331-161C60.687 138.7 32.312 99.3 7 54L0 41V6z"/></svg></span><span class="brace-center" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMidYMin slice"><path d="M199572 214
+c100.7 8.3 195.3 44 280 108 55.3 42 101.7 93 139 153l9 14c2.7-4 5.7-8.7 9-14
+ 53.3-86.7 123.7-153 211-199 66.7-36 137.3-56.3 212-62h199568v120H200432c-178.3
+ 11.7-311.7 78.3-403 201-6 8-9.7 12-11 12-.7.7-6.7 1-18 1s-17.3-.3-18-1c-1.3 0
+-5-4-11-12-44.7-59.3-101.3-106.3-170-141s-145.3-54.3-229-60H0V214z"/></svg></span><span class="brace-right" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMaxYMin slice"><path d="M399994 0l6 6v35l-6 11c-56 104-135.3 181.3-238 232-57.3
+ 28.7-117 45-179 50H-300V214h399897c43.3-7 81-15 113-26 100.7-33 179.7-91 237
+-174 2.7-5 6-9 10-13 .7-1 7.3-1 20-1h17z"/></svg></span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">5</span><span class="mspace thickspace"></span><span class="mord">6</span><span class="mspace thickspace"></span><span class="mord">7</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.648em;"></span></span></span></span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">5</span><span class="mpunct">;</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">6</span><span class="mspace thickspace"></span><span class="mord">2</span><span class="mspace thickspace"></span><span class="mord">9</span><span class="mspace thickspace"></span><span class="mord">1</span><span class="mspace thickspace"></span><span class="mord">2</span><span class="mspace thickspace"></span><span class="mord">7</span><span class="mspace thickspace"></span><span class="mord">0</span><span class="mspace thickspace"></span><span class="mord">9</span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">6</span></span></span><span style="top:-6.8544399999999985em;"><span class="pstrut" style="height:3.29244em;"></span><span class="mord"><span class="mord munder"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.64444em;"><span class="svg-align" style="top:-2.352em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.548em;min-width:1.6em;"><span class="brace-left" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMinYMin slice"><path d="M0 6l6-6h17c12.688 0 19.313.3 20 1 4 4 7.313 8.3 10 13
+ 35.313 51.3 80.813 93.8 136.5 127.5 55.688 33.7 117.188 55.8 184.5 66.5.688
+ 0 2 .3 4 1 18.688 2.7 76 4.3 172 5h399450v120H429l-6-1c-124.688-8-235-61.7
+-331-161C60.687 138.7 32.312 99.3 7 54L0 41V6z"/></svg></span><span class="brace-center" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMidYMin slice"><path d="M199572 214
+c100.7 8.3 195.3 44 280 108 55.3 42 101.7 93 139 153l9 14c2.7-4 5.7-8.7 9-14
+ 53.3-86.7 123.7-153 211-199 66.7-36 137.3-56.3 212-62h199568v120H200432c-178.3
+ 11.7-311.7 78.3-403 201-6 8-9.7 12-11 12-.7.7-6.7 1-18 1s-17.3-.3-18-1c-1.3 0
+-5-4-11-12-44.7-59.3-101.3-106.3-170-141s-145.3-54.3-229-60H0V214z"/></svg></span><span class="brace-right" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMaxYMin slice"><path d="M399994 0l6 6v35l-6 11c-56 104-135.3 181.3-238 232-57.3
+ 28.7-117 45-179 50H-300V214h399897c43.3-7 81-15 113-26 100.7-33 179.7-91 237
+-174 2.7-5 6-9 10-13 .7-1 7.3-1 20-1h17z"/></svg></span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">5</span><span class="mspace thickspace"></span><span class="mord">6</span><span class="mspace thickspace"></span><span class="mord">7</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.648em;"></span></span></span></span><span class="mspace thickspace"></span><span class="mord mover"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:1.29244em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">5</span><span class="mspace thickspace"></span><span class="mord">6</span></span></span><span class="svg-align" style="top:-3.74444em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.548em;min-width:1.6em;"><span class="brace-left" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMinYMin slice"><path d="M6 548l-6-6v-35l6-11c56-104 135.3-181.3 238-232 57.3-28.7 117
+-45 179-50h399577v120H403c-43.3 7-81 15-113 26-100.7 33-179.7 91-237 174-2.7
+ 5-6 9-10 13-.7 1-7.3 1-20 1H6z"/></svg></span><span class="brace-center" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMidYMin slice"><path d="M200428 334
+c-100.7-8.3-195.3-44-280-108-55.3-42-101.7-93-139-153l-9-14c-2.7 4-5.7 8.7-9 14
+-53.3 86.7-123.7 153-211 199-66.7 36-137.3 56.3-212 62H0V214h199568c178.3-11.7
+ 311.7-78.3 403-201 6-8 9.7-12 11-12 .7-.7 6.7-1 18-1s17.3.3 18 1c1.3 0 5 4 11
+ 12 44.7 59.3 101.3 106.3 170 141s145.3 54.3 229 60h199572v120z"/></svg></span><span class="brace-right" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMaxYMin slice"><path d="M400000 542l
+-6 6h-17c-12.7 0-19.3-.3-20-1-4-4-7.3-8.3-10-13-35.3-51.3-80.8-93.8-136.5-127.5
+s-117.2-55.8-184.5-66.5c-.7 0-2-.3-4-1-18.7-2.7-76-4.3-172-5H0V214h399571l6 1
+c124.7 8 235 61.7 331 161 31.3 33.3 59.7 72.7 85 118l7 13v35z"/></svg></span></span></span></span></span></span></span><span class="mspace thickspace"></span><span class="mord">2</span><span class="mspace thickspace"></span><span class="mord">9</span><span class="mspace thickspace"></span><span class="mord">1</span><span class="mspace thickspace"></span><span class="mord">2</span><span class="mspace thickspace"></span><span class="mord">7</span><span class="mspace thickspace"></span><span class="mord">0</span><span class="mspace thickspace"></span><span class="mord">9</span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">6</span></span></span><span style="top:-5.366439999999999em;"><span class="pstrut" style="height:3.29244em;"></span><span class="mord"><span class="mord munder"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.64444em;"><span class="svg-align" style="top:-2.352em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.548em;min-width:1.6em;"><span class="brace-left" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMinYMin slice"><path d="M0 6l6-6h17c12.688 0 19.313.3 20 1 4 4 7.313 8.3 10 13
+ 35.313 51.3 80.813 93.8 136.5 127.5 55.688 33.7 117.188 55.8 184.5 66.5.688
+ 0 2 .3 4 1 18.688 2.7 76 4.3 172 5h399450v120H429l-6-1c-124.688-8-235-61.7
+-331-161C60.687 138.7 32.312 99.3 7 54L0 41V6z"/></svg></span><span class="brace-center" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMidYMin slice"><path d="M199572 214
+c100.7 8.3 195.3 44 280 108 55.3 42 101.7 93 139 153l9 14c2.7-4 5.7-8.7 9-14
+ 53.3-86.7 123.7-153 211-199 66.7-36 137.3-56.3 212-62h199568v120H200432c-178.3
+ 11.7-311.7 78.3-403 201-6 8-9.7 12-11 12-.7.7-6.7 1-18 1s-17.3-.3-18-1c-1.3 0
+-5-4-11-12-44.7-59.3-101.3-106.3-170-141s-145.3-54.3-229-60H0V214z"/></svg></span><span class="brace-right" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMaxYMin slice"><path d="M399994 0l6 6v35l-6 11c-56 104-135.3 181.3-238 232-57.3
+ 28.7-117 45-179 50H-300V214h399897c43.3-7 81-15 113-26 100.7-33 179.7-91 237
+-174 2.7-5 6-9 10-13 .7-1 7.3-1 20-1h17z"/></svg></span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">5</span><span class="mspace thickspace"></span><span class="mord">6</span><span class="mspace thickspace"></span><span class="mord">7</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.648em;"></span></span></span></span><span class="mspace thickspace"></span><span class="mord munder"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.64444em;"><span class="svg-align" style="top:-2.352em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.548em;min-width:1.6em;"><span class="brace-left" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMinYMin slice"><path d="M0 6l6-6h17c12.688 0 19.313.3 20 1 4 4 7.313 8.3 10 13
+ 35.313 51.3 80.813 93.8 136.5 127.5 55.688 33.7 117.188 55.8 184.5 66.5.688
+ 0 2 .3 4 1 18.688 2.7 76 4.3 172 5h399450v120H429l-6-1c-124.688-8-235-61.7
+-331-161C60.687 138.7 32.312 99.3 7 54L0 41V6z"/></svg></span><span class="brace-center" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMidYMin slice"><path d="M199572 214
+c100.7 8.3 195.3 44 280 108 55.3 42 101.7 93 139 153l9 14c2.7-4 5.7-8.7 9-14
+ 53.3-86.7 123.7-153 211-199 66.7-36 137.3-56.3 212-62h199568v120H200432c-178.3
+ 11.7-311.7 78.3-403 201-6 8-9.7 12-11 12-.7.7-6.7 1-18 1s-17.3-.3-18-1c-1.3 0
+-5-4-11-12-44.7-59.3-101.3-106.3-170-141s-145.3-54.3-229-60H0V214z"/></svg></span><span class="brace-right" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMaxYMin slice"><path d="M399994 0l6 6v35l-6 11c-56 104-135.3 181.3-238 232-57.3
+ 28.7-117 45-179 50H-300V214h399897c43.3-7 81-15 113-26 100.7-33 179.7-91 237
+-174 2.7-5 6-9 10-13 .7-1 7.3-1 20-1h17z"/></svg></span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">5</span><span class="mspace thickspace"></span><span class="mord">6</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.648em;"></span></span></span></span><span class="mspace thickspace"></span><span class="mord">9</span><span class="mspace thickspace"></span><span class="mord">1</span><span class="mspace thickspace"></span><span class="mord">2</span><span class="mspace thickspace"></span><span class="mord">7</span><span class="mspace thickspace"></span><span class="mord">0</span><span class="mspace thickspace"></span><span class="mord">9</span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">6</span></span></span><span style="top:-3.8784399999999994em;"><span class="pstrut" style="height:3.29244em;"></span><span class="mord"><span class="mord munder"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.64444em;"><span class="svg-align" style="top:-2.352em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.548em;min-width:1.6em;"><span class="brace-left" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMinYMin slice"><path d="M0 6l6-6h17c12.688 0 19.313.3 20 1 4 4 7.313 8.3 10 13
+ 35.313 51.3 80.813 93.8 136.5 127.5 55.688 33.7 117.188 55.8 184.5 66.5.688
+ 0 2 .3 4 1 18.688 2.7 76 4.3 172 5h399450v120H429l-6-1c-124.688-8-235-61.7
+-331-161C60.687 138.7 32.312 99.3 7 54L0 41V6z"/></svg></span><span class="brace-center" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMidYMin slice"><path d="M199572 214
+c100.7 8.3 195.3 44 280 108 55.3 42 101.7 93 139 153l9 14c2.7-4 5.7-8.7 9-14
+ 53.3-86.7 123.7-153 211-199 66.7-36 137.3-56.3 212-62h199568v120H200432c-178.3
+ 11.7-311.7 78.3-403 201-6 8-9.7 12-11 12-.7.7-6.7 1-18 1s-17.3-.3-18-1c-1.3 0
+-5-4-11-12-44.7-59.3-101.3-106.3-170-141s-145.3-54.3-229-60H0V214z"/></svg></span><span class="brace-right" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMaxYMin slice"><path d="M399994 0l6 6v35l-6 11c-56 104-135.3 181.3-238 232-57.3
+ 28.7-117 45-179 50H-300V214h399897c43.3-7 81-15 113-26 100.7-33 179.7-91 237
+-174 2.7-5 6-9 10-13 .7-1 7.3-1 20-1h17z"/></svg></span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">5</span><span class="mspace thickspace"></span><span class="mord">5</span><span class="mspace thickspace"></span><span class="mord">6</span><span class="mspace thickspace"></span><span class="mord">6</span><span class="mspace thickspace"></span><span class="mord">7</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.648em;"></span></span></span></span><span class="mspace thickspace"></span><span class="mord">9</span><span class="mspace thickspace"></span><span class="mord">1</span><span class="mspace thickspace"></span><span class="mord">2</span><span class="mspace thickspace"></span><span class="mord">7</span><span class="mspace thickspace"></span><span class="mord">0</span><span class="mspace thickspace"></span><span class="mord">9</span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">6</span></span></span><span style="top:-1.9380000000000006em;"><span class="pstrut" style="height:3.29244em;"></span><span class="mord"><span class="mord munder"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.64444em;"><span class="svg-align" style="top:-2.352em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.548em;min-width:1.6em;"><span class="brace-left" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMinYMin slice"><path d="M0 6l6-6h17c12.688 0 19.313.3 20 1 4 4 7.313 8.3 10 13
+ 35.313 51.3 80.813 93.8 136.5 127.5 55.688 33.7 117.188 55.8 184.5 66.5.688
+ 0 2 .3 4 1 18.688 2.7 76 4.3 172 5h399450v120H429l-6-1c-124.688-8-235-61.7
+-331-161C60.687 138.7 32.312 99.3 7 54L0 41V6z"/></svg></span><span class="brace-center" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMidYMin slice"><path d="M199572 214
+c100.7 8.3 195.3 44 280 108 55.3 42 101.7 93 139 153l9 14c2.7-4 5.7-8.7 9-14
+ 53.3-86.7 123.7-153 211-199 66.7-36 137.3-56.3 212-62h199568v120H200432c-178.3
+ 11.7-311.7 78.3-403 201-6 8-9.7 12-11 12-.7.7-6.7 1-18 1s-17.3-.3-18-1c-1.3 0
+-5-4-11-12-44.7-59.3-101.3-106.3-170-141s-145.3-54.3-229-60H0V214z"/></svg></span><span class="brace-right" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMaxYMin slice"><path d="M399994 0l6 6v35l-6 11c-56 104-135.3 181.3-238 232-57.3
+ 28.7-117 45-179 50H-300V214h399897c43.3-7 81-15 113-26 100.7-33 179.7-91 237
+-174 2.7-5 6-9 10-13 .7-1 7.3-1 20-1h17z"/></svg></span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">5</span><span class="mspace thickspace"></span><span class="mord">5</span><span class="mspace thickspace"></span><span class="mord">6</span><span class="mspace thickspace"></span><span class="mord">6</span><span class="mspace thickspace"></span><span class="mord">7</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.648em;"></span></span></span></span><span class="mspace thickspace"></span><span class="mord mover"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:1.29244em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">9</span><span class="mspace thickspace"></span><span class="mord">1</span></span></span><span class="svg-align" style="top:-3.74444em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.548em;min-width:1.6em;"><span class="brace-left" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMinYMin slice"><path d="M6 548l-6-6v-35l6-11c56-104 135.3-181.3 238-232 57.3-28.7 117
+-45 179-50h399577v120H403c-43.3 7-81 15-113 26-100.7 33-179.7 91-237 174-2.7
+ 5-6 9-10 13-.7 1-7.3 1-20 1H6z"/></svg></span><span class="brace-center" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMidYMin slice"><path d="M200428 334
+c-100.7-8.3-195.3-44-280-108-55.3-42-101.7-93-139-153l-9-14c-2.7 4-5.7 8.7-9 14
+-53.3 86.7-123.7 153-211 199-66.7 36-137.3 56.3-212 62H0V214h199568c178.3-11.7
+ 311.7-78.3 403-201 6-8 9.7-12 11-12 .7-.7 6.7-1 18-1s17.3.3 18 1c1.3 0 5 4 11
+ 12 44.7 59.3 101.3 106.3 170 141s145.3 54.3 229 60h199572v120z"/></svg></span><span class="brace-right" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMaxYMin slice"><path d="M400000 542l
+-6 6h-17c-12.7 0-19.3-.3-20-1-4-4-7.3-8.3-10-13-35.3-51.3-80.8-93.8-136.5-127.5
+s-117.2-55.8-184.5-66.5c-.7 0-2-.3-4-1-18.7-2.7-76-4.3-172-5H0V214h399571l6 1
+c124.7 8 235 61.7 331 161 31.3 33.3 59.7 72.7 85 118l7 13v35z"/></svg></span></span></span></span></span></span></span><span class="mspace thickspace"></span><span class="mord">2</span><span class="mspace thickspace"></span><span class="mord">7</span><span class="mspace thickspace"></span><span class="mord">0</span><span class="mspace thickspace"></span><span class="mord">9</span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">6</span></span></span><span style="top:-0.45000000000000095em;"><span class="pstrut" style="height:3.29244em;"></span><span class="mord"><span class="mord munder"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.64444em;"><span class="svg-align" style="top:-2.352em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.548em;min-width:1.6em;"><span class="brace-left" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMinYMin slice"><path d="M0 6l6-6h17c12.688 0 19.313.3 20 1 4 4 7.313 8.3 10 13
+ 35.313 51.3 80.813 93.8 136.5 127.5 55.688 33.7 117.188 55.8 184.5 66.5.688
+ 0 2 .3 4 1 18.688 2.7 76 4.3 172 5h399450v120H429l-6-1c-124.688-8-235-61.7
+-331-161C60.687 138.7 32.312 99.3 7 54L0 41V6z"/></svg></span><span class="brace-center" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMidYMin slice"><path d="M199572 214
+c100.7 8.3 195.3 44 280 108 55.3 42 101.7 93 139 153l9 14c2.7-4 5.7-8.7 9-14
+ 53.3-86.7 123.7-153 211-199 66.7-36 137.3-56.3 212-62h199568v120H200432c-178.3
+ 11.7-311.7 78.3-403 201-6 8-9.7 12-11 12-.7.7-6.7 1-18 1s-17.3-.3-18-1c-1.3 0
+-5-4-11-12-44.7-59.3-101.3-106.3-170-141s-145.3-54.3-229-60H0V214z"/></svg></span><span class="brace-right" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMaxYMin slice"><path d="M399994 0l6 6v35l-6 11c-56 104-135.3 181.3-238 232-57.3
+ 28.7-117 45-179 50H-300V214h399897c43.3-7 81-15 113-26 100.7-33 179.7-91 237
+-174 2.7-5 6-9 10-13 .7-1 7.3-1 20-1h17z"/></svg></span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">5</span><span class="mspace thickspace"></span><span class="mord">5</span><span class="mspace thickspace"></span><span class="mord">6</span><span class="mspace thickspace"></span><span class="mord">6</span><span class="mspace thickspace"></span><span class="mord">7</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.648em;"></span></span></span></span><span class="mspace thickspace"></span><span class="mord munder"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.64444em;"><span class="svg-align" style="top:-2.352em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.548em;min-width:1.6em;"><span class="brace-left" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMinYMin slice"><path d="M0 6l6-6h17c12.688 0 19.313.3 20 1 4 4 7.313 8.3 10 13
+ 35.313 51.3 80.813 93.8 136.5 127.5 55.688 33.7 117.188 55.8 184.5 66.5.688
+ 0 2 .3 4 1 18.688 2.7 76 4.3 172 5h399450v120H429l-6-1c-124.688-8-235-61.7
+-331-161C60.687 138.7 32.312 99.3 7 54L0 41V6z"/></svg></span><span class="brace-center" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMidYMin slice"><path d="M199572 214
+c100.7 8.3 195.3 44 280 108 55.3 42 101.7 93 139 153l9 14c2.7-4 5.7-8.7 9-14
+ 53.3-86.7 123.7-153 211-199 66.7-36 137.3-56.3 212-62h199568v120H200432c-178.3
+ 11.7-311.7 78.3-403 201-6 8-9.7 12-11 12-.7.7-6.7 1-18 1s-17.3-.3-18-1c-1.3 0
+-5-4-11-12-44.7-59.3-101.3-106.3-170-141s-145.3-54.3-229-60H0V214z"/></svg></span><span class="brace-right" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMaxYMin slice"><path d="M399994 0l6 6v35l-6 11c-56 104-135.3 181.3-238 232-57.3
+ 28.7-117 45-179 50H-300V214h399897c43.3-7 81-15 113-26 100.7-33 179.7-91 237
+-174 2.7-5 6-9 10-13 .7-1 7.3-1 20-1h17z"/></svg></span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mspace thickspace"></span><span class="mord">2</span><span class="mspace thickspace"></span><span class="mord">7</span><span class="mspace thickspace"></span><span class="mord">9</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.648em;"></span></span></span></span><span class="mspace thickspace"></span><span class="mord">0</span><span class="mspace thickspace"></span><span class="mord">9</span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">6</span></span></span><span style="top:1.4904399999999982em;"><span class="pstrut" style="height:3.29244em;"></span><span class="mord"><span class="mord munder"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.64444em;"><span class="svg-align" style="top:-2.352em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.548em;min-width:1.6em;"><span class="brace-left" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMinYMin slice"><path d="M0 6l6-6h17c12.688 0 19.313.3 20 1 4 4 7.313 8.3 10 13
+ 35.313 51.3 80.813 93.8 136.5 127.5 55.688 33.7 117.188 55.8 184.5 66.5.688
+ 0 2 .3 4 1 18.688 2.7 76 4.3 172 5h399450v120H429l-6-1c-124.688-8-235-61.7
+-331-161C60.687 138.7 32.312 99.3 7 54L0 41V6z"/></svg></span><span class="brace-center" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMidYMin slice"><path d="M199572 214
+c100.7 8.3 195.3 44 280 108 55.3 42 101.7 93 139 153l9 14c2.7-4 5.7-8.7 9-14
+ 53.3-86.7 123.7-153 211-199 66.7-36 137.3-56.3 212-62h199568v120H200432c-178.3
+ 11.7-311.7 78.3-403 201-6 8-9.7 12-11 12-.7.7-6.7 1-18 1s-17.3-.3-18-1c-1.3 0
+-5-4-11-12-44.7-59.3-101.3-106.3-170-141s-145.3-54.3-229-60H0V214z"/></svg></span><span class="brace-right" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMaxYMin slice"><path d="M399994 0l6 6v35l-6 11c-56 104-135.3 181.3-238 232-57.3
+ 28.7-117 45-179 50H-300V214h399897c43.3-7 81-15 113-26 100.7-33 179.7-91 237
+-174 2.7-5 6-9 10-13 .7-1 7.3-1 20-1h17z"/></svg></span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">5</span><span class="mspace thickspace"></span><span class="mord">5</span><span class="mspace thickspace"></span><span class="mord">6</span><span class="mspace thickspace"></span><span class="mord">6</span><span class="mspace thickspace"></span><span class="mord">7</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.648em;"></span></span></span></span><span class="mspace thickspace"></span><span class="mord munder"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.64444em;"><span class="svg-align" style="top:-2.352em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.548em;min-width:1.6em;"><span class="brace-left" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMinYMin slice"><path d="M0 6l6-6h17c12.688 0 19.313.3 20 1 4 4 7.313 8.3 10 13
+ 35.313 51.3 80.813 93.8 136.5 127.5 55.688 33.7 117.188 55.8 184.5 66.5.688
+ 0 2 .3 4 1 18.688 2.7 76 4.3 172 5h399450v120H429l-6-1c-124.688-8-235-61.7
+-331-161C60.687 138.7 32.312 99.3 7 54L0 41V6z"/></svg></span><span class="brace-center" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMidYMin slice"><path d="M199572 214
+c100.7 8.3 195.3 44 280 108 55.3 42 101.7 93 139 153l9 14c2.7-4 5.7-8.7 9-14
+ 53.3-86.7 123.7-153 211-199 66.7-36 137.3-56.3 212-62h199568v120H200432c-178.3
+ 11.7-311.7 78.3-403 201-6 8-9.7 12-11 12-.7.7-6.7 1-18 1s-17.3-.3-18-1c-1.3 0
+-5-4-11-12-44.7-59.3-101.3-106.3-170-141s-145.3-54.3-229-60H0V214z"/></svg></span><span class="brace-right" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMaxYMin slice"><path d="M399994 0l6 6v35l-6 11c-56 104-135.3 181.3-238 232-57.3
+ 28.7-117 45-179 50H-300V214h399897c43.3-7 81-15 113-26 100.7-33 179.7-91 237
+-174 2.7-5 6-9 10-13 .7-1 7.3-1 20-1h17z"/></svg></span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mspace thickspace"></span><span class="mord">2</span><span class="mspace thickspace"></span><span class="mord">7</span><span class="mspace thickspace"></span><span class="mord">9</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.648em;"></span></span></span></span><span class="mspace thickspace"></span><span class="mord mover"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:1.29244em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0</span><span class="mspace thickspace"></span><span class="mord">9</span></span></span><span class="svg-align" style="top:-3.74444em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.548em;min-width:1.6em;"><span class="brace-left" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMinYMin slice"><path d="M6 548l-6-6v-35l6-11c56-104 135.3-181.3 238-232 57.3-28.7 117
+-45 179-50h399577v120H403c-43.3 7-81 15-113 26-100.7 33-179.7 91-237 174-2.7
+ 5-6 9-10 13-.7 1-7.3 1-20 1H6z"/></svg></span><span class="brace-center" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMidYMin slice"><path d="M200428 334
+c-100.7-8.3-195.3-44-280-108-55.3-42-101.7-93-139-153l-9-14c-2.7 4-5.7 8.7-9 14
+-53.3 86.7-123.7 153-211 199-66.7 36-137.3 56.3-212 62H0V214h199568c178.3-11.7
+ 311.7-78.3 403-201 6-8 9.7-12 11-12 .7-.7 6.7-1 18-1s17.3.3 18 1c1.3 0 5 4 11
+ 12 44.7 59.3 101.3 106.3 170 141s145.3 54.3 229 60h199572v120z"/></svg></span><span class="brace-right" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMaxYMin slice"><path d="M400000 542l
+-6 6h-17c-12.7 0-19.3-.3-20-1-4-4-7.3-8.3-10-13-35.3-51.3-80.8-93.8-136.5-127.5
+s-117.2-55.8-184.5-66.5c-.7 0-2-.3-4-1-18.7-2.7-76-4.3-172-5H0V214h399571l6 1
+c124.7 8 235 61.7 331 161 31.3 33.3 59.7 72.7 85 118l7 13v35z"/></svg></span></span></span></span></span></span></span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">6</span></span></span><span style="top:2.9784399999999978em;"><span class="pstrut" style="height:3.29244em;"></span><span class="mord"><span class="mord munder"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.64444em;"><span class="svg-align" style="top:-2.352em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.548em;min-width:1.6em;"><span class="brace-left" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMinYMin slice"><path d="M0 6l6-6h17c12.688 0 19.313.3 20 1 4 4 7.313 8.3 10 13
+ 35.313 51.3 80.813 93.8 136.5 127.5 55.688 33.7 117.188 55.8 184.5 66.5.688
+ 0 2 .3 4 1 18.688 2.7 76 4.3 172 5h399450v120H429l-6-1c-124.688-8-235-61.7
+-331-161C60.687 138.7 32.312 99.3 7 54L0 41V6z"/></svg></span><span class="brace-center" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMidYMin slice"><path d="M199572 214
+c100.7 8.3 195.3 44 280 108 55.3 42 101.7 93 139 153l9 14c2.7-4 5.7-8.7 9-14
+ 53.3-86.7 123.7-153 211-199 66.7-36 137.3-56.3 212-62h199568v120H200432c-178.3
+ 11.7-311.7 78.3-403 201-6 8-9.7 12-11 12-.7.7-6.7 1-18 1s-17.3-.3-18-1c-1.3 0
+-5-4-11-12-44.7-59.3-101.3-106.3-170-141s-145.3-54.3-229-60H0V214z"/></svg></span><span class="brace-right" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMaxYMin slice"><path d="M399994 0l6 6v35l-6 11c-56 104-135.3 181.3-238 232-57.3
+ 28.7-117 45-179 50H-300V214h399897c43.3-7 81-15 113-26 100.7-33 179.7-91 237
+-174 2.7-5 6-9 10-13 .7-1 7.3-1 20-1h17z"/></svg></span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">5</span><span class="mspace thickspace"></span><span class="mord">5</span><span class="mspace thickspace"></span><span class="mord">6</span><span class="mspace thickspace"></span><span class="mord">6</span><span class="mspace thickspace"></span><span class="mord">7</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.648em;"></span></span></span></span><span class="mspace thickspace"></span><span class="mord munder"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.64444em;"><span class="svg-align" style="top:-2.352em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.548em;min-width:1.6em;"><span class="brace-left" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMinYMin slice"><path d="M0 6l6-6h17c12.688 0 19.313.3 20 1 4 4 7.313 8.3 10 13
+ 35.313 51.3 80.813 93.8 136.5 127.5 55.688 33.7 117.188 55.8 184.5 66.5.688
+ 0 2 .3 4 1 18.688 2.7 76 4.3 172 5h399450v120H429l-6-1c-124.688-8-235-61.7
+-331-161C60.687 138.7 32.312 99.3 7 54L0 41V6z"/></svg></span><span class="brace-center" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMidYMin slice"><path d="M199572 214
+c100.7 8.3 195.3 44 280 108 55.3 42 101.7 93 139 153l9 14c2.7-4 5.7-8.7 9-14
+ 53.3-86.7 123.7-153 211-199 66.7-36 137.3-56.3 212-62h199568v120H200432c-178.3
+ 11.7-311.7 78.3-403 201-6 8-9.7 12-11 12-.7.7-6.7 1-18 1s-17.3-.3-18-1c-1.3 0
+-5-4-11-12-44.7-59.3-101.3-106.3-170-141s-145.3-54.3-229-60H0V214z"/></svg></span><span class="brace-right" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMaxYMin slice"><path d="M399994 0l6 6v35l-6 11c-56 104-135.3 181.3-238 232-57.3
+ 28.7-117 45-179 50H-300V214h399897c43.3-7 81-15 113-26 100.7-33 179.7-91 237
+-174 2.7-5 6-9 10-13 .7-1 7.3-1 20-1h17z"/></svg></span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mspace thickspace"></span><span class="mord">2</span><span class="mspace thickspace"></span><span class="mord">7</span><span class="mspace thickspace"></span><span class="mord">9</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.648em;"></span></span></span></span><span class="mspace thickspace"></span><span class="mord munder"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.64444em;"><span class="svg-align" style="top:-2.352em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.548em;min-width:1.6em;"><span class="brace-left" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMinYMin slice"><path d="M0 6l6-6h17c12.688 0 19.313.3 20 1 4 4 7.313 8.3 10 13
+ 35.313 51.3 80.813 93.8 136.5 127.5 55.688 33.7 117.188 55.8 184.5 66.5.688
+ 0 2 .3 4 1 18.688 2.7 76 4.3 172 5h399450v120H429l-6-1c-124.688-8-235-61.7
+-331-161C60.687 138.7 32.312 99.3 7 54L0 41V6z"/></svg></span><span class="brace-center" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMidYMin slice"><path d="M199572 214
+c100.7 8.3 195.3 44 280 108 55.3 42 101.7 93 139 153l9 14c2.7-4 5.7-8.7 9-14
+ 53.3-86.7 123.7-153 211-199 66.7-36 137.3-56.3 212-62h199568v120H200432c-178.3
+ 11.7-311.7 78.3-403 201-6 8-9.7 12-11 12-.7.7-6.7 1-18 1s-17.3-.3-18-1c-1.3 0
+-5-4-11-12-44.7-59.3-101.3-106.3-170-141s-145.3-54.3-229-60H0V214z"/></svg></span><span class="brace-right" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMaxYMin slice"><path d="M399994 0l6 6v35l-6 11c-56 104-135.3 181.3-238 232-57.3
+ 28.7-117 45-179 50H-300V214h399897c43.3-7 81-15 113-26 100.7-33 179.7-91 237
+-174 2.7-5 6-9 10-13 .7-1 7.3-1 20-1h17z"/></svg></span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0</span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">6</span><span class="mspace thickspace"></span><span class="mord">9</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.648em;"></span></span></span></span></span></span><span style="top:4.466439999999998em;"><span class="pstrut" style="height:3.29244em;"></span><span class="mord"><span class="mord munder"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.64444em;"><span class="svg-align" style="top:-2.352em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.548em;min-width:1.6em;"><span class="brace-left" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMinYMin slice"><path d="M0 6l6-6h17c12.688 0 19.313.3 20 1 4 4 7.313 8.3 10 13
+ 35.313 51.3 80.813 93.8 136.5 127.5 55.688 33.7 117.188 55.8 184.5 66.5.688
+ 0 2 .3 4 1 18.688 2.7 76 4.3 172 5h399450v120H429l-6-1c-124.688-8-235-61.7
+-331-161C60.687 138.7 32.312 99.3 7 54L0 41V6z"/></svg></span><span class="brace-center" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMidYMin slice"><path d="M199572 214
+c100.7 8.3 195.3 44 280 108 55.3 42 101.7 93 139 153l9 14c2.7-4 5.7-8.7 9-14
+ 53.3-86.7 123.7-153 211-199 66.7-36 137.3-56.3 212-62h199568v120H200432c-178.3
+ 11.7-311.7 78.3-403 201-6 8-9.7 12-11 12-.7.7-6.7 1-18 1s-17.3-.3-18-1c-1.3 0
+-5-4-11-12-44.7-59.3-101.3-106.3-170-141s-145.3-54.3-229-60H0V214z"/></svg></span><span class="brace-right" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMaxYMin slice"><path d="M399994 0l6 6v35l-6 11c-56 104-135.3 181.3-238 232-57.3
+ 28.7-117 45-179 50H-300V214h399897c43.3-7 81-15 113-26 100.7-33 179.7-91 237
+-174 2.7-5 6-9 10-13 .7-1 7.3-1 20-1h17z"/></svg></span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">5</span><span class="mspace thickspace"></span><span class="mord">5</span><span class="mspace thickspace"></span><span class="mord">6</span><span class="mspace thickspace"></span><span class="mord">6</span><span class="mspace thickspace"></span><span class="mord">7</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.648em;"></span></span></span></span><span class="mspace thickspace"></span><span class="mord munder"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.64444em;"><span class="svg-align" style="top:-2.352em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.548em;min-width:1.6em;"><span class="brace-left" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMinYMin slice"><path d="M0 6l6-6h17c12.688 0 19.313.3 20 1 4 4 7.313 8.3 10 13
+ 35.313 51.3 80.813 93.8 136.5 127.5 55.688 33.7 117.188 55.8 184.5 66.5.688
+ 0 2 .3 4 1 18.688 2.7 76 4.3 172 5h399450v120H429l-6-1c-124.688-8-235-61.7
+-331-161C60.687 138.7 32.312 99.3 7 54L0 41V6z"/></svg></span><span class="brace-center" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMidYMin slice"><path d="M199572 214
+c100.7 8.3 195.3 44 280 108 55.3 42 101.7 93 139 153l9 14c2.7-4 5.7-8.7 9-14
+ 53.3-86.7 123.7-153 211-199 66.7-36 137.3-56.3 212-62h199568v120H200432c-178.3
+ 11.7-311.7 78.3-403 201-6 8-9.7 12-11 12-.7.7-6.7 1-18 1s-17.3-.3-18-1c-1.3 0
+-5-4-11-12-44.7-59.3-101.3-106.3-170-141s-145.3-54.3-229-60H0V214z"/></svg></span><span class="brace-right" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMaxYMin slice"><path d="M399994 0l6 6v35l-6 11c-56 104-135.3 181.3-238 232-57.3
+ 28.7-117 45-179 50H-300V214h399897c43.3-7 81-15 113-26 100.7-33 179.7-91 237
+-174 2.7-5 6-9 10-13 .7-1 7.3-1 20-1h17z"/></svg></span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0</span><span class="mspace thickspace"></span><span class="mord">1</span><span class="mspace thickspace"></span><span class="mord">2</span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">6</span><span class="mspace thickspace"></span><span class="mord">7</span><span class="mspace thickspace"></span><span class="mord">9</span><span class="mspace thickspace"></span><span class="mord">9</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.648em;"></span></span></span></span></span></span><span style="top:5.954439999999997em;"><span class="pstrut" style="height:3.29244em;"></span><span class="mord"><span class="mord munder"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.64444em;"><span class="svg-align" style="top:-2.352em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.548em;min-width:1.6em;"><span class="brace-left" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMinYMin slice"><path d="M0 6l6-6h17c12.688 0 19.313.3 20 1 4 4 7.313 8.3 10 13
+ 35.313 51.3 80.813 93.8 136.5 127.5 55.688 33.7 117.188 55.8 184.5 66.5.688
+ 0 2 .3 4 1 18.688 2.7 76 4.3 172 5h399450v120H429l-6-1c-124.688-8-235-61.7
+-331-161C60.687 138.7 32.312 99.3 7 54L0 41V6z"/></svg></span><span class="brace-center" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMidYMin slice"><path d="M199572 214
+c100.7 8.3 195.3 44 280 108 55.3 42 101.7 93 139 153l9 14c2.7-4 5.7-8.7 9-14
+ 53.3-86.7 123.7-153 211-199 66.7-36 137.3-56.3 212-62h199568v120H200432c-178.3
+ 11.7-311.7 78.3-403 201-6 8-9.7 12-11 12-.7.7-6.7 1-18 1s-17.3-.3-18-1c-1.3 0
+-5-4-11-12-44.7-59.3-101.3-106.3-170-141s-145.3-54.3-229-60H0V214z"/></svg></span><span class="brace-right" style="height:0.548em;"><svg width="400em" height="0.548em" viewbox="0 0 400000 548" preserveaspectratio="xMaxYMin slice"><path d="M399994 0l6 6v35l-6 11c-56 104-135.3 181.3-238 232-57.3
+ 28.7-117 45-179 50H-300V214h399897c43.3-7 81-15 113-26 100.7-33 179.7-91 237
+-174 2.7-5 6-9 10-13 .7-1 7.3-1 20-1h17z"/></svg></span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0</span><span class="mspace thickspace"></span><span class="mord">1</span><span class="mspace thickspace"></span><span class="mord">2</span><span class="mspace thickspace"></span><span class="mord">2</span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">3</span><span class="mspace thickspace"></span><span class="mord">5</span><span class="mspace thickspace"></span><span class="mord">5</span><span class="mspace thickspace"></span><span class="mord">6</span><span class="mspace thickspace"></span><span class="mord">6</span><span class="mspace thickspace"></span><span class="mord">6</span><span class="mspace thickspace"></span><span class="mord">7</span><span class="mspace thickspace"></span><span class="mord">7</span><span class="mspace thickspace"></span><span class="mord">9</span><span class="mspace thickspace"></span><span class="mord">9</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.648em;"></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:9.894879999999997em;"></span></span></span></span></span></span></span></span></span></span></p>
+<p><strong>minrun</strong></p>
+<p>最后，我们讨论下 minrun 的选取方式。因此如果待排序序列长度为 minrun，则我们总共会生成<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>⌈</mo><mfrac><mrow><mi>n</mi></mrow><mrow><mi>m</mi><mi>i</mi><mi>n</mi><mi>r</mi><mi>u</mi><mi>n</mi></mrow></mfrac><mo>⌉</mo></mrow><annotation encoding="application/x-tex">\lceil \frac{n}{min run } \rceil</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1.095em;vertical-align:-0.345em;"></span><span class="base"><span class="mopen">⌈</span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.695392em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight">m</span><span class="mord mathit mtight">i</span><span class="mord mathit mtight">n</span><span class="mord mathit mtight" style="margin-right:0.02778em;">r</span><span class="mord mathit mtight">u</span><span class="mord mathit mtight">n</span></span></span></span><span style="top:-3.15em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.2em;"><svg width="400em" height="0.2em" viewbox="0 0 400000 200" preserveaspectratio="xMinYMin slice"><path d="M0 80H400000 v40H0z M0 80H400000 v40H0z"/></svg></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose">⌉</span></span></span></span>个初始 run 。</p>
+<ul>
+<li>如果<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>⌈</mo><mfrac><mrow><mi>n</mi></mrow><mrow><mi>m</mi><mi>i</mi><mi>n</mi><mi>r</mi><mi>u</mi><mi>n</mi></mrow></mfrac><mo>⌉</mo></mrow><annotation encoding="application/x-tex">\lceil \frac{n}{min run } \rceil</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1.095em;vertical-align:-0.345em;"></span><span class="base"><span class="mopen">⌈</span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.695392em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight">m</span><span class="mord mathit mtight">i</span><span class="mord mathit mtight">n</span><span class="mord mathit mtight" style="margin-right:0.02778em;">r</span><span class="mord mathit mtight">u</span><span class="mord mathit mtight">n</span></span></span></span><span style="top:-3.15em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.2em;"><svg width="400em" height="0.2em" viewbox="0 0 400000 200" preserveaspectratio="xMinYMin slice"><path d="M0 80H400000 v40H0z M0 80H400000 v40H0z"/></svg></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose">⌉</span></span></span></span>刚好是2的整数次幂，则归并过程将会非常“完美”，可以表述为一个满二叉树。</li>
+<li>如果<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>⌈</mo><mfrac><mrow><mi>n</mi></mrow><mrow><mi>m</mi><mi>i</mi><mi>n</mi><mi>r</mi><mi>u</mi><mi>n</mi></mrow></mfrac><mo>⌉</mo></mrow><annotation encoding="application/x-tex">\lceil \frac{n}{min run } \rceil</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1.095em;vertical-align:-0.345em;"></span><span class="base"><span class="mopen">⌈</span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.695392em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight">m</span><span class="mord mathit mtight">i</span><span class="mord mathit mtight">n</span><span class="mord mathit mtight" style="margin-right:0.02778em;">r</span><span class="mord mathit mtight">u</span><span class="mord mathit mtight">n</span></span></span></span><span style="top:-3.15em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.2em;"><svg width="400em" height="0.2em" viewbox="0 0 400000 200" preserveaspectratio="xMinYMin slice"><path d="M0 80H400000 v40H0z M0 80H400000 v40H0z"/></svg></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose">⌉</span></span></span></span> 比2的某个整数次幂稍大一点点，则到算法的最后阶段会出现一个超长 run 与一个超短 run 的合并，这是一种非常不好的的情况。</li>
+</ul>
+<p>因此，我们会选取 minrun ，使得<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>⌈</mo><mfrac><mrow><mi>n</mi></mrow><mrow><mi>m</mi><mi>i</mi><mi>n</mi><mi>r</mi><mi>u</mi><mi>n</mi></mrow></mfrac><mo>⌉</mo></mrow><annotation encoding="application/x-tex">\lceil \frac{n}{min run } \rceil</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1.095em;vertical-align:-0.345em;"></span><span class="base"><span class="mopen">⌈</span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.695392em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight">m</span><span class="mord mathit mtight">i</span><span class="mord mathit mtight">n</span><span class="mord mathit mtight" style="margin-right:0.02778em;">r</span><span class="mord mathit mtight">u</span><span class="mord mathit mtight">n</span></span></span></span><span style="top:-3.15em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.2em;"><svg width="400em" height="0.2em" viewbox="0 0 400000 200" preserveaspectratio="xMinYMin slice"><path d="M0 80H400000 v40H0z M0 80H400000 v40H0z"/></svg></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose">⌉</span></span></span></span>刚好是2的整数次幂或比某个2的整数次幂稍小一点的数。</p>
+<h2 id="细节"><a class="markdownIt-Anchor" href="#细节"></a> 细节</h2>
+<p>Python 的 Timsort 的具体说明可以参见 <a href="http://svn.python.org/projects/python/trunk/Objects/listsort.txt" target="_blank" rel="noopener">Tim Peters 的说明</a>，非常详尽，也进行了更进一步的优化。</p>
+<p>如前所述，run 是已经排好序的一块分区，自然 run 可能会有不同的长度，而 Timesort 根据 run 的长度来选择排序的策略，因此 Timsort也是一个自适应的排序算法。例如，如果 run 的长度小于某一个值，则会选择插入排序算法来排序。</p>
+<p>run 的最小长度（minrun）取决于数组的大小。当数组元素少于64个时，那么 run 的最小长度便是数组的长度，这时 Timsort 用插入排序算法来排序。</p>
+<h3 id="数组元素小于64个"><a class="markdownIt-Anchor" href="#数组元素小于64个"></a> 数组元素小于64个</h3>
+<p>为了提升速率采用，实际采用的是二分插入排序（binary merge sort) ，这里简单说一下插入排序</p>
+<p>插入排序是一种简单的排序，在较大的数组中它很慢，但在小型数组中最为有效，思路如下：</p>
+<ul>
+<li>依次访问数组元素</li>
+<li>通过将元素插入正确的位置来构建排好序的数组</li>
+</ul>
+<p>这个 gif 展示了插入排序的操作过程：</p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-7-24/74313660.jpg" alt="insertion"></p>
+<h3 id="数组元素大于64个"><a class="markdownIt-Anchor" href="#数组元素大于64个"></a> 数组元素大于64个</h3>
+<p>如果数组大于64个元素，则算法将按照之前的思路开始，首先根据 minrun 查找数组中<strong>升序或严格降序的部分</strong>，这些部分就是 run 了。</p>
+<p>当 Timsort 找到一个 run 时，如果 run 的长度小于 minrun，跟之前一样，我们选择 run 之后的数字插入排序至 run 中，使得 run 的长度到达 minrun。</p>
+<p>然后将这个 run 压入栈中，也将该 run 在数组中的起始位置和 run 的长度放入栈中，之后根据先前压入栈中的 run 决定是否该合并 run。</p>
+<h3 id="minimum-size-minrun"><a class="markdownIt-Anchor" href="#minimum-size-minrun"></a> Minimum size (minrun)</h3>
+<p>如前所述， 我们知道当 run 的数目等于或略小于2的幂时，合并两个数组最为有效。所以 Timsort 选择范围为 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>[</mo><mn>3</mn><mn>2</mn><mo separator="true">,</mo><mn>6</mn><mn>4</mn><mo>]</mo></mrow><annotation encoding="application/x-tex">[32, 64]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mopen">[</span><span class="mord">3</span><span class="mord">2</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord">6</span><span class="mord">4</span><span class="mclose">]</span></span></span></span> 的 minrun，使得原始数组的长度除以 minrun 时（<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>⌈</mo><mfrac><mrow><mi>n</mi></mrow><mrow><mi>m</mi><mi>i</mi><mi>n</mi><mi>r</mi><mi>u</mi><mi>n</mi></mrow></mfrac><mo>⌉</mo></mrow><annotation encoding="application/x-tex">\lceil \frac{n}{min run } \rceil</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1.095em;vertical-align:-0.345em;"></span><span class="base"><span class="mopen">⌈</span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.695392em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight">m</span><span class="mord mathit mtight">i</span><span class="mord mathit mtight">n</span><span class="mord mathit mtight" style="margin-right:0.02778em;">r</span><span class="mord mathit mtight">u</span><span class="mord mathit mtight">n</span></span></span></span><span style="top:-3.15em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.2em;"><svg width="400em" height="0.2em" viewbox="0 0 400000 200" preserveaspectratio="xMinYMin slice"><path d="M0 80H400000 v40H0z M0 80H400000 v40H0z"/></svg></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose">⌉</span></span></span></span>），等于或略小于2的幂。</p>
+<p>具体而言，选择数组长度的六个最高标志位，如果其余的标志位被设置，则加1：</p>
+<ul>
+<li>189：10111101，取前六个最高标志位为101111(47)，同时最后两位为01，所以 minrun 为47+1，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>⌈</mo><mfrac><mrow><mi>n</mi></mrow><mrow><mi>m</mi><mi>i</mi><mi>n</mi><mi>r</mi><mi>u</mi><mi>n</mi></mrow></mfrac><mo>⌉</mo><mo>=</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">\lceil \frac{n}{min run } \rceil=4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1.095em;vertical-align:-0.345em;"></span><span class="base"><span class="mopen">⌈</span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.695392em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight">m</span><span class="mord mathit mtight">i</span><span class="mord mathit mtight">n</span><span class="mord mathit mtight" style="margin-right:0.02778em;">r</span><span class="mord mathit mtight">u</span><span class="mord mathit mtight">n</span></span></span></span><span style="top:-3.15em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.2em;"><svg width="400em" height="0.2em" viewbox="0 0 400000 200" preserveaspectratio="xMinYMin slice"><path d="M0 80H400000 v40H0z M0 80H400000 v40H0z"/></svg></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose">⌉</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">4</span></span></span></span> 满足要求。</li>
+<li>976：11 1101 0000，取前六个最高标志位为111101(61)，同时最后几位为0000，所以 minrun 为61，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>⌈</mo><mfrac><mrow><mi>n</mi></mrow><mrow><mi>m</mi><mi>i</mi><mi>n</mi><mi>r</mi><mi>u</mi><mi>n</mi></mrow></mfrac><mo>⌉</mo><mo>=</mo><mn>1</mn><mn>6</mn></mrow><annotation encoding="application/x-tex">\lceil \frac{n}{min run } \rceil=16</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1.095em;vertical-align:-0.345em;"></span><span class="base"><span class="mopen">⌈</span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.695392em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight">m</span><span class="mord mathit mtight">i</span><span class="mord mathit mtight">n</span><span class="mord mathit mtight" style="margin-right:0.02778em;">r</span><span class="mord mathit mtight">u</span><span class="mord mathit mtight">n</span></span></span></span><span style="top:-3.15em;"><span class="pstrut" style="height:3em;"></span><span class="stretchy" style="height:0.2em;"><svg width="400em" height="0.2em" viewbox="0 0 400000 200" preserveaspectratio="xMinYMin slice"><path d="M0 80H400000 v40H0z M0 80H400000 v40H0z"/></svg></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose">⌉</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">1</span><span class="mord">6</span></span></span></span> 满足要求。</li>
+</ul>
+<h3 id="merging"><a class="markdownIt-Anchor" href="#merging"></a> Merging</h3>
+<p>合并的时候，按照思路中的规则进行合并，满足以下条件时，合并结束：</p>
+<ul>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>X</mi><mo>&gt;</mo><mi>Y</mi><mo>+</mo><mi>Z</mi></mrow><annotation encoding="application/x-tex">X&gt;Y+Z</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.76666em;vertical-align:-0.08333em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.07847em;">X</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit" style="margin-right:0.22222em;">Y</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit" style="margin-right:0.07153em;">Z</span></span></span></span></li>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>Y</mi><mo>&gt;</mo><mi>Z</mi></mrow><annotation encoding="application/x-tex">Y&gt;Z</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.72243em;vertical-align:-0.0391em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.22222em;">Y</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit" style="margin-right:0.07153em;">Z</span></span></span></span></li>
+</ul>
+<p>例如：如果<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>X</mi><mo>&lt;</mo><mi>Y</mi><mo>+</mo><mi>Z</mi></mrow><annotation encoding="application/x-tex">X&lt;Y+Z</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.76666em;vertical-align:-0.08333em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.07847em;">X</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit" style="margin-right:0.22222em;">Y</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit" style="margin-right:0.07153em;">Z</span></span></span></span>，那么<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>X</mi><mo>+</mo><mi>Y</mi></mrow><annotation encoding="application/x-tex">X+Y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.76666em;vertical-align:-0.08333em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.07847em;">X</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit" style="margin-right:0.22222em;">Y</span></span></span></span>合并为一个新的 run，然后入栈。重复上述步骤，直到同时满足上述2个条件。</p>
+<p>当合并结束后，Timsort 会继续找下一 run，然后找到以后入栈，重复上述步骤，即每次 run 入栈都会检查是否需要合并2个 run。</p>
+<p>注意到，我们只在栈的顶部进行这样的合并，这个配合 run 是升序或严格降序的可以保证 Timsort 是稳定的，如下图所示。</p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-7-25/43860277.jpg" alt="merge"></p>
+<p>Timsort 并没执行原址(in_place)的归并，因为保证原址并稳定的话，需要很大的开销。</p>
+<p>实际中 Timsort 合并2个相邻的 run 需要临时存储空闲，临时存储空间的大小是2个 run 中较小的 run 的大小。Timsort算法先将较小的 run 复制到这个临时存储空间，然后用原先存储这2个 run 的空间来存储合并后的 run。</p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-7-25/97473261.jpg" alt="temporary"></p>
+<p>合并算法是用简单插入排序，依次从左到右或从右到左比较，然后合并2个 run。</p>
+<p>为了提高效率，Timsort用<strong>二分插入排序（binary merge sort）</strong>。即先用二分查找（binary search）找到插入的位置，然后再插入。</p>
+<p>####Galloping mode</p>
+<p>在 Galloping mode 中，算法在一个 run 中搜索另一个 run 的第一个元素。通过将该初始元素与另一个 run 的第<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>2</mn><mi>k</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">2k-1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="base"><span class="mord">2</span><span class="mord mathit" style="margin-right:0.03148em;">k</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord">1</span></span></span></span>个元素（即1,3,5…）进行比较来完成的，以便获得初始元素所在的元素范围。这缩短了二分查找的范围，从而提高了效率。如果发现 Galloping 的效率低于二分查找，则退出 Galloping mode。</p>
+<p>例如，我们要将 X 和 Y 这2个 run 合并，且X是较小的 run，以及 <strong>X 和 Y 已经分别是排好序的</strong>，如下图所示。</p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-7-25/93379912.jpg" alt="merging-xy1"></p>
+<p>二分查找会找到 X 中第一个大于 Y[0] 的元素 x，当找到 x 时，可以在合并时忽略 x 之前的元素。类似的，还可以在 Y 中找到第一个大于 X[-1] 的元素 y，当找到 y 时，可以在合并时忽略 y 之后的元素，这种查找可能在随机数中效率不会很高，但是在其他情况下有很高的效率。</p>
+<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-7-25/31968999.jpg" alt="merging-xy2"></p>
+<p>当算法到达最小阈值<code>min_gallop</code>时，算法切换到 Galloping mode，试图利用数据中的那些可以直接排序的元素。只有当一个 run 的初始元素不是另一个 run 的前七个元素之一时，Galloping 才有用。这意味着初始阈值为7。</p>
+<p>为了避免 Galloping mode 的缺点，合并函数会调整阈值。如果所选元素来自先前返回元素的同一数组，则<code>min_gallop</code>减1。否则，该值增加1，从而阻止返回到  Galloping mode 。 在随机数据的情况下，<code>min_gallop</code>的值会变得非常大，以至于 Galloping mode 永远不会再次发生。</p>
+<p>Galloping 并不总是有效的。在某些情况下，Galloping mode 会有比简单的线性搜索更多的比较。</p>
+<h2 id="分析"><a class="markdownIt-Anchor" href="#分析"></a> 分析</h2>
+<p>本质上 Timsort 是一个经过大量优化的归并排序，而归并排序已经到达了最坏情况下，比较排序算法时间复杂度的下界，所以在最坏的情况下，Timsort 时间复杂度为 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>O</mi><mo>(</mo><mi>n</mi><mi>l</mi><mi>g</mi><mi>n</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">O(nlgn)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathit">n</span><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathit" style="margin-right:0.03588em;">g</span><span class="mord mathit">n</span><span class="mclose">)</span></span></span></span>。在最佳情况下，即输入已经排好序，它则以线性时间运行 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>O</mi><mo>(</mo><mi>n</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathit">n</span><span class="mclose">)</span></span></span></span>。</p>
+<h2 id="code"><a class="markdownIt-Anchor" href="#code"></a> Code</h2>
+<p>此代码来自于 <a href="https://hackernoon.com/timsort-the-fastest-sorting-algorithm-youve-never-heard-of-36b28417f399" target="_blank" rel="noopener">here</a>。</p>
+<p>虽然这个代码不完整，也不类似于Python的官方<code>sorted()</code>源码，但是已经可以获得 Timsort 的总体感觉。如果你想看到 Timsort 的官方原始代码，参见<a href="https://github.com/python/cpython/blob/master/Objects/listobject.c" target="_blank" rel="noopener">此处</a>（是用C语言实现的，而不是Python）。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># based off of this code https://gist.github.com/nandajavarma/a3a6b62f34e74ec4c31674934327bbd3</span></span><br><span class="line"><span class="comment"># Brandon Skerritt</span></span><br><span class="line"><span class="comment"># https://skerritt.tech</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">binary_search</span><span class="params">(the_array, item, start, end)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> start == end:</span><br><span class="line">        <span class="keyword">if</span> the_array[start] &gt; item:</span><br><span class="line">            <span class="keyword">return</span> start</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> start + <span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> start &gt; end:</span><br><span class="line">        <span class="keyword">return</span> start</span><br><span class="line"></span><br><span class="line">    mid = round((start + end)/ <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> the_array[mid] &lt; item:</span><br><span class="line">        <span class="keyword">return</span> binary_search(the_array, item, mid + <span class="number">1</span>, end)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">elif</span> the_array[mid] &gt; item:</span><br><span class="line">        <span class="keyword">return</span> binary_search(the_array, item, start, mid - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> mid</span><br><span class="line"></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">Insertion sort that timsort uses if the array size is small or if</span></span><br><span class="line"><span class="string">the size of the "run" is small</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">insertion_sort</span><span class="params">(the_array)</span>:</span></span><br><span class="line">    l = len(the_array)</span><br><span class="line">    <span class="keyword">for</span> index <span class="keyword">in</span> range(<span class="number">1</span>, l):</span><br><span class="line">        value = the_array[index]</span><br><span class="line">        pos = binary_search(the_array, value, <span class="number">0</span>, index - <span class="number">1</span>)</span><br><span class="line">        the_array = the_array[:pos] + [value] + the_array[pos:index] + the_array[index+<span class="number">1</span>:]</span><br><span class="line">    <span class="keyword">return</span> the_array</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">merge</span><span class="params">(left, right)</span>:</span></span><br><span class="line">    <span class="string">"""Takes two sorted lists and returns a single sorted list by comparing the</span></span><br><span class="line"><span class="string">    elements one at a time.</span></span><br><span class="line"><span class="string">    [1, 2, 3, 4, 5, 6]</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> left:</span><br><span class="line">        <span class="keyword">return</span> right</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> right:</span><br><span class="line">        <span class="keyword">return</span> left</span><br><span class="line">    <span class="keyword">if</span> left[<span class="number">0</span>] &lt; right[<span class="number">0</span>]:</span><br><span class="line">        <span class="keyword">return</span> [left[<span class="number">0</span>]] + merge(left[<span class="number">1</span>:], right)</span><br><span class="line">    <span class="keyword">return</span> [right[<span class="number">0</span>]] + merge(left, right[<span class="number">1</span>:])</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">timsort</span><span class="params">(the_array)</span>:</span></span><br><span class="line">    runs, sorted_runs = [], []</span><br><span class="line">    length = len(the_array)</span><br><span class="line">    new_run = [the_array[<span class="number">0</span>]]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># for every i in the range of 1 to length of array</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, length):</span><br><span class="line">        <span class="comment"># if i is at the end of the list</span></span><br><span class="line">        <span class="keyword">if</span> i == length - <span class="number">1</span>:</span><br><span class="line">            new_run.append(the_array[i])</span><br><span class="line">            runs.append(new_run)</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        <span class="comment"># if the i'th element of the array is less than the one before it</span></span><br><span class="line">        <span class="keyword">if</span> the_array[i] &lt; the_array[i<span class="number">-1</span>]:</span><br><span class="line">            <span class="comment"># if new_run is set to None (NULL)</span></span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> new_run:</span><br><span class="line">                runs.append([the_array[i]])</span><br><span class="line">                new_run.append(the_array[i])</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                runs.append(new_run)</span><br><span class="line">                new_run = []</span><br><span class="line">        <span class="comment"># else if its equal to or more than</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            new_run.append(the_array[i])</span><br><span class="line"></span><br><span class="line">    <span class="comment"># for every item in runs, append it using insertion sort</span></span><br><span class="line">    <span class="keyword">for</span> item <span class="keyword">in</span> runs:</span><br><span class="line">        sorted_runs.append(insertion_sort(item))</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># for every run in sorted_runs, merge them</span></span><br><span class="line">    sorted_array = []</span><br><span class="line">    <span class="keyword">for</span> run <span class="keyword">in</span> sorted_runs:</span><br><span class="line">        sorted_array = merge(sorted_array, run)</span><br><span class="line"></span><br><span class="line">    print(sorted_array)</span><br><span class="line"></span><br><span class="line">timsort([<span class="number">2</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>])</span><br></pre></td></tr></table></figure>
+<h1 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> Reference</h1>
+<ol>
+<li><a href="https://hackernoon.com/timsort-the-fastest-sorting-algorithm-youve-never-heard-of-36b28417f399" target="_blank" rel="noopener">Timsort — the fastest sorting algorithm you’ve never heard of</a></li>
+<li>算法笔记——刁瑞 / 谢妍</li>
+<li>Timsort – <a href="https://en.wikipedia.org/wiki/Timsort" target="_blank" rel="noopener">Wiki</a></li>
+<li>Nicolas Auger, Cyril Nicaud, Carine Pivoteau. Merge Strategies: from Merge Sort to TimSort. 2015. <hal-01212839v2></hal-01212839v2></li>
+</ol>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2018/07/25/timsort/">http://sikasjc.github.io/2018/07/25/timsort/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/算法/">算法</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2018/07/14/type-hint-in-python/">
+        <span class="next-text nav-default">全面理解Python中的类型提示（Type Hints）</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMzQzMy85OTg5">
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>  
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/u/5605720030" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/si-qia-sika" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  
+
+  
+   <script type="text/javascript">
+	(function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>
