@@ -17,7 +17,7 @@
 
 
 
-  <meta name="keywords" content="python,算法," />
+  <meta name="keywords" content="算法,python," />
 
 
 
@@ -35,7 +35,7 @@
 
 
 <meta name="description" content="2002年Tim Peters为Python编程语言创建了Timsort。自从Python 2.3开始，Timsort一直是Python的标准排序算法。如今，Timsort 已是是 Python、 Java、  Android平台 和 GNU Octave 的默认排序算法。Timsort 本质上利用了归并排序与插入排序，是一种经过优化的归并排序算法。">
-<meta name="keywords" content="python,算法">
+<meta name="keywords" content="算法,python">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Timsort原理学习">
 <meta property="og:url" content="http://sikasjc.github.io/2018/07/25/timsort/index.html">
@@ -51,7 +51,7 @@
 <meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-7-25/97473261.jpg">
 <meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-7-25/93379912.jpg">
 <meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-7-25/31968999.jpg">
-<meta property="og:updated_time" content="2018-07-25T15:39:28.057Z">
+<meta property="og:updated_time" content="2018-07-25T15:41:08.478Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Timsort原理学习">
 <meta name="twitter:description" content="2002年Tim Peters为Python编程语言创建了Timsort。自从Python 2.3开始，Timsort一直是Python的标准排序算法。如今，Timsort 已是是 Python、 Java、  Android平台 和 GNU Octave 的默认排序算法。Timsort 本质上利用了归并排序与插入排序，是一种经过优化的归并排序算法。">
@@ -229,9 +229,9 @@
         
           <div class="post-tags">
             
-              <a href="/tags/python/">python</a>
-            
               <a href="/tags/算法/">算法</a>
+            
+              <a href="/tags/python/">python</a>
             
           </div>
         
@@ -242,7 +242,7 @@
   <div class="post-toc" id="post-toc">
     <h2 class="post-toc-title">目录</h2>
     <div class="post-toc-content">
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#introduction"><span class="toc-number">1.</span> <span class="toc-text"> Introduction</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#timsort"><span class="toc-number">2.</span> <span class="toc-text"> Timsort</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#概述"><span class="toc-number">2.1.</span> <span class="toc-text"> 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#思想"><span class="toc-number">2.2.</span> <span class="toc-text"> 思想</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#细节"><span class="toc-number">2.3.</span> <span class="toc-text"> 细节</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#数组元素小于64个"><span class="toc-number">2.3.1.</span> <span class="toc-text"> 数组元素小于64个</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数组元素大于64个"><span class="toc-number">2.3.2.</span> <span class="toc-text"> 数组元素大于64个</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#minimum-size-minrun"><span class="toc-number">2.3.3.</span> <span class="toc-text"> Minimum size (minrun)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#merging"><span class="toc-number">2.3.4.</span> <span class="toc-text"> Merging</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分析"><span class="toc-number">2.4.</span> <span class="toc-text"> 分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#code"><span class="toc-number">2.5.</span> <span class="toc-text"> Code</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#reference"><span class="toc-number">3.</span> <span class="toc-text"> Reference</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#introduction"><span class="toc-number">1.</span> <span class="toc-text"> Introduction</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#timsort"><span class="toc-number">2.</span> <span class="toc-text"> Timsort</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#概述"><span class="toc-number">2.1.</span> <span class="toc-text"> 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#思想"><span class="toc-number">2.2.</span> <span class="toc-text"> 思想</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#细节"><span class="toc-number">2.3.</span> <span class="toc-text"> 细节</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#数组元素小于64个"><span class="toc-number">2.3.1.</span> <span class="toc-text"> 数组元素小于64个</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数组元素大于64个"><span class="toc-number">2.3.2.</span> <span class="toc-text"> 数组元素大于64个</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#minimum-size-minrun"><span class="toc-number">2.3.3.</span> <span class="toc-text"> Minimum size (minrun)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#merging"><span class="toc-number">2.3.4.</span> <span class="toc-text"> Merging</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#galloping-mode"><span class="toc-number">2.3.4.1.</span> <span class="toc-text"> Galloping mode</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分析"><span class="toc-number">2.4.</span> <span class="toc-text"> 分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#code"><span class="toc-number">2.5.</span> <span class="toc-text"> Code</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#reference"><span class="toc-number">3.</span> <span class="toc-text"> Reference</span></a></li></ol>
     </div>
   </div>
 
@@ -546,7 +546,7 @@ c100.7 8.3 195.3 44 280 108 55.3 42 101.7 93 139 153l9 14c2.7-4 5.7-8.7 9-14
 <p><img src="http://ormnbkvfv.bkt.clouddn.com/18-7-25/97473261.jpg" alt="temporary"></p>
 <p>合并算法是用简单插入排序，依次从左到右或从右到左比较，然后合并2个 run。</p>
 <p>为了提高效率，Timsort用<strong>二分插入排序（binary merge sort）</strong>。即先用二分查找（binary search）找到插入的位置，然后再插入。</p>
-<p>####Galloping mode</p>
+<h4 id="galloping-mode"><a class="markdownIt-Anchor" href="#galloping-mode"></a> Galloping mode</h4>
 <p>在 Galloping mode 中，算法在一个 run 中搜索另一个 run 的第一个元素。通过将该初始元素与另一个 run 的第<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>2</mn><mi>k</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">2k-1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="base"><span class="mord">2</span><span class="mord mathit" style="margin-right:0.03148em;">k</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord">1</span></span></span></span>个元素（即1,3,5…）进行比较来完成的，以便获得初始元素所在的元素范围。这缩短了二分查找的范围，从而提高了效率。如果发现 Galloping 的效率低于二分查找，则退出 Galloping mode。</p>
 <p>例如，我们要将 X 和 Y 这2个 run 合并，且X是较小的 run，以及 <strong>X 和 Y 已经分别是排好序的</strong>，如下图所示。</p>
 <p><img src="http://ormnbkvfv.bkt.clouddn.com/18-7-25/93379912.jpg" alt="merging-xy1"></p>
@@ -602,15 +602,21 @@ c100.7 8.3 195.3 44 280 108 55.3 42 101.7 93 139 153l9 14c2.7-4 5.7-8.7 9-14
         
           <div class="post-tags">
             
-              <a href="/tags/python/">python</a>
-            
               <a href="/tags/算法/">算法</a>
+            
+              <a href="/tags/python/">python</a>
             
           </div>
         
         
         
   <nav class="post-nav">
+    
+      <a class="prev" href="/2018/08/22/improve/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">提升Python性能的7个习惯</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
     
     
       <a class="next" href="/2018/07/14/type-hint-in-python/">
