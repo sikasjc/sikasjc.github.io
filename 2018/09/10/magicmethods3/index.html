@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="这是最后一部分，虽然有些魔术方法,我们可能以后一辈子都不会再遇到了,这里也就只是简单介绍下; 而有些魔术方法,巧妙使用它可以构造出非常优美的代码,比如将复杂的逻辑封装成简单的API。"/>
+
+
+
+
+  <meta name="keywords" content="python,魔法方法," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2018/09/10/magicmethods3/"/>
+
+
+<meta name="description" content="这是最后一部分，虽然有些魔术方法,我们可能以后一辈子都不会再遇到了,这里也就只是简单介绍下; 而有些魔术方法,巧妙使用它可以构造出非常优美的代码,比如将复杂的逻辑封装成简单的API。">
+<meta name="keywords" content="python,魔法方法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="全面学习Python魔法方法(magic methods) III">
+<meta property="og:url" content="http://sikasjc.github.io/2018/09/10/magicmethods3/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="这是最后一部分，虽然有些魔术方法,我们可能以后一辈子都不会再遇到了,这里也就只是简单介绍下; 而有些魔术方法,巧妙使用它可以构造出非常优美的代码,比如将复杂的逻辑封装成简单的API。">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2018-09-28T15:05:37.032Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="全面学习Python魔法方法(magic methods) III">
+<meta name="twitter:description" content="这是最后一部分，虽然有些魔术方法,我们可能以后一辈子都不会再遇到了,这里也就只是简单介绍下; 而有些魔术方法,巧妙使用它可以构造出非常优美的代码,比如将复杂的逻辑封装成简单的API。">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> 全面学习Python魔法方法(magic methods) III · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          全面学习Python魔法方法(magic methods) III
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018年9月10日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/魔法方法/">魔法方法</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#copying"><span class="toc-number">1.</span> <span class="toc-text"> Copying</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#pickling"><span class="toc-number">2.</span> <span class="toc-text"> Pickling</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#pickling-a-quick-soak-in-the-brine"><span class="toc-number">2.1.</span> <span class="toc-text"> Pickling: A Quick Soak in the Brine</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pickling-your-own-objects"><span class="toc-number">2.2.</span> <span class="toc-text"> Pickling your own Objects</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#an-example"><span class="toc-number">2.3.</span> <span class="toc-text"> An Example</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#how-to-call-magic-methods"><span class="toc-number">3.</span> <span class="toc-text"> How to Call Magic Methods</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p><a href="https://sikasjc.github.io/2018/08/28/magicmethods1/">全面学习Python魔法方法(magic methods) I</a></p>
+<p><a href="https://sikasjc.github.io/2018/08/28/magicmethods2/">全面学习Python魔法方法(magic methods) II</a></p>
+<p>全面学习Python魔法方法(magic methods) III</p>
+<h2 id="copying"><a class="markdownIt-Anchor" href="#copying"></a> Copying</h2>
+<p>有时，特别是在处理可变对象时，您希望能够复制对象并进行更改，而不会影响您从中复制的内容。 这是Python的copy发挥作用的地方，但我们必须告诉Python如何有效地复制。</p>
+<ul>
+<li>
+<p><code>__copy__(self)</code></p>
+<p>为类的实例定义<code>copy.copy()</code>的行为。 <code>copy.copy()</code>返回对象的浅拷贝{这意味着，虽然实例本身是一个新实例，但它的所有数据都被引用，即对象本身被复制，但其数据仍被引用（因此浅拷贝中的数据更改可能会导致原始更改）。</p>
+</li>
+<li>
+<p><code>__deepcopy__(self, memodict=)</code></p>
+<p>为类的实例定义<code>copy.deepcopy()</code>的行为。<code>copy.deepcopy()</code>返回对象的深拷贝，对象及其数据都是<code>copied.memodict</code>是一个以前复制的对象的缓存，这可以优化复制并防止在复制递归数据结构时无限递归。如果要深拷贝单个属性，请在该属性上调用<code>copy.deepcopy()</code>，并将<code>memodict</code>作为第一个参数。</p>
+</li>
+</ul>
+<p>与往常一样，在任何情况下，我们都需要比默认行为提供的更细粒度的控制。例如，如果试图复制一个将缓存存储为字典(可能很大)的对象，那么复制缓存可能也没有意义——如果缓存可以在实例之间在内存中共享。</p>
+<h2 id="pickling"><a class="markdownIt-Anchor" href="#pickling"></a> Pickling</h2>
+<p>pickle是Python数据结构的序列化过程，当需要存储一个对象并稍后检索它时，它可能非常有用。pickle非常重要，因此它不仅有自己的模块(pickle)，还具有自己的协议和相应的魔法方法。但是首先，简单介绍一下如何pickle现有类型。</p>
+<h3 id="pickling-a-quick-soak-in-the-brine"><a class="markdownIt-Anchor" href="#pickling-a-quick-soak-in-the-brine"></a> Pickling: A Quick Soak in the Brine</h3>
+<p>让我们深入pickling。 假设有一个要稍后存储和检索的字典，可以将其内容写入文件，仔细确保编写正确的语法，然后使用<code>exec()</code>或处理文件输入来检索它。</p>
+<p>但这最是不危险的：如果以明文形式存储重要数据，则可能会以任何方式损坏或更改程序导致崩溃或更糟糕地在计算机上运行恶意代码。因此，我们要pickle数据：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line"></span><br><span class="line">data = &#123;<span class="string">'foo'</span>: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],</span><br><span class="line">		<span class="string">'bar'</span>: (<span class="string">'Hello'</span>, <span class="string">'world!'</span>),</span><br><span class="line">		<span class="string">'baz'</span>: <span class="keyword">True</span> &#125;</span><br><span class="line">jar = open(<span class="string">'data.pkl'</span>, <span class="string">'wb'</span>)</span><br><span class="line">pickle.dump(data, jar) <span class="comment"># write the pickled data to the file jar</span></span><br><span class="line">jar.close()</span><br></pre></td></tr></table></figure>
+<p>如果我们想要原来的数据，所要做的就是unpickle it：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line"></span><br><span class="line">pkl_file = open(<span class="string">'data.pkl'</span>, <span class="string">'rb'</span>) <span class="comment"># connect to the pickled data</span></span><br><span class="line">data = pickle.load(pkl_file) <span class="comment"># load it into a variable</span></span><br><span class="line">print(data)</span><br><span class="line">pkl_file.close()</span><br></pre></td></tr></table></figure>
+<p>但是提醒的是:pickle并不完美。Pickle文件很容易在无意和有意的情况下被损坏。pickle可能比使用纯文本文件更安全，但它仍然可以用于运行恶意代码。它在不同版本的Python中也是不兼容的，所以不要期望发布pickle对象，也不要期望人们能够打开它们。但是，它也可以是缓存和其他常见序列化任务的强大工具。</p>
+<h3 id="pickling-your-own-objects"><a class="markdownIt-Anchor" href="#pickling-your-own-objects"></a> Pickling your own Objects</h3>
+<p>Pickle不仅适用于内置类型。它适用于遵循pickle协议的任何类。pickle协议有四个可选方法供Python对象自定义它们的行为方式（对于C扩展，它有点不同，但这不在我们的范围内）：</p>
+<ul>
+<li>
+<p><code>__getinitargs__(self)</code></p>
+<p>如果想在类被打开时调用<code>__init__</code>，可以定义<code>__getinitargs__</code>，它应该返回想要传递给<code>__init__</code>的参数的元组。 请注意，此方法仅适用于旧式类</p>
+</li>
+<li>
+<p><code>__getnewargs__(self)</code>对于新式类，可以影响在unpickling时传递给<code>__new__</code>的参数。 此方法还应返回一个参数元组，然后传递给<code>__new__</code>。</p>
+</li>
+<li>
+<p><code>__getstate__(self)</code></p>
+<p>不存储对象的<code>__dict__</code>属性，而是可以返回在对象被pickle时存储的自定义状态。当对象被打开时，<code>__setstate__</code>将使用该状态。</p>
+</li>
+<li>
+<p><code>__setstate__(self，state)</code>当对象被unpickled时，如果定义了<code>__setstate__</code>，则对象的状态将被传递给它，而不是直接应用于对象的<code>__dict__</code>。这与<code>__getstate__</code>相同：当两者都被定义时，你可以用你想要的任何东西来表示对象的pickle状态。</p>
+</li>
+<li>
+<p><code>__reduce__(self)</code></p>
+<p>当定义扩展类型(即使用Python的C API实现的类型)时，如果想要pickle这些类型，则必须告诉Python如何pickle这些类型。<code>__reduce__()</code>在定义它的对象被pickle时被调用，它可以返回一个表示Python将查找和pickle的全局名称的字符串，或者一个元组。</p>
+<p>元组包含2到5个元素：一个可调用对象，用于重新创建对象，一个可调用对象的参数元组，一个要传递给<code>__setstate__</code>(可选)的状态，一个迭代器，产生要被pickle的列表项(可选)和一个迭代器，产生要被pickle的字典项(可选)</p>
+</li>
+<li>
+<p><code>__reduce_ex__(self)</code></p>
+<p>如果它已定义，则<code>__reduce_ex__</code>将在pickle时调用<code>__reduce__</code>。<code>__reduce__</code>也可以定义为不支持<code>__reduce_ex__</code>的旧版本的pickling API。</p>
+</li>
+</ul>
+<h3 id="an-example"><a class="markdownIt-Anchor" href="#an-example"></a> An Example</h3>
+<p>我们的例子是一个Slate，它记住它的值是什么以及何时写入它们的值。但是，每次进行pickle时，这个Slate都会变为空白：不会保存当前值。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Slate</span> :</span></span><br><span class="line">	<span class="string">'''Class to store a string and a changelog, and forget its value when</span></span><br><span class="line"><span class="string">	pickled.'''</span></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, value)</span>:</span></span><br><span class="line">		self.value = value</span><br><span class="line">		self.last_change = time.asctime()</span><br><span class="line">		self.history = &#123;&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">change</span><span class="params">(self, new_value)</span>:</span></span><br><span class="line">	<span class="comment"># Change the value.Commit last value to history</span></span><br><span class="line">		self.history [ self.last_change] = self.value</span><br><span class="line">		self.value = new_value</span><br><span class="line">		self.last_change = time.asctime()</span><br><span class="line">	</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">print_changes</span><span class="params">( self)</span>:</span></span><br><span class="line">		print(<span class="string">'Changelog for Slate object:'</span>)</span><br><span class="line">		<span class="keyword">for</span> k, v <span class="keyword">in</span> self.history.items():</span><br><span class="line">			print(<span class="string">'%s\t %s'</span> % (k, v))</span><br><span class="line">	</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__getstate__</span><span class="params">( self)</span>:</span></span><br><span class="line">		<span class="comment"># Deliberately do not return self.value or self.last_change .</span></span><br><span class="line">		<span class="comment"># We want to have a " blank slate " when we unpickle .</span></span><br><span class="line">		<span class="keyword">return</span> self.history</span><br><span class="line">	</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__setstate__</span><span class="params">(self, state)</span>:</span></span><br><span class="line">	<span class="comment"># Make self.history = state and last_change and value undefined</span></span><br><span class="line">		self.history = state</span><br><span class="line">		self.value, self.last_change = <span class="keyword">None</span>, <span class="keyword">None</span></span><br></pre></td></tr></table></figure>
+<h2 id="how-to-call-magic-methods"><a class="markdownIt-Anchor" href="#how-to-call-magic-methods"></a> How to Call Magic Methods</h2>
+<p>Python中的一些魔法方法直接映射到内置函数; 在这种情况下，如何调用它们是相当明显的。但是，在其他情况下，调用就不那么明显了，让我们看一看一些不明显的语法，这些语法会导致调用魔法的方法。</p>
+<table>
+<thead>
+<tr>
+<th>魔法方法</th>
+<th>被调用时</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>__new__(cls [,...])</code></td>
+<td><code>instance = MyClass(arg1, arg2)</code></td>
+<td><code>__new__</code>is called on instance creation</td>
+</tr>
+<tr>
+<td><code>__init__(self [,...])</code></td>
+<td><code>instance = MyClass(arg1, arg2)</code></td>
+<td><code>__init__</code> is called on instance creation</td>
+</tr>
+<tr>
+<td><code>__cmp__(self, other)</code></td>
+<td><code>self == other</code>, <code>self &gt; other</code>, etc.</td>
+<td>Called for any comparison</td>
+</tr>
+<tr>
+<td><code>__pos__(self)</code></td>
+<td><code>+self</code></td>
+<td>Unary plus sign</td>
+</tr>
+<tr>
+<td><code>__neg__(self)</code></td>
+<td><code>-self</code></td>
+<td>Unary minus sign</td>
+</tr>
+<tr>
+<td><code>__invert__(self)</code></td>
+<td><code>self</code></td>
+<td>Bitwise inversion</td>
+</tr>
+<tr>
+<td><code>__index__(self)</code></td>
+<td><code>x[self]</code></td>
+<td>Conversion when object is used as index</td>
+</tr>
+<tr>
+<td><code>__nonzero__(self)</code></td>
+<td><code>bool(self)</code></td>
+<td>Boolean value of the object</td>
+</tr>
+<tr>
+<td><code>__getattr__(self, name)</code></td>
+<td><code>self.name</code> # name doesn’t exist</td>
+<td>Accessing nonexistent at tribute</td>
+</tr>
+<tr>
+<td><code>__setattr__(self, name, val)</code></td>
+<td><code>self.name = val</code></td>
+<td>Assigning to an attribute</td>
+</tr>
+<tr>
+<td><code>__delattr__(self, name)</code></td>
+<td><code>del self.name</code></td>
+<td>Deleting an attribute</td>
+</tr>
+<tr>
+<td><code>__getattribute__(self, name)</code></td>
+<td><code>self.name</code></td>
+<td>Accessing any attribute</td>
+</tr>
+<tr>
+<td><code>__getitem__(self, key)</code></td>
+<td><code>self[key]</code></td>
+<td>Accessing an item using an in dex</td>
+</tr>
+<tr>
+<td><code>__setitem__(self, key, val)</code></td>
+<td><code>self[key] = val</code></td>
+<td>Assigning to an item using an index</td>
+</tr>
+<tr>
+<td><code>__delitem__(self, key)</code></td>
+<td><code>del self[key]</code></td>
+<td>Deleting an item using an in dex</td>
+</tr>
+<tr>
+<td><code>__iter__(self)</code></td>
+<td><code>for x in self</code></td>
+<td>Iteration</td>
+</tr>
+<tr>
+<td><code>__contains__(self, value)</code></td>
+<td><code>value in self</code>, <code>value not in self</code></td>
+<td>Membership tests using in</td>
+</tr>
+<tr>
+<td><code>__call__(self [,...])</code></td>
+<td><code>self(args)</code></td>
+<td>“Calling” an instance</td>
+</tr>
+<tr>
+<td><code>__enter__(self)</code></td>
+<td><code>with self as x:</code></td>
+<td>with statement context man agers</td>
+</tr>
+<tr>
+<td><code>__exit__(self, exc, val, trace)</code></td>
+<td><code>with self as x:</code></td>
+<td>with statement context man agers</td>
+</tr>
+<tr>
+<td><code>__getstate__(self)</code></td>
+<td><code>pickle.dump(pkl_file, self)</code></td>
+<td>Pickling</td>
+</tr>
+<tr>
+<td><code>__setstate__(self)</code></td>
+<td><code>data = pickle.load(pkl_- file)</code></td>
+<td>Pickling</td>
+</tr>
+</tbody>
+</table>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2018/09/10/magicmethods3/">http://sikasjc.github.io/2018/09/10/magicmethods3/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/魔法方法/">魔法方法</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2018/09/02/magicmethods2/">
+        <span class="next-text nav-default">全面学习Python魔法方法(magic methods) II</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMzQzMy85OTg5">
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>  
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/u/5605720030" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/si-qia-sika" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  
+
+  
+   <script type="text/javascript">
+	(function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>

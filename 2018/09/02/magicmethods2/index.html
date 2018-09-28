@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="这是第二部分,继续python魔法方法的学习，不断感受python强大的魔法方法。"/>
+
+
+
+
+  <meta name="keywords" content="python,魔法方法," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2018/09/02/magicmethods2/"/>
+
+
+<meta name="description" content="这是第二部分,继续python魔法方法的学习，不断感受python强大的魔法方法。">
+<meta name="keywords" content="python,魔法方法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="全面学习Python魔法方法(magic methods) II">
+<meta property="og:url" content="http://sikasjc.github.io/2018/09/02/magicmethods2/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="这是第二部分,继续python魔法方法的学习，不断感受python强大的魔法方法。">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2018-09-28T15:03:09.008Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="全面学习Python魔法方法(magic methods) II">
+<meta name="twitter:description" content="这是第二部分,继续python魔法方法的学习，不断感受python强大的魔法方法。">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> 全面学习Python魔法方法(magic methods) II · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          全面学习Python魔法方法(magic methods) II
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018年9月2日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/魔法方法/">魔法方法</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#controlling-attribute-access"><span class="toc-number">1.</span> <span class="toc-text"> Controlling Attribute Access</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#making-custom-sequences"><span class="toc-number">2.</span> <span class="toc-text"> Making Custom Sequences</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#requirements"><span class="toc-number">2.1.</span> <span class="toc-text"> Requirements</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#the-magic-behind-containers"><span class="toc-number">2.2.</span> <span class="toc-text"> The magic behind containers</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#an-example"><span class="toc-number">2.3.</span> <span class="toc-text"> An example</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reflection"><span class="toc-number">3.</span> <span class="toc-text"> Reflection</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#abstract-base-classes"><span class="toc-number">4.</span> <span class="toc-text"> Abstract Base Classes</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#callable-objects"><span class="toc-number">5.</span> <span class="toc-text"> Callable Objects</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#context-managers"><span class="toc-number">6.</span> <span class="toc-text"> Context Managers</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#building-descriptor-objects"><span class="toc-number">7.</span> <span class="toc-text"> Building Descriptor Objects</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p>其他见此：</p>
+<p><a href="https://sikasjc.github.io/2018/08/28/magicmethods1/">全面学习Python魔法方法(magic methods) I</a></p>
+<p>全面学习Python魔法方法(magic methods) II</p>
+<p><a href="https://sikasjc.github.io/2018/08/28/magicmethods3/">全面学习Python魔法方法(magic methods) III</a></p>
+<h2 id="controlling-attribute-access"><a class="markdownIt-Anchor" href="#controlling-attribute-access"></a> Controlling Attribute Access</h2>
+<p>Python通过“魔法方法”完成了许多的封装，如下所示：</p>
+<ul>
+<li>
+<p><code>__getattr__(self，name）</code></p>
+<p>可以定义用户何时尝试访问不存在的属性(或者根本不存在)的行为。这对于捕获和重定向常见的拼写错误非常有用，可以提供有关使用弃用属性的警告(如果愿意，仍然可以选择计算并返回该属性)，或者巧妙地处理<code>AttributeError</code>。它只在访问不存在的属性时被调用，但是它不是真正的封装解决方案。</p>
+</li>
+<li>
+<p><code>__setattr__(self，name，value)</code></p>
+<p>与<code>__getattr__</code>不同，<code>__setattr__</code>是一个封装解决方案。它允许定义分配给属性的行为，无论该属性是否存在，这意味着可以为属性值的任何更改定义自定义规则。注意不要出现无限递归，如下所示。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__setattr__</span><span class="params">(self, name, value)</span>:</span></span><br><span class="line">    self.name = value</span><br><span class="line">    <span class="comment"># since every time an attribute is assigned , __setattr__()</span></span><br><span class="line">    <span class="comment"># is called , this is recursion . So this really means</span></span><br><span class="line">    <span class="comment"># self.__setattr__ ('name', value). Since the method keeps</span></span><br><span class="line">    <span class="comment"># calling itself , the recursion goes on forever causing a crash</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__setattr__</span> <span class="params">(self , name , value )</span>:</span></span><br><span class="line">    <span class="comment"># assigning to the dict of names in the class</span></span><br><span class="line">    self.__dict__[name] = value </span><br><span class="line">    <span class="comment"># define custom behavior here</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p><code>__delattr__(self，name)</code></p>
+<p>这与<code>__setattr__</code>完全相同，但是用于删除属性而不是设置它们。为了防止无限递归，需要采取与<code>__setattr__</code>相同的预防措施(在<code>__delattr__</code>的实现中调用<code>del self.name</code>会导致无限递归)。</p>
+</li>
+<li>
+<p><code>__getattribute__(self，name)</code></p>
+<p><code>__getattribute__</code>非常适合配合<code>__setattr__</code>和<code>__delattr__</code>一起使用，但是只能用于新式类。<code>__getattribute__</code>为访问属性值时，定义规则，即<code>__getattribute__</code>是属性访问拦截器，当这个类的属性被访问时，会自动调用类的<code>__getattribute__</code>方法。</p>
+<p>同时它还主要消除了<code>__getattr__</code>的需要，当<code>__getattribute__</code>被实现时，只有在显式调用或引发<code>AttributeError</code>时才会被调用。但是不推荐这样使用，因为非常容易出现bug，导致无限递归。</p>
+</li>
+</ul>
+<p>那么，我们应该在Python中学习自定义属性访问的哪些内容？ 不应被轻易使用。</p>
+<p>事实上，它往往是过于有力并且违反直觉。Python 不会试图让坏事变得不可能，而只是为了让它们变得困难。自由是至关重要的，所以你可以真正做任何你想做的事。</p>
+<p>以下是一些特殊属性访问方法的示例（使用super，是因为并非所有类都具有属性<code>__dict__</code>）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AccessCounter</span><span class="params">(object)</span>:</span></span><br><span class="line">	<span class="string">'''A class that contains a value and implements an</span></span><br><span class="line"><span class="string">	access counter . The counter increments each time the</span></span><br><span class="line"><span class="string">	value is changed . '''</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, val)</span>:</span></span><br><span class="line">		super(AccessCounter, self).__setattr__(<span class="string">'counter'</span>, <span class="number">0</span>)</span><br><span class="line">		super(AccessCounter, self).__setattr__(<span class="string">'value'</span>, val)</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__setattr__</span><span class="params">(self, name, value)</span>:</span></span><br><span class="line">		<span class="keyword">if</span> name == <span class="string">'value'</span>:</span><br><span class="line">		super(AccessCounter, self).__setattr__(<span class="string">'counter'</span>, self.counter + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">		<span class="comment"># Make this unconditional .</span></span><br><span class="line">		<span class="comment"># If you want to prevent other attributes to be set,</span></span><br><span class="line">		<span class="comment"># raise AttributeError(name )</span></span><br><span class="line">		super(AccessCounter, self).__setattr__(name, value )</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__delattr__</span><span class="params">(self, name)</span>:</span></span><br><span class="line">		<span class="keyword">if</span> name == <span class="string">'value'</span>:</span><br><span class="line">		super(AccessCounter, self).__setattr__(<span class="string">'counter'</span>, self.counter + <span class="number">1</span>)</span><br><span class="line">		super(AccessCounter, self).__delattr__(name)]</span><br></pre></td></tr></table></figure>
+<h2 id="making-custom-sequences"><a class="markdownIt-Anchor" href="#making-custom-sequences"></a> Making Custom Sequences</h2>
+<p>有许多方法可以使 Python 类像内置序列（dict，tuple，list，string等）一样运行。</p>
+<h3 id="requirements"><a class="markdownIt-Anchor" href="#requirements"></a> Requirements</h3>
+<p>既然正在谈论在Python中创建自己的序列，那么是时候讨论协议了。</p>
+<p>协议有点类似于其他语言中的接口，因为它们为您提供了一组必须定义的方法。但是，在Python中，协议是完全非正式的，不需要显式声明来实现。相反，它们更像是一种指导。</p>
+<p>我们为什么现在谈论协议？因为在Python中实现自定义容器类型涉及使用其中一些协议。</p>
+<p>首先，有用于定义不可变容器的协议：要创建一个不可变容器，只需要定义<code>__len__</code>和<code>__getitem__</code>（后面会详细介绍）。可变容器协议则需要不可变容器所需的所有内容以及<code>__setitem__</code>和<code>__delitem__</code>。最后，如果您希望对象可迭代，则必须定义<code>__iter__</code>，它返回一个迭代器。该迭代器必须符合迭代器协议，要求迭代器具有<code>__iter__</code>（返回自身）和<code>next</code> 方法。</p>
+<h3 id="the-magic-behind-containers"><a class="markdownIt-Anchor" href="#the-magic-behind-containers"></a> The magic behind containers</h3>
+<ul>
+<li>
+<p><code>__len__(self)</code></p>
+<p>返回容器的长度。不可变容器和可变容器的协议的一部分。</p>
+</li>
+<li>
+<p><code>__getitem__(self，key)</code></p>
+<p>使用符号<code>self[key]</code>定义访问项目时的行为。这也是可变和不可变容器协议的一部分。它还应该引发适当的异常：如果<code>key</code>的类型错误，则为TypeError; 如果<code>key</code>没有对应的值，则为KeyError。</p>
+</li>
+<li>
+<p><code>__setitem__(self，key，value)</code></p>
+<p>使用符号<code>self[key]=value</code>定义项目分配时的行为。这是可变容器协议的一部分。同样，应该在适当的时候引发KeyError和TypeError。</p>
+</li>
+<li>
+<p><code>__delitem__(self，key)</code></p>
+<p>定义删除项目时的行为(例如<code>del self[key]</code>)。这只是可变容器协议的一部分。使用无效<code>key</code>时，必须引发相应的异常。</p>
+</li>
+<li>
+<p><code>__iter__(self)</code></p>
+<p>应返回容器的迭代器。迭代器在许多上下文中返回，最明显的是内置函数的<code>iter()</code>以及容器在容器中使用 x 的表单循环时：迭代器是它们自己的对象，它们还必须定义一个返回<code>self</code>的<code>__iter__</code>方法。</p>
+</li>
+<li>
+<p><code>__reversed__(self)</code></p>
+<p>调用以实现<code>reverse()</code>内置函数的行为, 应返回序列的反转版本。只有在序列类被排序时才实现它，例如list或tuple。</p>
+</li>
+<li>
+<p><code>__contains__(self，item)</code></p>
+<p><code>__contains__</code>定义使用<code>in</code>和 <code>not in</code> 测试成员资格。当没有定义<code>__contains__</code>时，如果遇到正在寻找的项目, Python只是迭代序列并返回<code>True</code>。</p>
+</li>
+<li>
+<p><code>__missing__(self，key)</code></p>
+<p><code>__missing__</code>用于dict的子类。它定义了在字典中不存在访问密钥时的行为。</p>
+</li>
+</ul>
+<h3 id="an-example"><a class="markdownIt-Anchor" href="#an-example"></a> An example</h3>
+<p>一个示例，说明如何实现自己的序列。 当然，自定义序列有更多有用的应用，但其中相当一部分已在标准库中实现，如<code>Counter</code>，<code>OrderedDict</code> 和 <code>NamedTuple</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FunctionalList</span> :</span></span><br><span class="line">    <span class="string">'''A class wrapping a list with some extra functional</span></span><br><span class="line"><span class="string">    magic, like head, tail, init, last, drop, and take.'''</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, values = None)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> values <span class="keyword">is</span> <span class="keyword">None</span> :</span><br><span class="line">            self.values = []</span><br><span class="line">        <span class="keyword">else</span> :</span><br><span class="line">            self.values = values</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__len__</span><span class="params">(self)</span>:</span></span><br><span class="line">    	<span class="keyword">return</span> len(self.values)</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__getitem__</span><span class="params">(self, key)</span>:</span></span><br><span class="line">    	<span class="comment"># if key is of invalid type or value, the list values</span></span><br><span class="line">    	<span class="comment"># will raise the error</span></span><br><span class="line">    	<span class="keyword">return</span> self.values[key]</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__setitem__</span><span class="params">(self, key, value)</span>:</span></span><br><span class="line">    	self.values[key] = value</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__delitem__</span><span class="params">(self, key)</span>:</span></span><br><span class="line">    	<span class="keyword">del</span> self.values[key]</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__iter__</span><span class="params">(self)</span>:</span></span><br><span class="line">    	<span class="keyword">return</span> iter(self.values)</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__reversed__</span><span class="params">(self)</span>:</span></span><br><span class="line">    	<span class="keyword">return</span> reversed(self.values)</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">append</span><span class="params">(self, value)</span>:</span></span><br><span class="line">    	self.values.append(value)</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">head</span><span class="params">(self)</span>:</span></span><br><span class="line">    	<span class="comment"># get the first element</span></span><br><span class="line">    	<span class="keyword">return</span> self.values[<span class="number">0</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">tail</span><span class="params">(self)</span>:</span></span><br><span class="line">    	<span class="comment"># get all elements after the first</span></span><br><span class="line">    	<span class="keyword">return</span> self.values[<span class="number">1</span>:]</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">init</span><span class="params">(self)</span>:</span></span><br><span class="line">    	<span class="comment"># get elements up to the last</span></span><br><span class="line">    	<span class="keyword">return</span> self.values[:<span class="number">-1</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">last</span><span class="params">(self)</span>:</span></span><br><span class="line">   		<span class="comment"># get last element</span></span><br><span class="line">    	<span class="keyword">return</span> self.values[<span class="number">-1</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">drop</span><span class="params">(self, n)</span>:</span></span><br><span class="line">    	<span class="comment"># get all elements except first n</span></span><br><span class="line">    	<span class="keyword">return</span> self.values[n:]</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">take</span><span class="params">(self, n)</span>:</span></span><br><span class="line">    	<span class="comment"># get first n elements</span></span><br><span class="line">    	<span class="keyword">return</span> self.values[:n]</span><br></pre></td></tr></table></figure>
+<h2 id="reflection"><a class="markdownIt-Anchor" href="#reflection"></a> Reflection</h2>
+<p>还可以使用内置函数 <code>isinstance</code> 控制反射的工作方式，并通过定义魔法方法来控制 <code>issubclass()</code>的行为。</p>
+<ul>
+<li>
+<p><code>__instancecheck__(self，instance)</code></p>
+<p>检查实例是否是定义的类的实例 (e.g. isinstance(instance, class)</p>
+</li>
+<li>
+<p><code>__subclasscheck__(self，subclass)</code></p>
+<p>检查一个类是否是定义的类的子类 (e.g. issubclass(subclass, class))</p>
+</li>
+</ul>
+<p>这些魔法方法的用处可能看起来很少，但它们反映了Python和Python中面向对象编程的一些重要内容。</p>
+<h2 id="abstract-base-classes"><a class="markdownIt-Anchor" href="#abstract-base-classes"></a> Abstract Base Classes</h2>
+<p>参见 <a href="https://docs.python.org/3.6/library/abc.html#module-abc" target="_blank" rel="noopener"><code>abc</code></a> — Abstract Base Classes</p>
+<h2 id="callable-objects"><a class="markdownIt-Anchor" href="#callable-objects"></a> Callable Objects</h2>
+<p>在Python中，函数是第一类对象（first-class objects）。这意味着它们可以传递给函数和方法，就像它们是任何其他类型的对象一样，这是一个非常强大的功能。</p>
+<p>Python中一种特殊的魔法方法允许类的实例表现得就像它们是函数一样，这样你就可以“调用”它们，将它们传递给以函数作为参数的函数，依此类推。</p>
+<ul>
+<li>
+<p><code>__call__(self，[args ...])</code></p>
+<p>允许将类的实例作为函数调用。从本质上讲，这意味着<code>x()</code>与<code>x.__call__()</code>相同。<code>__call__</code>采用可变数量的参数, 这意味着您可以像定义任何其他函数一样定义<code>__call__</code></p>
+</li>
+</ul>
+<p><code>__call__</code>在具有需要经常更改状态的实例的类中特别有用。“调用”实例可以是一种直观而优雅的方式来更改对象的状态。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Entity</span> :</span></span><br><span class="line">	<span class="string">'''Class to represent an entity . Callable to update</span></span><br><span class="line"><span class="string">	the entity ’s position .'''</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, size, x, y)</span>:</span></span><br><span class="line">		self.x, self.y = x, y</span><br><span class="line">		self.size = size</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self, x, y)</span>:</span></span><br><span class="line">	<span class="string">'''Change the position of the entity .'''</span></span><br><span class="line">		self.x, self.y = x, y</span><br><span class="line">		<span class="comment"># snip ...</span></span><br></pre></td></tr></table></figure>
+<h2 id="context-managers"><a class="markdownIt-Anchor" href="#context-managers"></a> Context Managers</h2>
+<p>在Python 2.5中，Python中引入了一个新关键字以及一种新的代码重用方法，即with语句。 上下文管理器的概念在Python中并不是新的（它之前是作为库的一部分实现的），但直到PEP 343被接受它才能实现作为第一类语言构造的状态。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> open (<span class="string">'foo. txt'</span>) <span class="keyword">as</span> bar:</span><br><span class="line">    <span class="comment"># perform some action with bar</span></span><br></pre></td></tr></table></figure>
+<p>上下文管理器允许在创建对象用with语句包装时，对对象进行设置和清理操作。上下文管理器的行为由两种魔法方法决定：</p>
+<ul>
+<li>
+<p><code>__enter__(self)</code></p>
+<p>定义上下文管理器在with语句创建的块的开头应该执行的操作。请注意，<code>__enter__</code>的返回值绑定到with语句的目标，或者as之后的名称。</p>
+</li>
+<li>
+<p><code>__exit__(self，exception_type，exception_value，traceback)</code></p>
+<p>定义上下文管理器在块执行（或终止）后应该执行的操作。它可以用于处理异常，执行清理，或者在块中的操作之后立即执行某些操作。如果块成功执行，则 <code>exception_type</code>，<code>exception_value</code>和<code>traceback</code>将为<code>None</code>。否则，您可以选择处理异常或让用户处理它; 如果你想处理它，请确保<code>__exit__</code>在完成所有操作后返回<code>True</code>。如果您不希望上下文管理器处理异常，那就让它发生即可。</p>
+</li>
+</ul>
+<p><code>__enter__</code>和<code>__exit__</code>对于具有明确定义，并且有常见的设置和清理行为的特定类非常有用。您还可以使用这些方法创建包装其他对象的通用上下文管理器：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Closer</span> :</span></span><br><span class="line">    <span class="string">'''A context manager to automatically close an object with a</span></span><br><span class="line"><span class="string">    close () method in a with statement.'''</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, obj)</span>:</span></span><br><span class="line">    	self.obj = obj</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__enter__</span><span class="params">(self)</span>:</span></span><br><span class="line">    	<span class="keyword">return</span> self.obj <span class="comment"># bound to target</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__exit__</span><span class="params">(self, exception_type, exception_val, trace)</span>:</span></span><br><span class="line">    	<span class="keyword">try</span>:</span><br><span class="line">    		self.obj.close()</span><br><span class="line">    	<span class="keyword">except</span> AttributeError: <span class="comment"># obj isn ’t closable</span></span><br><span class="line">    		print(<span class="string">'Not closable.'</span>)</span><br><span class="line">             <span class="keyword">return</span> <span class="keyword">True</span> <span class="comment"># exception handled successfully</span></span><br></pre></td></tr></table></figure>
+<p>以下是Closer的实例，使用FTP连接来演示它（一个可关闭的套接字）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> magicmethods <span class="keyword">import</span> Closer</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> ftplib <span class="keyword">import</span> FTP</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">with</span> Closer(FTP(<span class="string">'ftp.somesite.com'</span>)) <span class="keyword">as</span> conn :</span><br><span class="line"><span class="meta">... </span>    conn.dir()</span><br><span class="line">...</span><br><span class="line"><span class="comment"># output omitted for brevity</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>conn.dir()</span><br><span class="line"><span class="comment"># long AttributeError message , can't use a connection that's closed</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">with</span> Closer(int(<span class="number">5</span>)) <span class="keyword">as</span> i:</span><br><span class="line"><span class="meta">... </span>	i += <span class="number">1</span></span><br><span class="line">...</span><br><span class="line">Not closable.</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>i</span><br><span class="line"><span class="number">6</span></span><br></pre></td></tr></table></figure>
+<p>Python标准库包含一个模块contextlib，它包含一个上下文管理器<code>contextlib.closing()</code>，它执行大致相同的操作（不需要处理对象没有close()方法的情况）。</p>
+<h2 id="building-descriptor-objects"><a class="markdownIt-Anchor" href="#building-descriptor-objects"></a> Building Descriptor Objects</h2>
+<p>描述符是一种类类，当通过获取，设置或删除访问时，还可以更改其他对象。 描述符并不意味着独立; 相反，它们应该由一个所有者类持有（an owner class）。在构建面向对象的数据库或具有值相互依赖的属性的类时，描述符非常有用。当在几个不同的测量单位中表示属性或表示计算的属性（例如，从类中的原点到表示网格上的点的距离）时，描述符也特别有用。</p>
+<p>要成为描述符，类必须至少实现<code>__get__</code>，<code>__set__</code>和<code>__delete__</code>中之一。</p>
+<ul>
+<li>
+<p><code>__get__(self，instance，owner)</code></p>
+<p>定义描述符的值被检索时的行为。<code>instance</code>是<code>owner</code>对象的实例。<code>owner</code>是<code>owner class</code>本身。</p>
+</li>
+<li>
+<p><code>__set__(self，instance，value)</code></p>
+<p>定义描述符的值被更改时的行为。<code>instance</code>是<code>owner</code>类的实例，<code>value</code>是设置描述符的值。</p>
+</li>
+<li>
+<p><code>__delete__(self，instance)</code></p>
+<p>定义删除描述符值时的行为。 <code>instance</code>是<code>owner</code>对象的实例。</p>
+</li>
+</ul>
+<p>一个使用描述符的例子：单位转换。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Meter</span><span class="params">(object)</span>:</span></span><br><span class="line">	<span class="string">'''Descriptor for a meter.'''</span><span class="string">'</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    def __init__(self, value=0.0):</span></span><br><span class="line"><span class="string">    	self.value = float(value)</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    def __get__(self, instance, owner):</span></span><br><span class="line"><span class="string">    	return self.value</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    def __set__(self, instance, value):</span></span><br><span class="line"><span class="string">    	self.value = float(value)</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">class Foot(object):</span></span><br><span class="line"><span class="string">    """Descriptor for a foot."""</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    def __get__(self, instance, owner):</span></span><br><span class="line"><span class="string">    	return instance.meter * 3.2808</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    def __set__(self, instance, value):</span></span><br><span class="line"><span class="string">    	instance.meter = float(value) / 3.2808</span></span><br><span class="line"><span class="string">class Distance(object):</span></span><br><span class="line"><span class="string">    '</span><span class="string">''</span>Class to represent distance holding two descriptors <span class="keyword">for</span> feet <span class="keyword">and</span></span><br><span class="line">    meters.<span class="string">'''</span></span><br><span class="line"><span class="string">    meter = Meter()</span></span><br><span class="line"><span class="string">    foot = Foot()</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2018/09/02/magicmethods2/">http://sikasjc.github.io/2018/09/02/magicmethods2/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/魔法方法/">魔法方法</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2018/09/10/magicmethods3/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">全面学习Python魔法方法(magic methods) III</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2018/08/28/magicmethods1/">
+        <span class="next-text nav-default">全面学习Python魔法方法(magic methods) I</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMzQzMy85OTg5">
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>  
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/u/5605720030" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/si-qia-sika" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  
+
+  
+   <script type="text/javascript">
+	(function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>
