@@ -29,19 +29,20 @@
 
 
 
-<link rel="canonical" href="http://sikasjc.github.io/"/>
+<link rel="canonical" href="http://sikasjc.github.io/2018/09/28/magicmethods1/"/>
 
 
-<meta name="description" content="Just begin.Do the math.">
-<meta property="og:type" content="website">
+<meta name="description" content="title: 全面学习Python魔法方法(magic methods) I date: 2018-08-28 22:45:00 tags: [python,魔法方法] categories: [基础总结,学习笔记] description: 在Python中,魔法方法是一种可以给类增加魔力的特殊方法,它们被双下横线所包围,它们是面向对象的Python的一切。如果你的对象实现（重载）了这些方法中的">
+<meta property="og:type" content="article">
 <meta property="og:title" content="Sika">
-<meta property="og:url" content="http://sikasjc.github.io/index.html">
+<meta property="og:url" content="http://sikasjc.github.io/2018/09/28/magicmethods1/index.html">
 <meta property="og:site_name" content="Sika">
-<meta property="og:description" content="Just begin.Do the math.">
+<meta property="og:description" content="title: 全面学习Python魔法方法(magic methods) I date: 2018-08-28 22:45:00 tags: [python,魔法方法] categories: [基础总结,学习笔记] description: 在Python中,魔法方法是一种可以给类增加魔力的特殊方法,它们被双下横线所包围,它们是面向对象的Python的一切。如果你的对象实现（重载）了这些方法中的">
 <meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2018-09-28T14:53:38.612Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Sika">
-<meta name="twitter:description" content="Just begin.Do the math.">
+<meta name="twitter:description" content="title: 全面学习Python魔法方法(magic methods) I date: 2018-08-28 22:45:00 tags: [python,魔法方法] categories: [基础总结,学习笔记] description: 在Python中,魔法方法是一种可以给类增加魔力的特殊方法,它们被双下横线所包围,它们是面向对象的Python的一切。如果你的对象实现（重载）了这些方法中的">
 
 
 <link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
@@ -68,7 +69,7 @@
 
 
 
-    <title> Sika </title>
+    <title>  · Sika </title>
   </head>
 
   <body><div id="mobile-navbar" class="mobile-navbar">
@@ -198,14 +199,12 @@
         <div class="content-wrapper">
           <div id="content" class="content">
             
-  <section id="posts" class="posts">
-    
-      
+  
   <article class="post">
     <header class="post-header">
       <h1 class="post-title">
         
-          <a class="post-link" href="/2018/09/28/magicmethods1/"></a>
+          
         
       </h1>
 
@@ -219,14 +218,17 @@
 
     
     
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#introduction"><span class="toc-number">1.</span> <span class="toc-text"> Introduction</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#construction-and-initialization"><span class="toc-number">2.</span> <span class="toc-text"> Construction and Initialization</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#making-operators-work-on-custom-classes"><span class="toc-number">3.</span> <span class="toc-text"> Making Operators Work on Custom Classes</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#comparison-magic-methods-比较魔法方法"><span class="toc-number">3.1.</span> <span class="toc-text"> Comparison magic methods 比较魔法方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#numeric-magic-methods-数值魔法方法"><span class="toc-number">3.2.</span> <span class="toc-text"> Numeric Magic Methods 数值魔法方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#unary-operators-and-functions-一元运算符"><span class="toc-number">3.2.1.</span> <span class="toc-text"> Unary operators and functions 一元运算符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#normal-arithmetic-operators-普通算术运算符"><span class="toc-number">3.2.2.</span> <span class="toc-text"> Normal arithmetic operators 普通算术运算符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#reflected-arithmetic-operators-反射算术运算符"><span class="toc-number">3.2.3.</span> <span class="toc-text"> Reflected arithmetic operators 反射算术运算符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#augmented-assignment"><span class="toc-number">3.2.4.</span> <span class="toc-text"> Augmented assignment</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#type-conversion-magic-methods"><span class="toc-number">3.3.</span> <span class="toc-text"> Type conversion magic methods</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#representing-your-classes"><span class="toc-number">4.</span> <span class="toc-text"> Representing your Classes</span></a></li></ol>
+    </div>
+  </div>
+
 
     <div class="post-content">
       
-        
-        
-
-        
-          <p>title: 全面学习Python魔法方法(magic methods) I<br>
+        <p>title: 全面学习Python魔法方法(magic methods) I<br>
 date: 2018-08-28 22:45:00<br>
 tags: [python,魔法方法]<br>
 categories: [基础总结,学习笔记]<br>
@@ -444,495 +446,66 @@ description: 在Python中,魔法方法是一种可以给类增加魔力的特殊
 </ul>
 <p><strong>我们已经完成了魔法方法指南中的无聊（并且没有示例…）部分。现在已经介绍了一些更基本的魔法方法，现在是时候转向更高级的方法了</strong></p>
 
-        
       
     </div>
 
     
-
-    
-
-  </article>
-
-    
       
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/08/22/improve/">提升Python性能的7个习惯</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018年8月22日
-        </span>
-      </div>
-        
-          <div class="post-tags">
-            
-              <a href="/tags/python/">python</a>
-            
-          </div>
-        
-    </header>
-
-    
-    
-
-    <div class="post-content">
       
-        
-        
-          
-        
 
-        
-          <p>Python在性能方面并不擅长，但通过一些习惯，可以提高程序性能并避免一些不必要的资源浪费。</p>
-          <div class="read-more">
-            <a href="/2018/08/22/improve/" class="read-more-link">阅读更多</a>
-          </div>
-        
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2018/09/28/magicmethods1/">http://sikasjc.github.io/2018/09/28/magicmethods1/</a>
+    </p>
+    <p class="copyright-item lincese">
       
-    </div>
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
 
-    
 
-    
 
-  </article>
-
-    
       
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/07/25/timsort/">Timsort原理学习</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018年7月25日
-        </span>
-      </div>
-        
-          <div class="post-tags">
-            
-              <a href="/tags/python/">python</a>
-            
-              <a href="/tags/算法/">算法</a>
-            
-          </div>
-        
-    </header>
-
-    
-    
-
-    <div class="post-content">
       
-        
-        
-          
-        
-
-        
-          <p>2002年Tim Peters为Python编程语言创建了Timsort。自从Python 2.3开始，Timsort一直是Python的标准排序算法。如今，Timsort 已是是 Python、 Java、  Android平台 和 GNU Octave 的默认排序算法。Timsort 本质上利用了归并排序与插入排序，是一种经过优化的归并排序算法。</p>
-          <div class="read-more">
-            <a href="/2018/07/25/timsort/" class="read-more-link">阅读更多</a>
-          </div>
-        
-      
-    </div>
-
     
 
     
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
+      <footer class="post-footer">
         
-          <a class="post-link" href="/2018/07/14/type-hint-in-python/">全面理解Python中的类型提示（Type Hints）</a>
         
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018年7月14日
-        </span>
-      </div>
         
-          <div class="post-tags">
-            
-              <a href="/tags/python/">python</a>
-            
-              <a href="/tags/类型提示/">类型提示</a>
-            
-          </div>
-        
-    </header>
-
+  <nav class="post-nav">
     
     
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <blockquote>
-<p><strong>翻译自 <a href="https://www.bernat.tech/the-state-of-type-hints-in-python/" target="_blank" rel="noopener">the state of type hints in Python</a></strong></p>
-</blockquote>
-<p>众所周知，Python 是动态类型语言，运行时不需要指定变量类型。这一点是不会改变的，但是2015年9月创始人 Guido van Rossum 在 Python 3.5 引入了一个类型系统，允许开发者指定变量类型。它的主要作用是方便开发，供IDE 和各种开发工具使用，对代码运行不产生影响，运行时会过滤类型信息。</p>
-          <div class="read-more">
-            <a href="/2018/07/14/type-hint-in-python/" class="read-more-link">阅读更多</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/06/28/Built-in-functions/">Python HOWTOS学习，函数式编程（二）</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018年6月28日
-        </span>
-      </div>
-        
-          <div class="post-tags">
-            
-              <a href="/tags/python/">python</a>
-            
-              <a href="/tags/函数式编程/">函数式编程</a>
-            
-          </div>
-        
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <p>前一部分讲了什么是函数式编程（Functional Programming），函数式编程特点和Python语言特性中的迭代器<code>Iterator</code>，列表生成式list comprehensive以及生成器<code>Generator</code>，可以参见<a href="https://sikasjc.github.io/2018/06/15/iterator-generator/">此处</a>。</p>
-          <div class="read-more">
-            <a href="/2018/06/28/Built-in-functions/" class="read-more-link">阅读更多</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/06/20/list-and-tuple/">Python数据类型：list 与 tuple 的区别</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018年6月20日
-        </span>
-      </div>
-        
-          <div class="post-tags">
-            
-              <a href="/tags/python/">python</a>
-            
-          </div>
-        
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <p>Python有两个相似的序列类型，元组 tuples 和列表 lists。它们之间最显著的区别是 tuples 是不可变的（immutable），也就是说，你不能改变它们的大小以及它们的不变对象（immutable objects）...</p>
-          <div class="read-more">
-            <a href="/2018/06/20/list-and-tuple/" class="read-more-link">阅读更多</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/06/15/iterator-generator/">Python HOWTOS学习，函数式编程（一）</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018年6月15日
-        </span>
-      </div>
-        
-          <div class="post-tags">
-            
-              <a href="/tags/python/">python</a>
-            
-              <a href="/tags/函数式编程/">函数式编程</a>
-            
-          </div>
-        
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <p>Python作为一门多范式编程语言，也提供了对函数式编程（Functional Programming）的支持，虽然并不是那么纯粹，也不支持尾递归优化......</p>
-          <div class="read-more">
-            <a href="/2018/06/15/iterator-generator/" class="read-more-link">阅读更多</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/06/12/NMS/">Non-Maximum Suppression（NMS）非最大抑制</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018年6月12日
-        </span>
-      </div>
-        
-          <div class="post-tags">
-            
-              <a href="/tags/python/">python</a>
-            
-              <a href="/tags/算法/">算法</a>
-            
-              <a href="/tags/目标检测/">目标检测</a>
-            
-          </div>
-        
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <p>NMS在计算机视觉领域有着非常重要的应用，如视频目标跟踪、数据挖掘、3D重建、目标识别以及纹理分析等......</p>
-          <div class="read-more">
-            <a href="/2018/06/12/NMS/" class="read-more-link">阅读更多</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/06/03/IoU/">IoU（Intersection over Union）</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018年6月3日
-        </span>
-      </div>
-        
-          <div class="post-tags">
-            
-              <a href="/tags/python/">python</a>
-            
-              <a href="/tags/目标检测/">目标检测</a>
-            
-          </div>
-        
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <p>在目标检测中，我们需要定位出目标的位置，而我们的算法不可能百分百跟人工标注的数据完全匹配，因此需要一种衡量目标定位精度的标准......</p>
-          <div class="read-more">
-            <a href="/2018/06/03/IoU/" class="read-more-link">阅读更多</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-      
-  <article class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        
-          <a class="post-link" href="/2018/05/30/Hat-like-Filter/">Hat-like Filter</a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <span class="post-time">
-          2018年5月30日
-        </span>
-      </div>
-        
-          <div class="post-tags">
-            
-              <a href="/tags/python/">python</a>
-            
-              <a href="/tags/算法/">算法</a>
-            
-              <a href="/tags/车道线检测/">车道线检测</a>
-            
-          </div>
-        
-    </header>
-
-    
-    
-
-    <div class="post-content">
-      
-        
-        
-          
-        
-
-        
-          <p>根据车道线本身形状和颜色特点，利用 Hat-like Filter进行低级别的特征提取</p>
-          <div class="read-more">
-            <a href="/2018/05/30/Hat-like-Filter/" class="read-more-link">阅读更多</a>
-          </div>
-        
-      
-    </div>
-
-    
-
-    
-
-  </article>
-
-    
-  </section>
-
-  
-  <nav class="pagination">
-    
-    
-      <a class="next" href="/page/2/">
-        <span class="next-text">下一页</span>
+      <a class="next" href="/2018/08/22/improve/">
+        <span class="next-text nav-default">提升Python性能的7个习惯</span>
+        <span class="prev-text nav-mobile">下一篇</span>
         <i class="iconfont icon-right"></i>
       </a>
     
   </nav>
 
+      </footer>
+    
+
+  </article>
+
 
           </div>
           
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMzQzMy85OTg5">
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>  
+    
+  </div>
+
         </div>  
       </main>
 
@@ -1019,6 +592,25 @@ description: 在Python中,魔法方法是一种可以给类增加魔力的特殊
     </div>
 
     
+  
+  
+
+  
+   <script type="text/javascript">
+	(function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+  </script>
+
+
 
 
     
