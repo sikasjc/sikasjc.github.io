@@ -12,10 +12,12 @@
 
 
 
-  <meta name="description" content="Just begin.Do the math."/>
+  <meta name="description" content="在Python中,魔法方法是一种可以给类增加魔力的特殊方法,它们被双下横线所包围,它们是面向对象的Python的一切。如果你的对象实现（重载）了这些方法中的某一个，那么这个方法就会在特殊的情况下被 Python 所调用，你可以定义自己想要的行为，而这一切都是自动发生的。它们经常是两个下划线包围来命名的（比如 `__init__`，`__lt__`），Python的魔法方法是非常强大的，所以了解其使用方法也变得尤为重要！"/>
 
 
 
+
+  <meta name="keywords" content="python,魔法方法," />
 
 
 
@@ -29,20 +31,21 @@
 
 
 
-<link rel="canonical" href="http://sikasjc.github.io/2018/09/28/magicmethods1/"/>
+<link rel="canonical" href="http://sikasjc.github.io/2018/08/28/magicmethods1/"/>
 
 
-<meta name="description" content="title: 全面学习Python魔法方法(magic methods) I date: 2018-08-28 22:45:00 tags: [python,魔法方法] categories: [基础总结,学习笔记] description: 在Python中,魔法方法是一种可以给类增加魔力的特殊方法,它们被双下横线所包围,它们是面向对象的Python的一切。如果你的对象实现（重载）了这些方法中的">
+<meta name="description" content="在Python中,魔法方法是一种可以给类增加魔力的特殊方法,它们被双下横线所包围,它们是面向对象的Python的一切。如果你的对象实现（重载）了这些方法中的某一个，那么这个方法就会在特殊的情况下被 Python 所调用，你可以定义自己想要的行为，而这一切都是自动发生的。它们经常是两个下划线包围来命名的（比如 `__init__`，`__lt__`），Python的魔法方法是非常强大的，所以了解其使">
+<meta name="keywords" content="python,魔法方法">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Sika">
-<meta property="og:url" content="http://sikasjc.github.io/2018/09/28/magicmethods1/index.html">
+<meta property="og:title" content="全面学习Python魔法方法(magic methods) I">
+<meta property="og:url" content="http://sikasjc.github.io/2018/08/28/magicmethods1/index.html">
 <meta property="og:site_name" content="Sika">
-<meta property="og:description" content="title: 全面学习Python魔法方法(magic methods) I date: 2018-08-28 22:45:00 tags: [python,魔法方法] categories: [基础总结,学习笔记] description: 在Python中,魔法方法是一种可以给类增加魔力的特殊方法,它们被双下横线所包围,它们是面向对象的Python的一切。如果你的对象实现（重载）了这些方法中的">
+<meta property="og:description" content="在Python中,魔法方法是一种可以给类增加魔力的特殊方法,它们被双下横线所包围,它们是面向对象的Python的一切。如果你的对象实现（重载）了这些方法中的某一个，那么这个方法就会在特殊的情况下被 Python 所调用，你可以定义自己想要的行为，而这一切都是自动发生的。它们经常是两个下划线包围来命名的（比如 `__init__`，`__lt__`），Python的魔法方法是非常强大的，所以了解其使">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:updated_time" content="2018-09-28T14:53:38.612Z">
+<meta property="og:updated_time" content="2018-09-28T14:55:48.657Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Sika">
-<meta name="twitter:description" content="title: 全面学习Python魔法方法(magic methods) I date: 2018-08-28 22:45:00 tags: [python,魔法方法] categories: [基础总结,学习笔记] description: 在Python中,魔法方法是一种可以给类增加魔力的特殊方法,它们被双下横线所包围,它们是面向对象的Python的一切。如果你的对象实现（重载）了这些方法中的">
+<meta name="twitter:title" content="全面学习Python魔法方法(magic methods) I">
+<meta name="twitter:description" content="在Python中,魔法方法是一种可以给类增加魔力的特殊方法,它们被双下横线所包围,它们是面向对象的Python的一切。如果你的对象实现（重载）了这些方法中的某一个，那么这个方法就会在特殊的情况下被 Python 所调用，你可以定义自己想要的行为，而这一切都是自动发生的。它们经常是两个下划线包围来命名的（比如 `__init__`，`__lt__`），Python的魔法方法是非常强大的，所以了解其使">
 
 
 <link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
@@ -69,7 +72,7 @@
 
 
 
-    <title>  · Sika </title>
+    <title> 全面学习Python魔法方法(magic methods) I · Sika </title>
   </head>
 
   <body><div id="mobile-navbar" class="mobile-navbar">
@@ -204,15 +207,23 @@
     <header class="post-header">
       <h1 class="post-title">
         
-          
+          全面学习Python魔法方法(magic methods) I
         
       </h1>
 
       <div class="post-meta">
         <span class="post-time">
-          2018年9月28日
+          2018年8月28日
         </span>
       </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/魔法方法/">魔法方法</a>
+            
+          </div>
         
     </header>
 
@@ -228,12 +239,7 @@
 
     <div class="post-content">
       
-        <p>title: 全面学习Python魔法方法(magic methods) I<br>
-date: 2018-08-28 22:45:00<br>
-tags: [python,魔法方法]<br>
-categories: [基础总结,学习笔记]<br>
-description: 在Python中,魔法方法是一种可以给类增加魔力的特殊方法,它们被双下横线所包围,它们是面向对象的Python的一切。如果你的对象实现（重载）了这些方法中的某一个，那么这个方法就会在特殊的情况下被 Python 所调用，你可以定义自己想要的行为，而这一切都是自动发生的。它们经常是两个下划线包围来命名的（比如 <code>__init__</code>，<code>__lt__</code>），Python的魔法方法是非常强大的，所以了解其使用方法也变得尤为重要！</p>
-<p>其他见此：</p>
+        <p>其他见此：</p>
 <p>全面学习Python魔法方法(magic methods) I</p>
 <p>全面学习Python魔法方法(magic methods) II</p>
 <p>全面学习Python魔法方法(magic methods) III</p>
@@ -460,7 +466,7 @@ description: 在Python中,魔法方法是一种可以给类增加魔力的特殊
     </p>
     <p class="copyright-item">
       <span>链接: </span>
-      <a href="http://sikasjc.github.io/2018/09/28/magicmethods1/">http://sikasjc.github.io/2018/09/28/magicmethods1/</a>
+      <a href="http://sikasjc.github.io/2018/08/28/magicmethods1/">http://sikasjc.github.io/2018/08/28/magicmethods1/</a>
     </p>
     <p class="copyright-item lincese">
       
@@ -476,6 +482,14 @@ description: 在Python中,魔法方法是一种可以给类增加魔力的特殊
 
     
       <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/魔法方法/">魔法方法</a>
+            
+          </div>
         
         
         

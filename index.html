@@ -205,15 +205,23 @@
     <header class="post-header">
       <h1 class="post-title">
         
-          <a class="post-link" href="/2018/09/28/magicmethods1/"></a>
+          <a class="post-link" href="/2018/08/28/magicmethods1/">全面学习Python魔法方法(magic methods) I</a>
         
       </h1>
 
       <div class="post-meta">
         <span class="post-time">
-          2018年9月28日
+          2018年8月28日
         </span>
       </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/魔法方法/">魔法方法</a>
+            
+          </div>
         
     </header>
 
@@ -224,226 +232,14 @@
       
         
         
+          
+        
 
         
-          <p>title: 全面学习Python魔法方法(magic methods) I<br>
-date: 2018-08-28 22:45:00<br>
-tags: [python,魔法方法]<br>
-categories: [基础总结,学习笔记]<br>
-description: 在Python中,魔法方法是一种可以给类增加魔力的特殊方法,它们被双下横线所包围,它们是面向对象的Python的一切。如果你的对象实现（重载）了这些方法中的某一个，那么这个方法就会在特殊的情况下被 Python 所调用，你可以定义自己想要的行为，而这一切都是自动发生的。它们经常是两个下划线包围来命名的（比如 <code>__init__</code>，<code>__lt__</code>），Python的魔法方法是非常强大的，所以了解其使用方法也变得尤为重要！</p>
-<p>其他见此：</p>
-<p>全面学习Python魔法方法(magic methods) I</p>
-<p>全面学习Python魔法方法(magic methods) II</p>
-<p>全面学习Python魔法方法(magic methods) III</p>
-<h1 id="introduction"><a class="markdownIt-Anchor" href="#introduction"></a> Introduction</h1>
-<p>什么是魔法方法？</p>
-<p>它们是面向对象 Python 中的一切。</p>
-<p>它们是您可以定义的特殊方法，可以为你的类添加“magic”。</p>
-<p>它们总是被双下划线包围（例如<code>__init__</code>或<code>__lt__</code>）。</p>
-<p>但是在它们却散落在 Python 的文档中，这是一个关于 Python 魔法方法的总结。</p>
-<h1 id="construction-and-initialization"><a class="markdownIt-Anchor" href="#construction-and-initialization"></a> Construction and Initialization</h1>
-<p>每个人都知道最基本的 magic method，<code>__init__</code>，这是我们定义对象初始化行为的方式。但是，当调用<code>x = SomeClass()</code>时，<code>__init__</code>不是第一个被调用。</p>
-<p>实际上，一个被调用的为<code>__new__</code>方法，它实际上创建了实例，然后将创建时的所有参数传递给初始化器。而在对象的生命周期的另一端，则有<code>__del__</code>方法。</p>
-<ul>
-<li>
-<p><code>__new__(cls, [...)</code></p>
-<p><code>__new__</code>是在对象的实例化中调用的第一个方法。它接受类，然后将所有参数传递给<code>__init__</code>。实际上，<code>__new__</code>很少使用，但它确实有其用途，特别是在子类化（subclassing）元组或字符串这样的不可变类型时。Python文档中有很详细的介绍。</p>
-</li>
-<li>
-<p><code>__init__(self, [...)</code></p>
-<p>类的初始化器。只要构造函数被调用，则参数就会被传递给它（例如，我们调用<code>x = SomeClass(10，'foo')</code>，会将<code>10</code>和<code>foo</code>作为参数传递给<code>__init__</code>）。<code>__init__</code>普遍用于Python类定义。</p>
-</li>
-<li>
-<p><code>__del__(self)</code></p>
-<p>如果说<code>__new__</code>和<code>__init__</code>构成了对象的构造函数，<code>__del__</code>就是析构函数。它没有实现语句<code>del x</code>（因此代码不会转换为<code>x.__del__()</code>）；相反，它定义了对象何时被垃圾回收。对于那些可能需要在删除时，进行额外清理的对象（如套接字或文件对象）是非常有用的。但要小心，如果对象在解释器退出时仍处于活动状态时，则无法保证<code>__del__</code>将被执行，所以在完成操作时，关闭连接<code>close()</code>。</p>
-<p>在python中，对于开发者来说很少会直接销毁对象(如果需要，应该使用<code>del</code>关键字销毁)。Python的内存管理机制能够很好的胜任这份工作。也就是说，不管是手动调用<code>del</code>还是由python自动回收都会触发<code>__del__</code>方法执行。</p>
-</li>
-</ul>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> os. path <span class="keyword">import</span> join</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FileObject</span>:</span></span><br><span class="line">	<span class="string">'''Wrapper for file objects to make sure the file gets closed on deletion.'''</span></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, filepath =<span class="string">'~'</span>, filename=<span class="string">'sample.txt'</span>)</span>:</span></span><br><span class="line">		<span class="comment"># open a file filename in filepath in read and write mode</span></span><br><span class="line">		self.file = open(join(filepath, filename), ’r+’)</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__del__</span><span class="params">(self)</span>:</span></span><br><span class="line">		self.file.close()</span><br><span class="line">		<span class="keyword">del</span> self.fil</span><br></pre></td></tr></table></figure>
-<h1 id="making-operators-work-on-custom-classes"><a class="markdownIt-Anchor" href="#making-operators-work-on-custom-classes"></a> Making Operators Work on Custom Classes</h1>
-<p>使用Python魔法方法的最大优势之一，就是它们提供了一种简单的方法，使得对象可以像内置类型一样进行操作。</p>
-<p>在一些语言中，通常会执行以下操作：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> instance.equals(other_instance):</span><br><span class="line">	<span class="comment"># do something</span></span><br></pre></td></tr></table></figure>
-<p>你当然也可以选择在 Python 中这样做，但这会增加混乱并且冗长。如果不同的库对相同的操作使用不同的名称，这会使得工作量大大增加。</p>
-<p>但是，借助魔法方法的强大功能，我们可以定义一个方法（在本例中为<code>__eq__</code>），并以这样的代码来说明我们的想法：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> instance == other_instance:</span><br><span class="line">    <span class="comment"># do something</span></span><br></pre></td></tr></table></figure>
-<p>这就是魔法方法的力量的一部分。其中绝大多数允许我们，重新为运算符定义含义，以便于可以在我们自己的类上使用运算符，就像这些类是内建类型。</p>
-<h2 id="comparison-magic-methods-比较魔法方法"><a class="markdownIt-Anchor" href="#comparison-magic-methods-比较魔法方法"></a> Comparison magic methods 比较魔法方法</h2>
-<p>Python有一大堆魔法方法，旨在使用运算符实现对象之间的直观比较。同时还提供了一种重载 Python 默认行为以进行对象比较的方法（通过引用）。下面列出了这些方法及其作用：</p>
-<ul>
-<li>
-<p><code>__eq__(self, other)</code></p>
-<p>定义相等运算符的行为，==</p>
-</li>
-<li>
-<p><code>__ne__(self, other)</code></p>
-<p>定义不等式运算符的行为，!=</p>
-</li>
-<li>
-<p><code>__lt__(self, other)</code></p>
-<p>定义小于运算符的行为, &lt;</p>
-</li>
-<li>
-<p><code>__gt__(self, other)</code></p>
-<p>定义大于运算符的行为, &gt;</p>
-</li>
-<li>
-<p><code>__le__(self, other)</code></p>
-<p>定义小于等于运算符的行为, &lt;=</p>
-</li>
-<li>
-<p><code>__ge__(self, other)</code></p>
-<p>定义大于等于运算符的行为, &gt;=</p>
-</li>
-</ul>
-<p>例如，考虑一个类来建模一个单词。我们可能希望按字典顺序（按字母表）比较单词，这是字符串的默认比较行为，但我们也可能希望根据其他一些标准（如长度或音节数）来进行。</p>
-<p>在这个例子中，我们将按长度进行比较：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Word</span> <span class="params">(str )</span>:</span></span><br><span class="line"><span class="string">"""Class for words , defining comparison based on word length."""</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__new__</span><span class="params">(cls, word)</span>:</span></span><br><span class="line">	<span class="comment"># Note that we have to use __new__ . This is because str is an</span></span><br><span class="line">	<span class="comment"># immutable type , so we have to initialize it early (at creation )</span></span><br><span class="line">		<span class="keyword">if</span> <span class="string">" "</span> <span class="keyword">in</span> word:</span><br><span class="line">			print(<span class="string">"Value contains spaces . Truncating to first space."</span>)</span><br><span class="line">			word = word [: word.index (<span class="string">" "</span>)]</span><br><span class="line">			<span class="comment"># Word is now all chars before first space</span></span><br><span class="line">			<span class="keyword">return</span> str.__new__(cls, word)</span><br><span class="line">	</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__gt__</span><span class="params">(self, other)</span>:</span></span><br><span class="line">		<span class="keyword">return</span> len(self) &gt; len(other)</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__lt__</span><span class="params">(self, other )</span>:</span></span><br><span class="line">		<span class="keyword">return</span> len(self) &lt; len(other)</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__ge__</span><span class="params">(self, other)</span>:</span></span><br><span class="line">		<span class="keyword">return</span> len(self) &gt;= len(other)</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__le__</span><span class="params">(self, other)</span>:</span></span><br><span class="line">		<span class="keyword">return</span> len(self) &lt;= len(other)</span><br></pre></td></tr></table></figure>
-<p>现在，我们可以创建两个单词（使用<code>Word('foo')</code>和<code>Word('bar')</code>）并根据长度进行比较。但注意，我们没有定义<code>__eq__</code>和<code>__ne__</code>。这是因为这会导致一些奇怪的行为（特别是<code>Word('foo')== Word('bar')</code>将返回为<code>true</code>）。基于长度测试相等性是没有意义的，所以我们使用<code>str</code>的一般实现。</p>
-<p>实际上，不必定义每个比较魔法方法来进行比较。标准库在模块functools中为我们提供了一个类装饰器，如果你只定义<code>__eq__</code>和另一个（例如<code>__gt__</code>，<code>__ lt__</code>等），它将定义所有全面的比较方法。这个特性在Python 2.7+可用，通过将 <a href="https://docs.python.org/2/library/functools.html" target="_blank" rel="noopener">@total_ordering</a> 放在类定义之上来使用它。</p>
-<h2 id="numeric-magic-methods-数值魔法方法"><a class="markdownIt-Anchor" href="#numeric-magic-methods-数值魔法方法"></a> Numeric Magic Methods 数值魔法方法</h2>
-<p>就像可以创建类的实例，然后通过比较运算符进行比较的方法一样，可以为数值运算符定义行为。</p>
-<p>可以将数值魔法方法分为5类：一元运算符，普通的算术运算符，反射算术运算符（稍后将详细介绍），扩充赋值和类型转换。</p>
-<h3 id="unary-operators-and-functions-一元运算符"><a class="markdownIt-Anchor" href="#unary-operators-and-functions-一元运算符"></a> Unary operators and functions 一元运算符</h3>
-<ul>
-<li><code>__pos__(self)</code> 实现一元取正运算符行为（例如，<code>+some_object</code>）</li>
-<li><code>__neg__(self)</code>实现一元取负运算符行为（例如，<code>-some_object</code>）</li>
-<li><code>__abs__(self)</code> 实现内置函数<code>abs()</code>的行为</li>
-<li><code>__invert__(self)</code> 使用<code>~</code>运算符实现取反行为</li>
-<li><code>__round__(self, n)</code> 实现内置函数<code>round()</code>的行为，<code>n</code>是要舍入的小数位数</li>
-<li><code>__floor__(self)</code> 实现<code>math.floor()</code>的行为，即向下取整</li>
-<li><code>__ceil__(self)</code> 实现<code>math.ceil()</code>的行为，即向上取整</li>
-<li><code>__trunc__(self)</code> 实现<code>math.trunc()</code>的行为，即截断为整数</li>
-</ul>
-<h3 id="normal-arithmetic-operators-普通算术运算符"><a class="markdownIt-Anchor" href="#normal-arithmetic-operators-普通算术运算符"></a> Normal arithmetic operators 普通算术运算符</h3>
-<p>可以定义一些典型的二元运算符：+, - , * 等。 在大多数情况下，是自解释性的。</p>
-<table>
-<thead>
-<tr>
-<th>魔法方法 Magic Methods</th>
-<th style="text-align:center">重载的运算符</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>__add__(self, other)</code></td>
-<td style="text-align:center">+</td>
-</tr>
-<tr>
-<td><code>__sub__(self, other)</code></td>
-<td style="text-align:center">-</td>
-</tr>
-<tr>
-<td><code>__mul__(self, other)</code></td>
-<td style="text-align:center">*</td>
-</tr>
-<tr>
-<td><code>__floordiv__(self, other)</code></td>
-<td style="text-align:center">//</td>
-</tr>
-<tr>
-<td><code>__truediv__(self, other)</code></td>
-<td style="text-align:center">实现_true_ division</td>
-</tr>
-<tr>
-<td><code>__mod__(self, other)</code></td>
-<td style="text-align:center">%</td>
-</tr>
-<tr>
-<td><code>__divmod__(self, other)</code></td>
-<td style="text-align:center">使用内置函数<code>divmod()</code></td>
-</tr>
-<tr>
-<td><code>__pow__</code></td>
-<td style="text-align:center">**</td>
-</tr>
-<tr>
-<td><code>__lshift__(self, other)</code></td>
-<td style="text-align:center">&lt;&lt;</td>
-</tr>
-<tr>
-<td><code>__rshift__(self, other)</code></td>
-<td style="text-align:center">&gt;&gt;</td>
-</tr>
-<tr>
-<td><code>__and__(self, other)</code></td>
-<td style="text-align:center">&amp;</td>
-</tr>
-<tr>
-<td><code>__or__(self, other)</code></td>
-<td style="text-align:center">|</td>
-</tr>
-<tr>
-<td><code>__xor__(self, other)</code></td>
-<td style="text-align:center">^</td>
-</tr>
-</tbody>
-</table>
-<h3 id="reflected-arithmetic-operators-反射算术运算符"><a class="markdownIt-Anchor" href="#reflected-arithmetic-operators-反射算术运算符"></a> Reflected arithmetic operators 反射算术运算符</h3>
-<p>这是一个例子：</p>
-<p><code>some_object + other</code></p>
-<p>这是“常规”情况的一种补充。反射是与此其等价的，除了调换了操作数：</p>
-<p><code>other + some_object</code></p>
-<p>在大多数情况下，反射操作的结果与其正常的等效操作相同，因此您可能最终将<code>__radd__</code>定义为调用<code>__add__</code>，依此类推。</p>
-<p>请注意，运算符左侧的对象（示例中的<code>other</code>）不得定义其操作的非反射版本（或返回NotImplemented）。例如，在示例中，<code>some_object.__radd__</code>仅在<code>other</code>未定义<code>__add__</code>时才会被调用。</p>
-<ul>
-<li><code>__radd__(self, other)</code>实现反射加法</li>
-<li><code>__rsub__(self, other)</code>实现反射减法</li>
-<li><code>__rmul__(self, other)</code>实现反射乘法</li>
-<li><code>__rfloordiv__(self, other)</code>使用<code>//</code>运算符实现反射的整数除法</li>
-<li><code>__rdiv__(self, other)</code>使用<code>/</code>运算符实现反射除法</li>
-<li><code>__rtruediv__(self, other)</code>实现反映了真正的除法</li>
-<li><code>__rmod__(self, other)</code>使用<code>％</code>运算符实现反射的取模</li>
-<li><code>__rdivmod__(self, other)</code>当调用<code>divmod(other, self)</code>时使用内置函数的<code>divmod()</code>实现长除法的行为</li>
-<li><code>__rpow__</code>使用<code>**</code>运算符实现反射指数的行为</li>
-<li><code>__rlshift__(self, other)</code>使用<code>&lt;&lt;</code>运算符实现反向左按位移位</li>
-<li><code>__rrshift__(self, other)</code>使用<code>&gt;&gt;</code>运算符实现反向右移位</li>
-<li><code>__rand__(self, other)</code>使用<code>＆</code>运算符实现按位反射<code>and</code></li>
-<li><code>__ror__(self, other)</code>使用<code>|</code>运算符实现按位反射<code>or</code></li>
-<li><code>__rxor__(self, other）</code>使用<code>^</code>运算符实现反射按位<code>xor</code></li>
-</ul>
-<h3 id="augmented-assignment"><a class="markdownIt-Anchor" href="#augmented-assignment"></a> Augmented assignment</h3>
-<p>Python还有各种各样的魔法方法，允许为 Augmented assignment 自定义行为，它将“常规”运算符与赋值结合起来。</p>
-<p>例如，对于<code>a += b</code>，<code>__iadd__</code>返回<code>a + b</code>，它将被分配给<code>a</code></p>
-<ul>
-<li><code>__iadd__(self, other)</code>使用赋值实现添加</li>
-<li><code>__isub__(self, other)</code>使用赋值实现减法</li>
-<li><code>__imul__(self, other)</code>使用赋值实现乘法</li>
-<li><code>__ifloordiv__(self, other)</code>使用<code>//=</code>运算符实现赋值的整数除法</li>
-<li><code>__idiv__(self, other)</code>使用<code>/=</code>运算符实现赋值除法</li>
-<li><code>__itruediv__(self, other)</code>通过赋值实现真正的除法</li>
-<li><code>__imod__(self, other)</code>使用<code>％=</code>运算符实现带模式的模数</li>
-<li><code>__ipow__</code>使用<code>**=</code>运算符实现赋值的指数行为</li>
-<li><code>__ilshift__(self, other)</code>使用<code>&lt;&lt;=</code>运算符实现左移位</li>
-<li><code>__irshift__(self, other)</code>使用<code>&gt;&gt;=</code>运算符实现右移位</li>
-<li><code>__iand__(self, other)</code>使用<code>＆=</code>运算符按位实现<code>and</code>赋值</li>
-<li><code>__ior__(self, other)</code>使用<code>|=</code>运算符实现按位<code>or</code>赋值</li>
-<li><code>__ixor__(self, other)</code>使用<code>^=</code>运算符实现按位<code>xor</code>赋值</li>
-</ul>
-<h2 id="type-conversion-magic-methods"><a class="markdownIt-Anchor" href="#type-conversion-magic-methods"></a> Type conversion magic methods</h2>
-<p>Python还有一系列魔法方法，用于实现内置类型转换函数（如<code>float()</code>）的行为。</p>
-<ul>
-<li><code>__int__(self)</code>实现类型转换为<code>int</code></li>
-<li><code>__long__(self)</code>实现类型转换为<code>long</code></li>
-<li><code>__float__(self)</code>实现类型转换为<code>float</code></li>
-<li><code>__complex__(self)</code>实现类型转换为<code>complex</code></li>
-<li><code>__oct__(self)</code>实现类型转换为八进制。</li>
-<li><code>__hex__(self)</code>实现类型转换为十六进制。</li>
-<li><code>__index__(self)</code>在切片表达式中使用对象时，实现类型转换为<code>int</code>。 如果定义可能在切片中使用的自定义数字类型，则应定义<code>__index__</code>。</li>
-<li><code>__trunc__(self)</code>调用<code>math.trunc(self)</code>时调用。<code>__trunc__</code>应该将<code>self</code>截断的值返回到整数类型(通常为<code>long</code>)。</li>
-</ul>
-<h1 id="representing-your-classes"><a class="markdownIt-Anchor" href="#representing-your-classes"></a> Representing your Classes</h1>
-<p>通常使用字符串表示一个类是非常有用的。在Python中，可以在类定义中实现一些方法，以自定义返回类的表示形式。</p>
-<ul>
-<li><code>__str__（self)</code>定义在类的实例上调用<code>str()</code>时的行为</li>
-<li><code>__repr__（self)</code>定义在类的实例上调用<code>repr()</code>时的行为。 <code>str()</code>和<code>repr()</code>之间的主要区别在于受众。 <code>repr()</code>旨在生成大多数机器可读的输出（在许多情况下, 它甚至可能是有效的Python代码), 而<code>str()</code>旨在是人类可读的</li>
-<li><code>__format__（self, formatstr)</code>定义在新样式字符串格式中使用类实例的行为。 例如, <code>&quot;Hello, 0:abc!&quot;.format(a)</code>将导致调用<code>a.__format__（&quot;abc&quot;)</code>。这对于定义那些，可能希望提供特殊格式选项的数字或字符串类型时非常有用</li>
-<li><code>__hash__（self)</code>定义在类的实例上调用<code>hash()</code>的行为。 它必须返回一个整数, 其结果用于字典中的快速键比较。请注意, 这通常也需要实现<code>__eq__</code>。 按以下规则生活：<code>a == b</code>表示`hash（a)== hash（b)``</li>
-<li><code>__bool__（self)</code>定义在类的实例上调用<code>bool()</code>时的行为。 应返回<code>True</code>或<code>False</code>, 具体取决于您是否要将实例视为<code>True</code>或<code>False</code></li>
-<li><code>__dir__（self)</code>定义在类的实例上调用<code>dir()</code>的行为。 此方法应返回用户的属性列表。通常, 实现<code>__dir__</code>是不必要的, 但如果重新定义<code>__getattr__</code>或<code>__getattribute__</code>或以其他方式动态生成属性, 则对于类的交互式使用非常重要</li>
-</ul>
-<p><strong>我们已经完成了魔法方法指南中的无聊（并且没有示例…）部分。现在已经介绍了一些更基本的魔法方法，现在是时候转向更高级的方法了</strong></p>
-
+          <p>在Python中,魔法方法是一种可以给类增加魔力的特殊方法,它们被双下横线所包围,它们是面向对象的Python的一切。如果你的对象实现（重载）了这些方法中的某一个，那么这个方法就会在特殊的情况下被 Python 所调用，你可以定义自己想要的行为，而这一切都是自动发生的。它们经常是两个下划线包围来命名的（比如 `__init__`，`__lt__`），Python的魔法方法是非常强大的，所以了解其使用方法也变得尤为重要！</p>
+          <div class="read-more">
+            <a href="/2018/08/28/magicmethods1/" class="read-more-link">阅读更多</a>
+          </div>
         
       
     </div>
@@ -521,9 +317,9 @@ description: 在Python中,魔法方法是一种可以给类增加魔力的特殊
         
           <div class="post-tags">
             
-              <a href="/tags/python/">python</a>
-            
               <a href="/tags/算法/">算法</a>
+            
+              <a href="/tags/python/">python</a>
             
           </div>
         
@@ -777,9 +573,9 @@ description: 在Python中,魔法方法是一种可以给类增加魔力的特殊
         
           <div class="post-tags">
             
-              <a href="/tags/python/">python</a>
-            
               <a href="/tags/算法/">算法</a>
+            
+              <a href="/tags/python/">python</a>
             
               <a href="/tags/目标检测/">目标检测</a>
             
@@ -881,9 +677,9 @@ description: 在Python中,魔法方法是一种可以给类增加魔力的特殊
         
           <div class="post-tags">
             
-              <a href="/tags/python/">python</a>
-            
               <a href="/tags/算法/">算法</a>
+            
+              <a href="/tags/python/">python</a>
             
               <a href="/tags/车道线检测/">车道线检测</a>
             
