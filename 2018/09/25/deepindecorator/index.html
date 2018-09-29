@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="深入Python装饰器"/>
+
+
+
+
+  <meta name="keywords" content="python,装饰器," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2018/09/25/deepindecorator/"/>
+
+
+<meta name="description" content="在之前的文章 入门Python装饰器 中，我们了解了函数是Python的第一类对象，因此也可以传递并当作参数，而装饰器是一个函数，它接受另一个函数并扩展这个函数的行为而不显式修改它。与此同时，也看到了如何创建一个简单的装饰器。">
+<meta name="keywords" content="python,装饰器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入Python装饰器">
+<meta property="og:url" content="http://sikasjc.github.io/2018/09/25/deepindecorator/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="在之前的文章 入门Python装饰器 中，我们了解了函数是Python的第一类对象，因此也可以传递并当作参数，而装饰器是一个函数，它接受另一个函数并扩展这个函数的行为而不显式修改它。与此同时，也看到了如何创建一个简单的装饰器。">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2018-09-29T14:22:18.580Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入Python装饰器">
+<meta name="twitter:description" content="在之前的文章 入门Python装饰器 中，我们了解了函数是Python的第一类对象，因此也可以传递并当作参数，而装饰器是一个函数，它接受另一个函数并扩展这个函数的行为而不显式修改它。与此同时，也看到了如何创建一个简单的装饰器。">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> 深入Python装饰器 · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          深入Python装饰器
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018年9月25日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/装饰器/">装饰器</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#类的装饰器"><span class="toc-number">1.</span> <span class="toc-text"> 类的装饰器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#装饰类的方法"><span class="toc-number">1.1.</span> <span class="toc-text"> 装饰类的方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#内置装饰器"><span class="toc-number">1.1.1.</span> <span class="toc-text"> 内置装饰器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#自定义类的装饰器"><span class="toc-number">1.1.2.</span> <span class="toc-text"> 自定义类的装饰器</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#装饰整个类"><span class="toc-number">1.2.</span> <span class="toc-text"> 装饰整个类</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#嵌套装饰器"><span class="toc-number">2.</span> <span class="toc-text"> 嵌套装饰器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#带参数的装饰器"><span class="toc-number">3.</span> <span class="toc-text"> 带参数的装饰器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#带可选参数的装饰器"><span class="toc-number">4.</span> <span class="toc-text"> 带可选参数的装饰器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#有状态的装饰器"><span class="toc-number">5.</span> <span class="toc-text"> 有状态的装饰器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#作为装饰器的类"><span class="toc-number">6.</span> <span class="toc-text"> 作为装饰器的类</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p>在之前的文章 <a href="https://sikasjc.github.io/2018/09/17/pythondecorator/">入门Python装饰器</a> 中，我们了解了函数是Python的第一类对象，因此也可以传递并当作参数，而装饰器是一个函数，它接受另一个函数并扩展这个函数的行为而不显式修改它。与此同时，也看到了如何创建一个简单的装饰器。</p>
+<a id="more"></a>
+<p>在本文中，我们将探索装饰器更高级的特性，包括如何使用以下特性:</p>
+<ul>
+<li>类的装饰器 Decorators on classes</li>
+<li>应用多个装饰器 Several decorators on one function</li>
+<li>带参数的装饰器 Decorators with arguments</li>
+<li>带可选参数的装饰器 Decorators that can optionally take arguments</li>
+<li>有状态的装饰器 Stateful decorators</li>
+<li>作为装饰器的类 Classes as decorators</li>
+</ul>
+<h2 id="类的装饰器"><a class="markdownIt-Anchor" href="#类的装饰器"></a> 类的装饰器</h2>
+<p>在类中使用装饰器有两种不同的方式。第一个非常接近于之前完成的函数：你可以装饰类的方法。这是引入装饰器的<a href="https://www.python.org/dev/peps/pep-0318/#motivation" target="_blank" rel="noopener">动机之一</a>。</p>
+<h3 id="装饰类的方法"><a class="markdownIt-Anchor" href="#装饰类的方法"></a> 装饰类的方法</h3>
+<h4 id="内置装饰器"><a class="markdownIt-Anchor" href="#内置装饰器"></a> 内置装饰器</h4>
+<p>Python中内置的一些常用的装饰器是 <code>@classmethod</code>、<code>@staticmethod</code>和<code>@property</code>。</p>
+<p><code>@classmethod</code>和<code>@staticmethod</code>装饰器用于在类命名空间中定义的方法，但这些方法不连接到该类的特定实例之中。<code>@property</code>装饰器用于为类属性定制<a href="https://docs.python.org/3/howto/descriptor.html#properties" target="_blank" rel="noopener"><code>getter</code>和<code>setter</code></a>。</p>
+<p>下面的Cicle类定义使用<code>@classmethod</code>、<code>@staticmethod</code>和<code>@property</code> 装饰器:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Circle</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, radius)</span>:</span></span><br><span class="line">        self._radius = radius</span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">radius</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="string">"""Get value of radius"""</span></span><br><span class="line">        <span class="keyword">return</span> self._radius</span><br><span class="line"></span><br><span class="line"><span class="meta">    @radius.setter</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">radius</span><span class="params">(self, value)</span>:</span></span><br><span class="line">        <span class="string">"""Set radius, raise error if negative"""</span></span><br><span class="line">        <span class="keyword">if</span> value &gt;= <span class="number">0</span>:</span><br><span class="line">            self._radius = value</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">raise</span> ValueError(<span class="string">"Radius must be positive"</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">area</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="string">"""Calculate area inside circle"""</span></span><br><span class="line">        <span class="keyword">return</span> self.pi() * self.radius**<span class="number">2</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">cylinder_volume</span><span class="params">(self, height)</span>:</span></span><br><span class="line">        <span class="string">"""Calculate volume of cylinder with circle as base"""</span></span><br><span class="line">        <span class="keyword">return</span> self.area * height</span><br><span class="line"></span><br><span class="line"><span class="meta">    @classmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">unit_circle</span><span class="params">(cls)</span>:</span></span><br><span class="line">        <span class="string">"""Factory method creating a circle with radius 1"""</span></span><br><span class="line">        <span class="keyword">return</span> cls(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">pi</span><span class="params">()</span>:</span></span><br><span class="line">        <span class="string">"""Value of π, could use math.pi instead though"""</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">3.1415926535</span></span><br></pre></td></tr></table></figure>
+<p>在这个类之中：</p>
+<ul>
+<li><code>.cylinder_volume()</code> 是常规方法</li>
+<li><code>.radius</code> 是一个可变属性:可以将其设置为不同的值。通过定义setter方法，我们可以进行一些错误测试，以确保不会将其设置为无意义的负数。Properties 作为属性访问，不使用括号。</li>
+<li><code>.area</code>是一个不可变的属性:没有<code>.setter()</code>方法的属性不能更改。即使它被定义为一个方法，它也可以被检索为一个没有括号的属性。</li>
+<li><code>.unit_circle()</code>是一个类方法。它不局限于一个特定的Circle实例。类方法通常用作工厂方法，可以创建类的特定实例。</li>
+<li><code>.pi()</code>是一个静态方法。它实际上并不依赖于Circle类，只是它是其名称空间的一部分。静态方法可以在实例或类上调用。</li>
+</ul>
+<p>例如，Circle类可以这样使用:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>c = Circle(<span class="number">5</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>c.radius</span><br><span class="line"><span class="number">5</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>c.area</span><br><span class="line"><span class="number">78.5398163375</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>c.radius = <span class="number">2</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>c.area</span><br><span class="line"><span class="number">12.566370614</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>c.area = <span class="number">100</span></span><br><span class="line">AttributeError: can<span class="string">'t set attribute</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&gt;&gt;&gt; c.cylinder_volume(height=4)</span></span><br><span class="line"><span class="string">50.265482456</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&gt;&gt;&gt; c.radius = -1</span></span><br><span class="line"><span class="string">ValueError: Radius must be positive</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&gt;&gt;&gt; c = Circle.unit_circle()</span></span><br><span class="line"><span class="string">&gt;&gt;&gt; c.radius</span></span><br><span class="line"><span class="string">1</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&gt;&gt;&gt; c.pi()</span></span><br><span class="line"><span class="string">3.1415926535</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&gt;&gt;&gt; Circle.pi()</span></span><br><span class="line"><span class="string">3.1415926535</span></span><br></pre></td></tr></table></figure>
+<h4 id="自定义类的装饰器"><a class="markdownIt-Anchor" href="#自定义类的装饰器"></a> 自定义类的装饰器</h4>
+<p>让我们定义一个类，在这个类中，我们使用前面的<code>@debug</code>和<code>@timer</code>装饰器装饰它的一些方法:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> decorators <span class="keyword">import</span> debug, timer</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TimeWaster</span>:</span></span><br><span class="line"><span class="meta">    @debug</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, max_num)</span>:</span></span><br><span class="line">        self.max_num = max_num</span><br><span class="line"></span><br><span class="line"><span class="meta">    @timer</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">waste_time</span><span class="params">(self, num_times)</span>:</span></span><br><span class="line">        <span class="keyword">for</span> _ <span class="keyword">in</span> range(num_times):</span><br><span class="line">            sum([i**<span class="number">2</span> <span class="keyword">for</span> i <span class="keyword">in</span> range(self.max_num)])</span><br></pre></td></tr></table></figure>
+<p>使用这个类，可以看到装饰器的效果:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>tw = TimeWaster(<span class="number">1000</span>)</span><br><span class="line">Calling __init__(&lt;time_waster.TimeWaster object at <span class="number">0x7efccce03908</span>&gt;, <span class="number">1000</span>)</span><br><span class="line"><span class="string">'__init__'</span> returned <span class="keyword">None</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>tw.waste_time(<span class="number">999</span>)</span><br><span class="line">Finished <span class="string">'waste_time'</span> <span class="keyword">in</span> <span class="number">0.3376</span> secs</span><br></pre></td></tr></table></figure>
+<h3 id="装饰整个类"><a class="markdownIt-Anchor" href="#装饰整个类"></a> 装饰整个类</h3>
+<p>在类上使用装饰器的另一种方法是装饰整个类。例如，这是在Python 3.7中的新dataclasses模块中完成的:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> dataclasses <span class="keyword">import</span> dataclass</span><br><span class="line"></span><br><span class="line"><span class="meta">@dataclass</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PlayingCard</span>:</span></span><br><span class="line">    rank: str</span><br><span class="line">    suit: str</span><br></pre></td></tr></table></figure>
+<p>语法的含义类似于函数装饰器。在上面的例子中，可以通过编写<code>PlayingCard = dataclass(PlayingCard)</code>来完成装饰。</p>
+<p>类装饰器的<a href="https://www.python.org/dev/peps/pep-3129/#rationale" target="_blank" rel="noopener">一个常见用法</a>是作为一些元类用例的更简单的替代。在这两种情况下，都可以动态地更改类的定义。</p>
+<p>编写类装饰器与编写函数装饰器非常相似。唯一的区别是装饰器将接收一个类作为参数，而不是函数。事实上，上面看到的所有装饰器都可以作为类的装饰器工作。不过，当在类上使用装饰器而不是函数上使用它们时，它们的效果可能不是预想的那样。在下面的示例中，<code>@timer</code>装饰器应用于一个类:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> decorators <span class="keyword">import</span> timer</span><br><span class="line"></span><br><span class="line"><span class="meta">@timer</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TimeWaster</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, max_num)</span>:</span></span><br><span class="line">        self.max_num = max_num</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">waste_time</span><span class="params">(self, num_times)</span>:</span></span><br><span class="line">        <span class="keyword">for</span> _ <span class="keyword">in</span> range(num_times):</span><br><span class="line">            sum([i**<span class="number">2</span> <span class="keyword">for</span> i <span class="keyword">in</span> range(self.max_num)])</span><br></pre></td></tr></table></figure>
+<p>装饰类并不装饰它的方法。回想一下<code>@timer</code>仅仅是<code>TimeWaster = timer(TimeWaster)</code>的缩写。</p>
+<p>在这里，<code>@timer</code>只度量实例化类所需的时间:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>tw = TimeWaster(<span class="number">1000</span>)</span><br><span class="line">Finished <span class="string">'TimeWaster'</span> <span class="keyword">in</span> <span class="number">0.0000</span> secs</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>tw.waste_time(<span class="number">999</span>)</span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure>
+<p>之后，我们将看到一个合适的定义类的装饰器的示例，即<code>@singleton</code>，它确保一个类只有一个实例。</p>
+<h2 id="嵌套装饰器"><a class="markdownIt-Anchor" href="#嵌套装饰器"></a> 嵌套装饰器</h2>
+<p>可以将多个装饰器堆叠在一起，来应用到一个函数上:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> decorators <span class="keyword">import</span> debug, do_twice</span><br><span class="line"></span><br><span class="line"><span class="meta">@debug</span></span><br><span class="line"><span class="meta">@do_twice</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">greet</span><span class="params">(name)</span>:</span></span><br><span class="line">    print(<span class="string">f"Hello <span class="subst">&#123;name&#125;</span>"</span>)</span><br></pre></td></tr></table></figure>
+<p>可以将其视为按顺序执行的装饰器。换句话说，<code>@debug</code>调用<code>@do_twice</code>，<code>@do_twice</code>调用<code>greet()</code>，或者可以理解为 <code>debug(do_twice(greet()))</code>:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>greet(<span class="string">"Eva"</span>)</span><br><span class="line">Calling greet(<span class="string">'Eva'</span>)</span><br><span class="line">Hello Eva</span><br><span class="line">Hello Eva</span><br><span class="line"><span class="string">'greet'</span> returned <span class="keyword">None</span></span><br></pre></td></tr></table></figure>
+<p>更改<code>@debug</code>和<code>@do_twice</code>的顺序，观察差异:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> decorators <span class="keyword">import</span> debug, do_twice</span><br><span class="line"></span><br><span class="line"><span class="meta">@do_twice</span></span><br><span class="line"><span class="meta">@debug</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">greet</span><span class="params">(name)</span>:</span></span><br><span class="line">    print(<span class="string">f"Hello <span class="subst">&#123;name&#125;</span>"</span>)</span><br></pre></td></tr></table></figure>
+<p>在这种情况下，<code>@do_twice</code>也会被应用到<code>@debug</code>上:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>greet(<span class="string">"Eva"</span>)</span><br><span class="line">Calling greet(<span class="string">'Eva'</span>)</span><br><span class="line">Hello Eva</span><br><span class="line"><span class="string">'greet'</span> returned <span class="keyword">None</span></span><br><span class="line">Calling greet(<span class="string">'Eva'</span>)</span><br><span class="line">Hello Eva</span><br><span class="line"><span class="string">'greet'</span> returned <span class="keyword">None</span></span><br></pre></td></tr></table></figure>
+<h2 id="带参数的装饰器"><a class="markdownIt-Anchor" href="#带参数的装饰器"></a> 带参数的装饰器</h2>
+<p>有时候，向装饰器传递参数是很有用的。例如，<code>@do_twice</code>可以扩展为<code>@repeat(num_times)</code>装饰器。然后，可以将执行被装饰函数的次数作为参数给出。</p>
+<p>你可以这样做:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@repeat(num_times=4)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">greet</span><span class="params">(name)</span>:</span></span><br><span class="line">    print(<span class="string">f"Hello <span class="subst">&#123;name&#125;</span>"</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>greet(<span class="string">"World"</span>)</span><br><span class="line">Hello World</span><br><span class="line">Hello World</span><br><span class="line">Hello World</span><br><span class="line">Hello World</span><br></pre></td></tr></table></figure>
+<p>考虑一下如何做到</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">repeat</span><span class="params">(num_times)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decorator_repeat</span><span class="params">(func)</span>:</span></span><br><span class="line">        ...  <span class="comment"># Create and return a wrapper function</span></span><br><span class="line">    <span class="keyword">return</span> decorator_repeat</span><br></pre></td></tr></table></figure>
+<p>通常情况下，装饰器会创建并返回一个内部包装器函数，因此完整地编写示例将会在内部函数中提供一个内部函数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">repeat</span><span class="params">(num_times)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decorator_repeat</span><span class="params">(func)</span>:</span></span><br><span class="line"><span class="meta">        @functools.wraps(func)</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">wrapper_repeat</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> range(num_times):</span><br><span class="line">                value = func(*args, **kwargs)</span><br><span class="line">            <span class="keyword">return</span> value</span><br><span class="line">        <span class="keyword">return</span> wrapper_repeat</span><br><span class="line">    <span class="keyword">return</span> decorator_repeat</span><br></pre></td></tr></table></figure>
+<p>它看起来有点乱，但是我们只在一个额外的<code>def</code>中添加了相同的装饰器模式，这些已经见过很多次了，这个<code>def</code>可以处理装饰器的参数。让我们从最里面的函数开始:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">wrapper_repeat</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> range(num_times):</span><br><span class="line">        value = func(*args, **kwargs)</span><br><span class="line">    <span class="keyword">return</span> value</span><br></pre></td></tr></table></figure>
+<p>这个<code>wrapper_repeat()</code>函数接受任意参数并返回被装饰函数<code>func()</code>的值。这个包装器函数还包含调用被装饰函数<code>num_times</code>次循环。这与之前看到的包装器函数没有什么不同，只是它使用了必须从外部提供的<code>num_times</code>参数。</p>
+<p>接下来，便是装饰器函数:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">decorator_repeat</span><span class="params">(func)</span>:</span></span><br><span class="line"><span class="meta">    @functools.wraps(func)</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">wrapper_repeat</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="keyword">return</span> wrapper_repeat</span><br></pre></td></tr></table></figure>
+<p>同样，<code>decorator_repeat()</code>与前面编写的装饰器函数完全相同，只是命名方式不同。这是因为我们为最外层的函数保留了基名<code>repeat()</code>，这是用户将要调用的函数。</p>
+<p>我们会发现，最外层的函数返回对装饰器函数的引用:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">repeat</span><span class="params">(num_times)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decorator_repeat</span><span class="params">(func)</span>:</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="keyword">return</span> decorator_repeat</span><br></pre></td></tr></table></figure>
+<p><code>repeat()</code>函数有一些东西需要我们注意:</p>
+<ul>
+<li>将<code>decorator_repeat()</code>定义为一个内部函数意味着<code>repeat()</code>将引用一个函数对象——<code>decorator_repeat</code>。之前，我们使用没有括号的<code>repeat</code>引用函数对象。在定义带有参数的修饰符时，则需要添加括号。</li>
+<li><code>num_times</code>参数似乎没有在<code>repeat()</code>本身中使用。但是通过传递<code>num_times</code>，可以创建一个闭包，其中存储<code>num_times</code>的值，直到<code>wrapper_repeat()</code>稍后使用它为止。</li>
+</ul>
+<p>测试一下我们的装饰器函数<code>@repeat(num_times=4)</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@repeat(num_times=4)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">greet</span><span class="params">(name)</span>:</span></span><br><span class="line">    print(<span class="string">f"Hello <span class="subst">&#123;name&#125;</span>"</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>greet(<span class="string">"World"</span>)</span><br><span class="line">Hello World</span><br><span class="line">Hello World</span><br><span class="line">Hello World</span><br><span class="line">Hello World</span><br></pre></td></tr></table></figure>
+<p>这正是我们想要的结果。</p>
+<h2 id="带可选参数的装饰器"><a class="markdownIt-Anchor" href="#带可选参数的装饰器"></a> 带可选参数的装饰器</h2>
+<p>我们还可以定义既可以使用参数，也可以不使用参数的装饰器。很可能，我们并不需要这样做，但是具有灵活性总归是很好的。</p>
+<p>正如在前一节中看到的，当装饰器使用参数时，需要添加一个额外的外部函数。难点在于，我们编写代码要弄清楚装饰器是否被调用了，是否有参数。</p>
+<p>由于装饰函数仅在没有参数的情况下调用装饰器时才直接传递，因此该函数必须是可选参数。这意味着装饰器参数必须全部由关键字指定。也可以用特殊的<code>*</code>语法来加强这一点，这意味着以下<a href="https://www.python.org/dev/peps/pep-3102/" target="_blank" rel="noopener">所有的参数都是只有关键字的</a>:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">name</span><span class="params">(_func=None, *, kw1=val1, kw2=val2, ...)</span>:</span>  <span class="comment"># 1</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decorator_name</span><span class="params">(func)</span>:</span></span><br><span class="line">        ...  <span class="comment"># Create and return a wrapper function.</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> _func <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">        <span class="keyword">return</span> decorator_name                      <span class="comment"># 2</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> decorator_name(_func)               <span class="comment"># 3</span></span><br></pre></td></tr></table></figure>
+<p>在这里，<code>_func</code>参数充当标记，注意调用装饰器时是否带有参数:</p>
+<ol>
+<li>如果<code>name</code>调用时没有参数，装饰后的函数将作为<code>_func</code>传入。如果调用<code>name</code>时带有参数，那么<code>_func</code>将为<code>None</code>，并且一些关键字参数可能已经从它们的默认值更改了。参数列表中的<code>*</code>表示剩余的参数，并且不是位置参数。</li>
+<li>这个例子中，带参数调用装饰器的情况下，返回一个装饰器函数，该函数可以读取并返回一个函数。</li>
+<li>没有带参数调用装饰器，则立即将装饰器应用到函数上。</li>
+</ol>
+<p>若想在在上一节的<code>@repeat</code>装饰器中使用这个样板，可以编写以下代码:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">repeat</span><span class="params">(_func=None, *, num_times=<span class="number">2</span>)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decorator_repeat</span><span class="params">(func)</span>:</span></span><br><span class="line"><span class="meta">        @functools.wraps(func)</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">wrapper_repeat</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">            <span class="keyword">for</span> _ <span class="keyword">in</span> range(num_times):</span><br><span class="line">                value = func(*args, **kwargs)</span><br><span class="line">            <span class="keyword">return</span> value</span><br><span class="line">        <span class="keyword">return</span> wrapper_repeat</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> _func <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">        <span class="keyword">return</span> decorator_repeat</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> decorator_repeat(_func)</span><br></pre></td></tr></table></figure>
+<p>与原始的<code>@repeat</code>进行比较。唯一的变化是添加了<code>_func</code>参数以及在末尾添加了<code>if-else</code>。</p>
+<p>Python Cookbook一书中9.6节 <a href="https://python3-cookbook.readthedocs.io/zh_CN/latest/c09/p06_define_decorator_that_takes_optional_argument.html" target="_blank" rel="noopener">带可选参数的装饰器</a> 展示了一种替代方法，使用<a href="https://docs.python.org/library/functools.html#functools.partial" target="_blank" rel="noopener"><code>functools.partial()</code></a></p>
+<p>这些例子表明，<code>@repeat</code>现在可以在有或没有参数的情况下使用:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@repeat</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">say_whee</span><span class="params">()</span>:</span></span><br><span class="line">    print(<span class="string">"Whee!"</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">@repeat(num_times=3)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">greet</span><span class="params">(name)</span>:</span></span><br><span class="line">    print(<span class="string">f"Hello <span class="subst">&#123;name&#125;</span>"</span>)</span><br></pre></td></tr></table></figure>
+<p>回想一下num_times的默认值是2:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>say_whee()</span><br><span class="line">Whee!</span><br><span class="line">Whee!</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>greet(<span class="string">"Penny"</span>)</span><br><span class="line">Hello Penny</span><br><span class="line">Hello Penny</span><br><span class="line">Hello Penny</span><br></pre></td></tr></table></figure>
+<h2 id="有状态的装饰器"><a class="markdownIt-Anchor" href="#有状态的装饰器"></a> 有状态的装饰器</h2>
+<p>有时候，有一个可以跟踪状态的装饰器是很有用的。作为一个简单的例子，我们将创建一个装饰器，统计调用函数的次数。</p>
+<blockquote>
+<p>在<a href="https://sikasjc.github.io/2018/09/17/pythondecorator/">入门Python装饰器</a>的开头，我们简单讨论了基于给定参数返回值的纯函数。有状态装饰器正好相反，返回值将取决于当前状态以及给定的参数。</p>
+</blockquote>
+<p>在下一节中，将看到如何使用类来保持状态。但在简单的情况下，您也可以使用<a href="https://www.python.org/dev/peps/pep-0232/" target="_blank" rel="noopener">函数属性</a>:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> functools</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">count_calls</span><span class="params">(func)</span>:</span></span><br><span class="line"><span class="meta">    @functools.wraps(func)</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">wrapper_count_calls</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">        wrapper_count_calls.num_calls += <span class="number">1</span></span><br><span class="line">        print(<span class="string">f"Call <span class="subst">&#123;wrapper_count_calls.num_calls&#125;</span> of <span class="subst">&#123;func.__name__!r&#125;</span>"</span>)</span><br><span class="line">        <span class="keyword">return</span> func(*args, **kwargs)</span><br><span class="line">    wrapper_count_calls.num_calls = <span class="number">0</span></span><br><span class="line">    <span class="keyword">return</span> wrapper_count_calls</span><br><span class="line"></span><br><span class="line"><span class="meta">@count_calls</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">say_whee</span><span class="params">()</span>:</span></span><br><span class="line">    print(<span class="string">"Whee!"</span>)</span><br></pre></td></tr></table></figure>
+<p>状态（调用函数的次数）存储在包装器函数的函数属性<code>.num_calls</code>中。下面是使用它的效果:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>say_whee()</span><br><span class="line">Call <span class="number">1</span> of <span class="string">'say_whee'</span></span><br><span class="line">Whee!</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>say_whee()</span><br><span class="line">Call <span class="number">2</span> of <span class="string">'say_whee'</span></span><br><span class="line">Whee!</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>say_whee.num_calls</span><br><span class="line"><span class="number">2</span></span><br></pre></td></tr></table></figure>
+<h2 id="作为装饰器的类"><a class="markdownIt-Anchor" href="#作为装饰器的类"></a> 作为装饰器的类</h2>
+<p>维护状态的典型方法是使用类。在本节中，您将看到如何使用类作为装饰器重写前一节中的<code>@count_calls</code>示例。</p>
+<p>回想一下，装饰器语法<code>@my_decorator</code>只是表示<code>func = my_decorator(func)</code>的一种更简单的方法。因此，如果<code>my_decorator</code>是一个类，那么它需要在<code>.__init__()</code>方法中将<code>func</code>作为参数。此外，该类需要可调用，以便它能够代替已装饰过的函数。</p>
+<p>要使类可调用，需要实现特殊的<code>.__call__()</code>方法:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Counter</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, start=<span class="number">0</span>)</span>:</span></span><br><span class="line">        self.count = start</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.count += <span class="number">1</span></span><br><span class="line">        print(<span class="string">f"Current count is <span class="subst">&#123;self.count&#125;</span>"</span>)</span><br></pre></td></tr></table></figure>
+<p><code>.__call__()</code>方法在每次尝试调用类的实例时执行:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>counter = Counter()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>counter()</span><br><span class="line">Current count <span class="keyword">is</span> <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>counter()</span><br><span class="line">Current count <span class="keyword">is</span> <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>counter.count</span><br><span class="line"><span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p>因此，一个装饰器类的典型实现，需要实现<code>.__init__()</code>和<code>.__call__()</code>:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> functools</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CountCalls</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, func)</span>:</span></span><br><span class="line">        functools.update_wrapper(self, func)</span><br><span class="line">        self.func = func</span><br><span class="line">        self.num_calls = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self, *args, **kwargs)</span>:</span></span><br><span class="line">        self.num_calls += <span class="number">1</span></span><br><span class="line">        print(<span class="string">f"Call <span class="subst">&#123;self.num_calls&#125;</span> of <span class="subst">&#123;self.func.__name__!r&#125;</span>"</span>)</span><br><span class="line">        <span class="keyword">return</span> self.func(*args, **kwargs)</span><br><span class="line"></span><br><span class="line"><span class="meta">@CountCalls</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">say_whee</span><span class="params">()</span>:</span></span><br><span class="line">    print(<span class="string">"Whee!"</span>)</span><br></pre></td></tr></table></figure>
+<p><code>.__init__()</code>方法必须存储对函数的引用，并且可以执行任何其他必要的初始化。<code>.__call__()</code>方法被调用而不是已装饰函数。它做的事情与我们前面示例中的<code>wrapper()</code>函数基本相同。注意，应该需要使用<code>functools.update_wrapper()</code>函数，而不是<code>@functools.wrapper</code>。</p>
+<p>这个<code>@CountCalls</code>装饰器的工作原理与前一节相同:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>say_whee()</span><br><span class="line">Call <span class="number">1</span> of <span class="string">'say_whee'</span></span><br><span class="line">Whee!</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>say_whee()</span><br><span class="line">Call <span class="number">2</span> of <span class="string">'say_whee'</span></span><br><span class="line">Whee!</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>say_whee.num_calls</span><br><span class="line"><span class="number">2</span></span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2018/09/25/deepindecorator/">http://sikasjc.github.io/2018/09/25/deepindecorator/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/装饰器/">装饰器</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2018/09/29/somedecorator/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">一些更加实用的Python装饰器示例</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2018/09/17/pythondecorator/">
+        <span class="next-text nav-default">入门Python装饰器</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMzQzMy85OTg5">
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>  
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/u/5605720030" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/si-qia-sika" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  
+
+  
+   <script type="text/javascript">
+	(function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>

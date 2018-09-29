@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="一些更加实用的Python装饰器示例"/>
+
+
+
+
+  <meta name="keywords" content="python,装饰器," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2018/09/29/somedecorator/"/>
+
+
+<meta name="description" content="经过入门Python装饰器和深入Python装饰器，我们已经知道如何创建各种各样的装饰器，现在让我们看一些在现实世界更有用的Python装饰器示例，来帮助我们更好的理解与使用Python装饰器">
+<meta name="keywords" content="python,装饰器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一些更加实用的Python装饰器示例">
+<meta property="og:url" content="http://sikasjc.github.io/2018/09/29/somedecorator/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="经过入门Python装饰器和深入Python装饰器，我们已经知道如何创建各种各样的装饰器，现在让我们看一些在现实世界更有用的Python装饰器示例，来帮助我们更好的理解与使用Python装饰器">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2018-09-29T14:25:10.238Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一些更加实用的Python装饰器示例">
+<meta name="twitter:description" content="经过入门Python装饰器和深入Python装饰器，我们已经知道如何创建各种各样的装饰器，现在让我们看一些在现实世界更有用的Python装饰器示例，来帮助我们更好的理解与使用Python装饰器">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> 一些更加实用的Python装饰器示例 · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          一些更加实用的Python装饰器示例
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018年9月29日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/装饰器/">装饰器</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#重新回顾示例减慢代码速度"><span class="toc-number">1.</span> <span class="toc-text"> 重新回顾示例——减慢代码速度</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#创建单例singletons"><span class="toc-number">2.</span> <span class="toc-text"> 创建单例（Singletons）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#缓存返回值"><span class="toc-number">3.</span> <span class="toc-text"> 缓存返回值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#添加关于单位的信息"><span class="toc-number">4.</span> <span class="toc-text"> 添加关于单位的信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#验证json"><span class="toc-number">5.</span> <span class="toc-text"> 验证JSON</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number"></span> <span class="toc-text"> 总结</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#更进一步-further-reading"><span class="toc-number"></span> <span class="toc-text"> 更进一步 Further Reading</span></a>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p>经过<a href="https://sikasjc.github.io/2018/09/17/pythondecorator/">入门Python装饰器</a>和深入Python装饰器，我们已经知道如何创建各种各样的装饰器，现在让我们看一些在现实世界更有用的Python装饰器示例，来帮助我们更好的理解与使用Python装饰器</p>
+<a id="more"></a>
+<h2 id="重新回顾示例减慢代码速度"><a class="markdownIt-Anchor" href="#重新回顾示例减慢代码速度"></a> 重新回顾示例——减慢代码速度</h2>
+<p>正如<a href="https://sikasjc.github.io/2018/09/17/pythondecorator/">入门Python装饰器</a>提到的，我们以前的<code>@slow_down</code>实现总是休眠一秒钟。现在已经知道了如何向装饰器添加参数，因此让我们使用一个控制其休眠时间的可选<code>rate</code>参数重写<code>@slow_down</code>:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> functools</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">slow_down</span><span class="params">(_func=None, *, rate=<span class="number">1</span>)</span>:</span></span><br><span class="line">    <span class="string">"""Sleep given amount of seconds before calling the function"""</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decorator_slow_down</span><span class="params">(func)</span>:</span></span><br><span class="line"><span class="meta">        @functools.wraps(func)</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">wrapper_slow_down</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">            time.sleep(rate)</span><br><span class="line">            <span class="keyword">return</span> func(*args, **kwargs)</span><br><span class="line">        <span class="keyword">return</span> wrapper_slow_down</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> _func <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">        <span class="keyword">return</span> decorator_slow_down</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> decorator_slow_down(_func)</span><br></pre></td></tr></table></figure>
+<p>我们使用深入Python装饰器中介绍的样板文件，让<code>@slow_down</code>可以带可选的参数。递归<code>countdown()</code>函数现在在每次计数之间休眠2秒:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@slow_down(rate=2)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">countdown</span><span class="params">(from_number)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> from_number &lt; <span class="number">1</span>:</span><br><span class="line">        print(<span class="string">"Liftoff!"</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(from_number)</span><br><span class="line">        countdown(from_number - <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>查看一下效果</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>countdown(<span class="number">3</span>)</span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="number">2</span></span><br><span class="line"><span class="number">1</span></span><br><span class="line">Liftoff!</span><br></pre></td></tr></table></figure>
+<h2 id="创建单例singletons"><a class="markdownIt-Anchor" href="#创建单例singletons"></a> 创建单例（Singletons）</h2>
+<p>单例是一个只有一个实例的类。Python中有几种常用的单例，包括<code>None</code>、<code>True</code>和<code>False</code>。事实上，<code>None</code>是一个单例，允许你使用<code>is</code>关键字比较<code>None</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> _func <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">    <span class="keyword">return</span> decorator_name</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="keyword">return</span> decorator_name(_func)</span><br></pre></td></tr></table></figure>
+<p>使用<code>is</code>只对完全相同实例的对象返回<code>True</code>。下面的<code>@singleton</code>装饰器将类的第一个实例存储为属性，从而将类转换为单例对象。稍后创建实例的尝试只是返回存储的实例:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> functools</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">singleton</span><span class="params">(cls)</span>:</span></span><br><span class="line">    <span class="string">"""Make a class a Singleton class (only one instance)"""</span></span><br><span class="line"><span class="meta">    @functools.wraps(cls)</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">wrapper_singleton</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> wrapper_singleton.instance:</span><br><span class="line">            wrapper_singleton.instance = cls(*args, **kwargs)</span><br><span class="line">        <span class="keyword">return</span> wrapper_singleton.instance</span><br><span class="line">    wrapper_singleton.instance = <span class="keyword">None</span></span><br><span class="line">    <span class="keyword">return</span> wrapper_singleton</span><br><span class="line"></span><br><span class="line"><span class="meta">@singleton</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TheOne</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<p>如上所示，这个类装饰器遵循与我们的函数装饰器相同的模板。唯一的区别是，我们使用<code>cls</code>作为参数名来表示它是一个类装饰器，而不是<code>func</code>。</p>
+<p>让我们看一下代码运行结果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>first_one = TheOne()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>another_one = TheOne()</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>id(first_one)</span><br><span class="line"><span class="number">140094218762280</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>id(another_one)</span><br><span class="line"><span class="number">140094218762280</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>first_one <span class="keyword">is</span> another_one</span><br><span class="line"><span class="keyword">True</span></span><br></pre></td></tr></table></figure>
+<p>很明显，<code>first_one</code>确实与<code>another_one</code>完全相同。</p>
+<blockquote>
+<p>在Python中，单例类的使用并不像在其他语言中那样频繁。单例的效果通常在模块中作为全局变量更好地实现。</p>
+</blockquote>
+<h2 id="缓存返回值"><a class="markdownIt-Anchor" href="#缓存返回值"></a> 缓存返回值</h2>
+<p>装饰器可以提供一种很好的缓存和记忆机制。让我们来看看斐波那契数列的递归定义:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> decorators <span class="keyword">import</span> count_calls</span><br><span class="line"></span><br><span class="line"><span class="meta">@count_calls</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fibonacci</span><span class="params">(num)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> num &lt; <span class="number">2</span>:</span><br><span class="line">        <span class="keyword">return</span> num</span><br><span class="line">    <span class="keyword">return</span> fibonacci(num - <span class="number">1</span>) + fibonacci(num - <span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+<p>虽然实现很简单，但运行时性能却很糟糕:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>fibonacci(<span class="number">10</span>)</span><br><span class="line">&lt;Lots of output <span class="keyword">from</span> count_calls&gt;</span><br><span class="line"><span class="number">55</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>fibonacci.num_calls</span><br><span class="line"><span class="number">177</span></span><br></pre></td></tr></table></figure>
+<p>要计算第10个斐波那契数，实际上只需要计算前面的斐波那契数，但是这个实现需要大量的177次计算。更糟糕的是:<code>fibonacci(20)</code>需要21891次计算，第30次需要270万次计算。这是因为代码一直在重新计算已知的斐波那契数。</p>
+<p>通常的解决方案是使用<code>for</code>循环和查找表来实现斐波那契数。然而，简单的计算缓存也可以做到这一点:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> functools</span><br><span class="line"><span class="keyword">from</span> decorators <span class="keyword">import</span> count_calls</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cache</span><span class="params">(func)</span>:</span></span><br><span class="line">    <span class="string">"""Keep a cache of previous function calls"""</span></span><br><span class="line"><span class="meta">    @functools.wraps(func)</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">wrapper_cache</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">        cache_key = args + tuple(kwargs.items())</span><br><span class="line">        <span class="keyword">if</span> cache_key <span class="keyword">not</span> <span class="keyword">in</span> wrapper_cache.cache:</span><br><span class="line">            wrapper_cache.cache[cache_key] = func(*args, **kwargs)</span><br><span class="line">        <span class="keyword">return</span> wrapper_cache.cache[cache_key]</span><br><span class="line">    wrapper_cache.cache = dict()</span><br><span class="line">    <span class="keyword">return</span> wrapper_cache</span><br><span class="line"></span><br><span class="line"><span class="meta">@cache</span></span><br><span class="line"><span class="meta">@count_calls</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fibonacci</span><span class="params">(num)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> num &lt; <span class="number">2</span>:</span><br><span class="line">        <span class="keyword">return</span> num</span><br><span class="line">    <span class="keyword">return</span> fibonacci(num - <span class="number">1</span>) + fibonacci(num - <span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+<p>缓存作为查找表工作，所以现在<code>fibonacci()</code>只执行一次必要的计算:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>fibonacci(<span class="number">10</span>)</span><br><span class="line">Call <span class="number">1</span> of <span class="string">'fibonacci'</span></span><br><span class="line">...</span><br><span class="line">Call <span class="number">11</span> of <span class="string">'fibonacci'</span></span><br><span class="line"><span class="number">55</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>fibonacci(<span class="number">8</span>)</span><br><span class="line"><span class="number">21</span></span><br></pre></td></tr></table></figure>
+<p>注意，在对<code>fibonacci(8)</code>的最后调用中，不需要进行新的计算，因为已经为<code>fibonacci(10)</code>计算了第8个斐波那契数。</p>
+<p>在标准库中， <a href="https://en.wikipedia.org/wiki/Cache_replacement_policies#Least_recently_used_(LRU)" target="_blank" rel="noopener">Least Recently Used (LRU) cache</a> 提供于 <a href="https://docs.python.org/library/functools.html#functools.lru_cache" target="_blank" rel="noopener"><code>@functools.lru_cache</code></a>。</p>
+<p>这个装饰器的特性比上面看到的要多很多。应该使用<code>@functools.lru_cache</code>，而不是编写自己的缓存装饰器:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> functools</span><br><span class="line"></span><br><span class="line"><span class="meta">@functools.lru_cache(maxsize=4)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fibonacci</span><span class="params">(num)</span>:</span></span><br><span class="line">    print(<span class="string">f"Calculating fibonacci(<span class="subst">&#123;num&#125;</span>)"</span>)</span><br><span class="line">    <span class="keyword">if</span> num &lt; <span class="number">2</span>:</span><br><span class="line">        <span class="keyword">return</span> num</span><br><span class="line">    <span class="keyword">return</span> fibonacci(num - <span class="number">1</span>) + fibonacci(num - <span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+<p><code>maxsize</code>参数指定最近缓存了多少调用。默认值是128，但是您可以指定<code>maxsize=None</code>来缓存所有函数调用。但是，请注意，如果正在缓存许多大型对象，这可能会导致内存问题。</p>
+<p>也可以使用<code>.cache_info()</code>方法查看缓存的执行情况，并在需要时对其进行调优。在我们的示例中，我们使用一个较小的<code>maxsize</code>来查看从缓存中删除元素的效果:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>fibonacci(<span class="number">10</span>)</span><br><span class="line">Calculating fibonacci(<span class="number">10</span>)</span><br><span class="line">Calculating fibonacci(<span class="number">9</span>)</span><br><span class="line">Calculating fibonacci(<span class="number">8</span>)</span><br><span class="line">Calculating fibonacci(<span class="number">7</span>)</span><br><span class="line">Calculating fibonacci(<span class="number">6</span>)</span><br><span class="line">Calculating fibonacci(<span class="number">5</span>)</span><br><span class="line">Calculating fibonacci(<span class="number">4</span>)</span><br><span class="line">Calculating fibonacci(<span class="number">3</span>)</span><br><span class="line">Calculating fibonacci(<span class="number">2</span>)</span><br><span class="line">Calculating fibonacci(<span class="number">1</span>)</span><br><span class="line">Calculating fibonacci(<span class="number">0</span>)</span><br><span class="line"><span class="number">55</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>fibonacci(<span class="number">8</span>)</span><br><span class="line"><span class="number">21</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>fibonacci(<span class="number">5</span>)</span><br><span class="line">Calculating fibonacci(<span class="number">5</span>)</span><br><span class="line">Calculating fibonacci(<span class="number">4</span>)</span><br><span class="line">Calculating fibonacci(<span class="number">3</span>)</span><br><span class="line">Calculating fibonacci(<span class="number">2</span>)</span><br><span class="line">Calculating fibonacci(<span class="number">1</span>)</span><br><span class="line">Calculating fibonacci(<span class="number">0</span>)</span><br><span class="line"><span class="number">5</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>fibonacci(<span class="number">8</span>)</span><br><span class="line">Calculating fibonacci(<span class="number">8</span>)</span><br><span class="line">Calculating fibonacci(<span class="number">7</span>)</span><br><span class="line">Calculating fibonacci(<span class="number">6</span>)</span><br><span class="line"><span class="number">21</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>fibonacci(<span class="number">5</span>)</span><br><span class="line"><span class="number">5</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>fibonacci.cache_info()</span><br><span class="line">CacheInfo(hits=<span class="number">17</span>, misses=<span class="number">20</span>, maxsize=<span class="number">4</span>, currsize=<span class="number">4</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="添加关于单位的信息"><a class="markdownIt-Anchor" href="#添加关于单位的信息"></a> 添加关于单位的信息</h2>
+<p>以下示例有点类似于<a href="https://sikasjc.github.io/2018/09/17/pythondecorator/">入门Python装饰器</a>中的Registering Plugins示例，因为它并未真正更改已装饰函数的行为。相反，它只是将<code>unit</code>添加为函数属性：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">set_unit</span><span class="params">(unit)</span>:</span></span><br><span class="line">    <span class="string">"""Register a unit on a function"""</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decorator_set_unit</span><span class="params">(func)</span>:</span></span><br><span class="line">        func.unit = unit</span><br><span class="line">        <span class="keyword">return</span> func</span><br><span class="line">    <span class="keyword">return</span> decorator_set_unit</span><br></pre></td></tr></table></figure>
+<p>下面的示例根据圆柱体的半径和高度(以厘米为单位)计算其体积:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> math</span><br><span class="line"></span><br><span class="line"><span class="meta">@set_unit("cm^3")</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">volume</span><span class="params">(radius, height)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> math.pi * radius**<span class="number">2</span> * height</span><br></pre></td></tr></table></figure>
+<p>这个<code>.unit</code>函数属性稍后可以在需要时访问:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>volume(<span class="number">3</span>, <span class="number">5</span>)</span><br><span class="line"><span class="number">141.3716694115407</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>volume.unit</span><br><span class="line"><span class="string">'cm^3'</span></span><br></pre></td></tr></table></figure>
+<p>也可以使用函数注释（ <a href="https://www.python.org/dev/peps/pep-3107/" target="_blank" rel="noopener">function annotations</a>）实现类似的功能:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> math</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">volume</span><span class="params">(radius, height)</span> -&gt; "cm^3":</span></span><br><span class="line">    <span class="keyword">return</span> math.pi * radius**<span class="number">2</span> * height</span><br></pre></td></tr></table></figure>
+<p>但是，由于注释用于<a href="https://www.python.org/dev/peps/pep-0484/" target="_blank" rel="noopener">类型提示</a>，因此很难将单位信息与有静态类型检查的注释相结合。</p>
+<p>当连接到一个可以在单位之间转换的库，单位变得更加强大和有趣。一个这样的库是<a href="http://pint.readthedocs.io/" target="_blank" rel="noopener"><code>pint</code></a>。安装<code>pint</code>(<a href="https://pypi.org/project/Pint/" target="_blank" rel="noopener"><code>pip install Pint</code></a>)，可以转换体积为立方英寸或加仑:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> pint</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>ureg = pint.UnitRegistry()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>vol = volume(<span class="number">3</span>, <span class="number">5</span>) * ureg(volume.unit)</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>vol</span><br><span class="line">&lt;Quantity(<span class="number">141.3716694115407</span>, <span class="string">'centimeter ** 3'</span>)&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>vol.to(<span class="string">"cubic inches"</span>)</span><br><span class="line">&lt;Quantity(<span class="number">8.627028576414954</span>, <span class="string">'inch ** 3'</span>)&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>vol.to(<span class="string">"gallons"</span>).m  <span class="comment"># Magnitude</span></span><br><span class="line"><span class="number">0.0373464440537444</span></span><br></pre></td></tr></table></figure>
+<p>还可以修改装饰器，直接返回<code>pint</code> <a href="https://pint.readthedocs.io/en/latest/tutorial.html" target="_blank" rel="noopener"><code>Quantity</code></a>。这样的<code>Quantity</code>是通过与单位相乘得到的。在<code>pint</code>中，单位必须在<code>UnitRegistry</code>中查找。注册表作为函数属性存储，以避免混淆名称空间:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">use_unit</span><span class="params">(unit)</span>:</span></span><br><span class="line">    <span class="string">"""Have a function return a Quantity with given unit"""</span></span><br><span class="line">    use_unit.ureg = pint.UnitRegistry()</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decorator_use_unit</span><span class="params">(func)</span>:</span></span><br><span class="line"><span class="meta">        @functools.wraps(func)</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">wrapper_use_unit</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">            value = func(*args, **kwargs)</span><br><span class="line">            <span class="keyword">return</span> value * use_unit.ureg(unit)</span><br><span class="line">        <span class="keyword">return</span> wrapper_use_unit</span><br><span class="line">    <span class="keyword">return</span> decorator_use_unit</span><br><span class="line"></span><br><span class="line"><span class="meta">@use_unit("meters per second")</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">average_speed</span><span class="params">(distance, duration)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> distance / duration</span><br></pre></td></tr></table></figure>
+<p>有了<code>@use_unit</code>装饰器，转换单位毫不费力:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>bolt = average_speed(<span class="number">100</span>, <span class="number">9.58</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>bolt</span><br><span class="line">&lt;Quantity(<span class="number">10.438413361169102</span>, <span class="string">'meter / second'</span>)&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>bolt.to(<span class="string">"km per hour"</span>)</span><br><span class="line">&lt;Quantity(<span class="number">37.578288100208766</span>, <span class="string">'kilometer / hour'</span>)&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>bolt.to(<span class="string">"mph"</span>).m  <span class="comment"># Magnitude</span></span><br><span class="line"><span class="number">23.350065679064745</span></span><br></pre></td></tr></table></figure>
+<h2 id="验证json"><a class="markdownIt-Anchor" href="#验证json"></a> 验证JSON</h2>
+<p>让我们看最后一个用例。快速查看以下 <a href="https://realpython.com/tutorials/flask/" target="_blank" rel="noopener">Flask</a>路由处理程序:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route("/grade", methods=["POST"])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">update_grade</span><span class="params">()</span>:</span></span><br><span class="line">    json_data = request.get_json()</span><br><span class="line">    <span class="keyword">if</span> <span class="string">"student_id"</span> <span class="keyword">not</span> <span class="keyword">in</span> json_data:</span><br><span class="line">        abort(<span class="number">400</span>)</span><br><span class="line">    <span class="comment"># Update database</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">"success!"</span></span><br></pre></td></tr></table></figure>
+<p>这里我们确保<code>key student_id</code>是请求的一部分。尽管这种验证有效，但它实际上并不属于函数本身。另外，可能还有其他使用相同验证的路由。因此，让我们保持<a href="https://en.wikipedia.org/wiki/Don%27t_repeat_yourself" target="_blank" rel="noopener">DRY</a>，并使用装饰器抽象出任何不必要的逻辑。下面的<code>@validate_json</code>装饰器将完成这项工作:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, request, abort</span><br><span class="line"><span class="keyword">import</span> functools</span><br><span class="line">app = Flask(__name__)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">validate_json</span><span class="params">(*expected_args)</span>:</span>                  <span class="comment"># 1</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decorator_validate_json</span><span class="params">(func)</span>:</span></span><br><span class="line"><span class="meta">        @functools.wraps(func)</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">wrapper_validate_json</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">            json_object = request.get_json()</span><br><span class="line">            <span class="keyword">for</span> expected_arg <span class="keyword">in</span> expected_args:      <span class="comment"># 2</span></span><br><span class="line">                <span class="keyword">if</span> expected_arg <span class="keyword">not</span> <span class="keyword">in</span> json_object:</span><br><span class="line">                    abort(<span class="number">400</span>)</span><br><span class="line">            <span class="keyword">return</span> func(*args, **kwargs)</span><br><span class="line">        <span class="keyword">return</span> wrapper_validate_json</span><br><span class="line">    <span class="keyword">return</span> decorator_validate_json</span><br></pre></td></tr></table></figure>
+<p>在上面的代码中，装饰器采用了一个可变长度列表作为参数，这样我们就可以传递尽可能多的字符串参数，每个参数都代表一个用于验证JSON数据的<code>key</code>:</p>
+<ol>
+<li>JSON中必须出现的<code>key</code>列表作为参数提供给装饰器。</li>
+<li>包装器函数验证JSON数据中出现的每个预期<code>key</code>。</li>
+</ol>
+<p>然后，路由处理程序可以关注其真正作业——更新级别——因为它可以安全地假设JSON数据是有效的:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route("/grade", methods=["POST"])</span></span><br><span class="line"><span class="meta">@validate_json("student_id")</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">update_grade</span><span class="params">()</span>:</span></span><br><span class="line">    json_data = request.get_json()</span><br><span class="line">    <span class="comment"># Update database.</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">"success!"</span></span><br></pre></td></tr></table></figure>
+<h1 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h1>
+<p>这确是一段相当艰难的旅程！</p>
+<p><a href="https://sikasjc.github.io/2018/09/17/pythondecorator/">入门Python装饰器</a>通过仔细研究函数来开始，特别是如何在其他函数中定义装饰器，并像其他任何Python对象一样传递装饰器。</p>
+<p>然后你学习了装饰器以及如何编写装饰器：</p>
+<ul>
+<li>装饰器可以重复使用</li>
+<li>装饰器可以用参数和返回值修饰函数</li>
+<li>装饰器可以使用<code>@functools.wraps</code>看起来更像装饰函数</li>
+</ul>
+<p>在深入Python装饰器中，我们看到了更高级的装饰器，并了解了如何:</p>
+<ul>
+<li>装饰类</li>
+<li>嵌套装饰器</li>
+<li>向装饰器添加参数</li>
+<li>在装饰器内部保寸状态</li>
+<li>使用类作为装饰器</li>
+</ul>
+<p>已经看到，要定义装饰器，通常需要定义返回包装器函数的函数。<br>
+包装器函数使用<code>*args</code>和<code>**kwargs</code>将参数传递给被装饰函数。如果希望装饰器也包含参数，则需要将包装器函数嵌套在另一个函数中。在这种情况下，通常会以三个<code>return</code>语句结束。</p>
+<h1 id="更进一步-further-reading"><a class="markdownIt-Anchor" href="#更进一步-further-reading"></a> 更进一步 Further Reading</h1>
+<p>可以参阅 Python Cookbook 一书</p>
+<p>有关如何在Python中实现装饰器的历史讨论，请参阅 <a href="https://www.python.org/dev/peps/pep-0318/" target="_blank" rel="noopener">PEP 318</a> 以及 <a href="https://wiki.python.org/moin/PythonDecorators" target="_blank" rel="noopener">Python Decorator Wiki</a>。更多装饰器的例子可以在Python装饰器库中找到。 <a href="https://github.com/micheles/decorator" target="_blank" rel="noopener"><code>decorator</code> module</a>可以简化创建自己的装饰器的过程，其 <a href="https://decorator.readthedocs.io/" target="_blank" rel="noopener">documentation</a> 中还包含了更进一步的装饰器示例。</p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2018/09/29/somedecorator/">http://sikasjc.github.io/2018/09/29/somedecorator/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/装饰器/">装饰器</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2018/09/25/deepindecorator/">
+        <span class="next-text nav-default">深入Python装饰器</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMzQzMy85OTg5">
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>  
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/u/5605720030" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/si-qia-sika" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  
+
+  
+   <script type="text/javascript">
+	(function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>
