@@ -42,7 +42,7 @@
 <meta property="og:site_name" content="Sika">
 <meta property="og:description" content="在Python中，我们经常可以见到**和*运算符，比如*args 和 **kwargs，还有n**3、*nums等等。这里总结一下，在Python中 **和*的用法。">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:updated_time" content="2018-10-12T14:44:28.139Z">
+<meta property="og:updated_time" content="2018-10-12T14:48:59.832Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Python中的星号，`**`和`*`运算符">
 <meta name="twitter:description" content="在Python中，我们经常可以见到**和*运算符，比如*args 和 **kwargs，还有n**3、*nums等等。这里总结一下，在Python中 **和*的用法。">
@@ -230,7 +230,7 @@
   <div class="post-toc" id="post-toc">
     <h2 class="post-toc-title">目录</h2>
     <div class="post-toc-content">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#数学运算符"><span class="toc-number">1.</span> <span class="toc-text"> 数学运算符</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#函数参数"><span class="toc-number"></span> <span class="toc-text"> 函数参数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#args"><span class="toc-number">0.1.</span> <span class="toc-text"> *args</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#kwargs"><span class="toc-number">0.2.</span> <span class="toc-text"> **kwargs</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解包参数列表"><span class="toc-number">1.</span> <span class="toc-text"> 解包参数列表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#序列解包"><span class="toc-number">2.</span> <span class="toc-text"> 序列解包</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#keyword-only-arguments"><span class="toc-number">3.</span> <span class="toc-text"> Keyword-Only Arguments</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-number">4.</span> <span class="toc-text"> Reference</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#数学运算符"><span class="toc-number">1.</span> <span class="toc-text"> 数学运算符</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#函数参数"><span class="toc-number">2.</span> <span class="toc-text"> 函数参数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解包参数列表"><span class="toc-number">3.</span> <span class="toc-text"> 解包参数列表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#序列解包"><span class="toc-number">4.</span> <span class="toc-text"> 序列解包</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#keyword-only-arguments"><span class="toc-number">5.</span> <span class="toc-text"> Keyword-Only Arguments</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-number">6.</span> <span class="toc-text"> Reference</span></a></li></ol>
     </div>
   </div>
 
@@ -246,13 +246,13 @@
 <li><code>**</code>用于乘方</li>
 </ul>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="number">2</span> * <span class="number">6</span></span><br><span class="line"><span class="number">12</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="number">2</span> ** <span class="number">6</span></span><br><span class="line"><span class="number">64</span></span><br></pre></td></tr></table></figure>
-<h1 id="函数参数"><a class="markdownIt-Anchor" href="#函数参数"></a> 函数参数</h1>
+<h2 id="函数参数"><a class="markdownIt-Anchor" href="#函数参数"></a> 函数参数</h2>
 <p><code>*args</code> 和 <code>**kwargs</code> 主要用于函数定义，是一种允许任意数量（即预先并不知道函数使用者会传递多少个参数给）的函数参数的习惯用法，可以参见<a href="https://docs.python.org/dev/tutorial/controlflow.html#more-on-defining-functions" target="_blank" rel="noopener">Python的官方文档</a>。</p>
 <p>首先并不是必须写成<code>*args</code> 和<code>**kwargs</code>。 只有变量前面的 <code>*</code>(星号)才是必须的，也可以写成<code>*var</code>和<code>**vars</code>。 而写成<code>*args</code> 和<code>**kwargs</code>只是一个通俗的命名约定。</p>
-<h3 id="args"><a class="markdownIt-Anchor" href="#args"></a> <code>*args</code></h3>
+<p><strong><code>*args</code></strong></p>
 <p><code>*args</code>是可变参数。<code>*args</code> 可以表示任意多个参数，它本质是一个 tuple。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">1</span>]: <span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">(*args)</span>:</span></span><br><span class="line">   ...:     <span class="keyword">for</span> a <span class="keyword">in</span> args:</span><br><span class="line">   ...:         <span class="keyword">print</span> a</span><br><span class="line">   ...:         </span><br><span class="line">   ...:         </span><br><span class="line"></span><br><span class="line">In [<span class="number">2</span>]: foo(<span class="number">1</span>)</span><br><span class="line"><span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">In [<span class="number">4</span>]: foo(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>)</span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">2</span></span><br><span class="line"><span class="number">3</span></span><br></pre></td></tr></table></figure>
-<h3 id="kwargs"><a class="markdownIt-Anchor" href="#kwargs"></a> <code>**kwargs</code></h3>
+<p>** <code>**kwargs</code>**</p>
 <p><code>**kwargs</code>是关键字参数，它本质上是一个 dict。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">5</span>]: <span class="function"><span class="keyword">def</span> <span class="title">bar</span><span class="params">(**kwargs)</span>:</span></span><br><span class="line">   ...:     <span class="keyword">for</span> a <span class="keyword">in</span> kwargs:</span><br><span class="line">   ...:         <span class="keyword">print</span> a, kwargs[a]</span><br><span class="line">   ...:         </span><br><span class="line">   ...:         </span><br><span class="line"></span><br><span class="line">In [<span class="number">6</span>]: bar(name=<span class="string">'one'</span>, age=<span class="number">27</span>)</span><br><span class="line">age <span class="number">27</span></span><br><span class="line">name one</span><br></pre></td></tr></table></figure>
 <p><code>*args</code> 和 <code>**kwargs</code>都可以与普通参数混合，以允许向函数传递一组固定参数和一些可变的参数：</p>
@@ -328,6 +328,12 @@
         
         
   <nav class="post-nav">
+    
+      <a class="prev" href="/2018/10/24/curvefitting/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">多项式曲线拟合和最小二乘法</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
     
     
       <a class="next" href="/2018/10/02/bithacks1/">
