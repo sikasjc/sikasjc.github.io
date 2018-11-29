@@ -42,20 +42,20 @@
 <meta property="og:site_name" content="Sika">
 <meta property="og:description" content="2002年Tim Peters为Python编程语言创建了Timsort。自从Python 2.3开始，Timsort一直是Python的标准排序算法。如今，Timsort 已是是 Python、 Java、  Android平台 和 GNU Octave 的默认排序算法。Timsort 本质上利用了归并排序与插入排序，是一种经过优化的归并排序算法。">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-7-24/32474840.jpg">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-7-24/5147842.jpg">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-7-24/92306265.jpg">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-7-24/82639566.jpg">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-7-24/74313660.jpg">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-7-25/43860277.jpg">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-7-25/97473261.jpg">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-7-25/93379912.jpg">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-7-25/31968999.jpg">
-<meta property="og:updated_time" content="2018-07-25T15:41:08.478Z">
+<meta property="og:image" content="https://i.postimg.cc/GpW10rBm/32474840.jpg">
+<meta property="og:image" content="https://i.postimg.cc/tJyQT5N0/5147842.png">
+<meta property="og:image" content="https://i.postimg.cc/XJfmT5Ss/92306265.jpg">
+<meta property="og:image" content="https://i.postimg.cc/rwz6Kzxp/82639566.png">
+<meta property="og:image" content="https://i.postimg.cc/d1PgHBX7/74313660.gif">
+<meta property="og:image" content="https://i.postimg.cc/MHt4G8GR/43860277.png">
+<meta property="og:image" content="https://i.postimg.cc/VLLpV57F/97473261.jpg">
+<meta property="og:image" content="https://i.postimg.cc/hPy6Wg6R/93379912.png">
+<meta property="og:image" content="https://i.postimg.cc/441jPp1d/31968999.png">
+<meta property="og:updated_time" content="2018-10-26T15:08:34.908Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Timsort原理学习">
 <meta name="twitter:description" content="2002年Tim Peters为Python编程语言创建了Timsort。自从Python 2.3开始，Timsort一直是Python的标准排序算法。如今，Timsort 已是是 Python、 Java、  Android平台 和 GNU Octave 的默认排序算法。Timsort 本质上利用了归并排序与插入排序，是一种经过优化的归并排序算法。">
-<meta name="twitter:image" content="http://ormnbkvfv.bkt.clouddn.com/18-7-24/32474840.jpg">
+<meta name="twitter:image" content="https://i.postimg.cc/GpW10rBm/32474840.jpg">
 
 
 <link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
@@ -254,7 +254,7 @@
 <blockquote>
 <p><a href="https://en.wikipedia.org/w/index.php?title=Peter_McIlroy&amp;action=edit&amp;redlink=1" target="_blank" rel="noopener">Peter McIlroy</a>’s “Optimistic Sorting and Information Theoretic Complexity”, in Proceedings of the Fourth Annual ACM-SIAM Symposium on Discrete Algorithms, pp. 467–474, January 1993.</p>
 </blockquote>
-<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-7-24/32474840.jpg" alt="tim-peters"></p>
+<p><img src="https://i.postimg.cc/GpW10rBm/32474840.jpg" alt="tim-peters"></p>
 <blockquote>
 <p>Tim Peters，图片来自 <a href="https://www.youtube.com/watch?v=1wAOy88WxmY" target="_blank" rel="noopener">youtube</a></p>
 </blockquote>
@@ -262,14 +262,14 @@
 <h1 id="timsort"><a class="markdownIt-Anchor" href="#timsort"></a> Timsort</h1>
 <h2 id="概述"><a class="markdownIt-Anchor" href="#概述"></a> 概述</h2>
 <p>Timsort的时间复杂度为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>O</mi><mo>(</mo><mi>n</mi><mi>l</mi><mi>g</mi><mi>n</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">O(nlgn)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathit">n</span><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathit" style="margin-right:0.03588em;">g</span><span class="mord mathit">n</span><span class="mclose">)</span></span></span></span>，比较一下它与归并排序以及快速排序：</p>
-<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-7-24/5147842.jpg" alt="rank"></p>
+<p><img src="https://i.postimg.cc/tJyQT5N0/5147842.png" alt="rank"></p>
 <blockquote>
 <p>图片来自 <a href="http://bigocheatsheet.com/" target="_blank" rel="noopener">bigocheatsheet</a>，里面有常见数据结构操作及排序算法的复杂度比较</p>
 </blockquote>
 <p>Timsort 的运行时间实际与归并排序相似的，本质上利用了归并排序与插入排序，是一种经过优化的归并排序算法。归并排序自身已经到达了比较排序算法时间复杂度的下界，因此优化过的 Timsort 可以认为是目前最快的比较排序算法之一。</p>
 <h2 id="思想"><a class="markdownIt-Anchor" href="#思想"></a> 思想</h2>
 <p>现实中的大多数据通常是有部分已经排好序的数据块，Timsort 就利用了这一特点。Timsort 称这些已经排好序的数据块们为 “natural  runs”，我们可以将其视为一个一个的“分区”。在排序时，Timsort迭代数据元素，将其放到不同的 run 里，同时针对这些 run ，按规则进行合并至只剩一个，则这个仅剩的 run 即为排好序的结果。</p>
-<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-7-24/92306265.jpg" alt="run"></p>
+<p><img src="https://i.postimg.cc/XJfmT5Ss/92306265.jpg" alt="run"></p>
 <p>也就是说，Timsort 的大致思想是先采用插入排序将非常小的 run 扩充为较大的 run ，然后再采用归并排序来合并多个 run，所以说 Timsort 实际为归并排序。具体来说，我们需要定义一个参数 minrun ，当 run 长度小于 minrun 时，我们认为它是非常小的 run ，否则认为它是较大的 run 。</p>
 <p>综上，Timsort 的过程为：</p>
 <ol>
@@ -291,7 +291,7 @@
 </li>
 </ul>
 <p>如下图所示，如果 run 是依次减小的，我们反转 run （ run 为图中加粗部分）</p>
-<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-7-24/82639566.jpg" alt="reverse"></p>
+<p><img src="https://i.postimg.cc/rwz6Kzxp/82639566.png" alt="reverse"></p>
 <p><strong>合并</strong></p>
 <p>我们再来考虑如何合并 run 。</p>
 <p>在理想情况下我们应当尽量合并长度相近的 run，这样可以节约计算时间。使用霍夫曼树的归并策略虽然可行，但我们不应该花费太多时间在选择优先合并的 run 上。Timsort 选择了一种折中的方案，它要求最右边的三个 run 的长度尽量满足两个条件。我们记最右边的三个 run 的长度从左到右分别是<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>A</mi><mo separator="true">,</mo><mi>B</mi><mo separator="true">,</mo><mi>C</mi></mrow><annotation encoding="application/x-tex">A,B,C</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="base"><span class="mord mathit">A</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit" style="margin-right:0.05017em;">B</span><span class="mpunct">,</span><span class="mord rule" style="margin-right:0.16666666666666666em;"></span><span class="mord mathit" style="margin-right:0.07153em;">C</span></span></span></span>，则 Timsort 要求：</p>
@@ -519,7 +519,7 @@ c100.7 8.3 195.3 44 280 108 55.3 42 101.7 93 139 153l9 14c2.7-4 5.7-8.7 9-14
 <li>通过将元素插入正确的位置来构建排好序的数组</li>
 </ul>
 <p>这个 gif 展示了插入排序的操作过程：</p>
-<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-7-24/74313660.jpg" alt="insertion"></p>
+<p><img src="https://i.postimg.cc/d1PgHBX7/74313660.gif" alt="insertion"></p>
 <h3 id="数组元素大于64个"><a class="markdownIt-Anchor" href="#数组元素大于64个"></a> 数组元素大于64个</h3>
 <p>如果数组大于64个元素，则算法将按照之前的思路开始，首先根据 minrun 查找数组中<strong>升序或严格降序的部分</strong>，这些部分就是 run 了。</p>
 <p>当 Timsort 找到一个 run 时，如果 run 的长度小于 minrun，跟之前一样，我们选择 run 之后的数字插入排序至 run 中，使得 run 的长度到达 minrun。</p>
@@ -540,18 +540,18 @@ c100.7 8.3 195.3 44 280 108 55.3 42 101.7 93 139 153l9 14c2.7-4 5.7-8.7 9-14
 <p>例如：如果<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>X</mi><mo>&lt;</mo><mi>Y</mi><mo>+</mo><mi>Z</mi></mrow><annotation encoding="application/x-tex">X&lt;Y+Z</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.76666em;vertical-align:-0.08333em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.07847em;">X</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord mathit" style="margin-right:0.22222em;">Y</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit" style="margin-right:0.07153em;">Z</span></span></span></span>，那么<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>X</mi><mo>+</mo><mi>Y</mi></mrow><annotation encoding="application/x-tex">X+Y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.76666em;vertical-align:-0.08333em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.07847em;">X</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord mathit" style="margin-right:0.22222em;">Y</span></span></span></span>合并为一个新的 run，然后入栈。重复上述步骤，直到同时满足上述2个条件。</p>
 <p>当合并结束后，Timsort 会继续找下一 run，然后找到以后入栈，重复上述步骤，即每次 run 入栈都会检查是否需要合并2个 run。</p>
 <p>注意到，我们只在栈的顶部进行这样的合并，这个配合 run 是升序或严格降序的可以保证 Timsort 是稳定的，如下图所示。</p>
-<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-7-25/43860277.jpg" alt="merge"></p>
+<p><img src="https://i.postimg.cc/MHt4G8GR/43860277.png" alt="merge"></p>
 <p>Timsort 并没执行原址(in_place)的归并，因为保证原址并稳定的话，需要很大的开销。</p>
 <p>实际中 Timsort 合并2个相邻的 run 需要临时存储空闲，临时存储空间的大小是2个 run 中较小的 run 的大小。Timsort算法先将较小的 run 复制到这个临时存储空间，然后用原先存储这2个 run 的空间来存储合并后的 run。</p>
-<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-7-25/97473261.jpg" alt="temporary"></p>
+<p><img src="https://i.postimg.cc/VLLpV57F/97473261.jpg" alt="temporary"></p>
 <p>合并算法是用简单插入排序，依次从左到右或从右到左比较，然后合并2个 run。</p>
 <p>为了提高效率，Timsort用<strong>二分插入排序（binary merge sort）</strong>。即先用二分查找（binary search）找到插入的位置，然后再插入。</p>
 <h4 id="galloping-mode"><a class="markdownIt-Anchor" href="#galloping-mode"></a> Galloping mode</h4>
 <p>在 Galloping mode 中，算法在一个 run 中搜索另一个 run 的第一个元素。通过将该初始元素与另一个 run 的第<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>2</mn><mi>k</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">2k-1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="base"><span class="mord">2</span><span class="mord mathit" style="margin-right:0.03148em;">k</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mord rule" style="margin-right:0.2222222222222222em;"></span><span class="mord">1</span></span></span></span>个元素（即1,3,5…）进行比较来完成的，以便获得初始元素所在的元素范围。这缩短了二分查找的范围，从而提高了效率。如果发现 Galloping 的效率低于二分查找，则退出 Galloping mode。</p>
 <p>例如，我们要将 X 和 Y 这2个 run 合并，且X是较小的 run，以及 <strong>X 和 Y 已经分别是排好序的</strong>，如下图所示。</p>
-<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-7-25/93379912.jpg" alt="merging-xy1"></p>
+<p><img src="https://i.postimg.cc/hPy6Wg6R/93379912.png" alt="merging-xy1"></p>
 <p>二分查找会找到 X 中第一个大于 Y[0] 的元素 x，当找到 x 时，可以在合并时忽略 x 之前的元素。类似的，还可以在 Y 中找到第一个大于 X[-1] 的元素 y，当找到 y 时，可以在合并时忽略 y 之后的元素，这种查找可能在随机数中效率不会很高，但是在其他情况下有很高的效率。</p>
-<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-7-25/31968999.jpg" alt="merging-xy2"></p>
+<p><img src="https://i.postimg.cc/441jPp1d/31968999.png" alt="merging-xy2"></p>
 <p>当算法到达最小阈值<code>min_gallop</code>时，算法切换到 Galloping mode，试图利用数据中的那些可以直接排序的元素。只有当一个 run 的初始元素不是另一个 run 的前七个元素之一时，Galloping 才有用。这意味着初始阈值为7。</p>
 <p>为了避免 Galloping mode 的缺点，合并函数会调整阈值。如果所选元素来自先前返回元素的同一数组，则<code>min_gallop</code>减1。否则，该值增加1，从而阻止返回到  Galloping mode 。 在随机数据的情况下，<code>min_gallop</code>的值会变得非常大，以至于 Galloping mode 永远不会再次发生。</p>
 <p>Galloping 并不总是有效的。在某些情况下，Galloping mode 会有比简单的线性搜索更多的比较。</p>

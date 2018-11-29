@@ -42,19 +42,19 @@
 <meta property="og:site_name" content="Sika">
 <meta property="og:description" content="1960年，Kalman 发表了他著名的用递归方法解决离散数据线性滤波问题的文章，从那以后，得益于数字计算技术的进步，卡尔曼滤波器已成为推广研究和应用的主题，尤其是在自主或协助导航领域。">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-5-7/4698982.jpg">
+<meta property="og:image" content="https://i.postimg.cc/mkMkx8Z0/4698982.png">
 <meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-5-7/41486730.jpg">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-5-7/92198433.jpg">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-5-7/58423769.jpg">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-5-7/50503158.jpg">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-5-8/65973561.jpg">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-5-8/22611405.jpg">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-5-8/94840379.jpg">
-<meta property="og:updated_time" content="2018-05-08T14:39:09.969Z">
+<meta property="og:image" content="https://i.postimg.cc/ZRXnD1m8/92198433.png">
+<meta property="og:image" content="https://i.postimg.cc/RV5q15X9/58423769.png">
+<meta property="og:image" content="https://i.postimg.cc/sfZvZDPw/50503158.png">
+<meta property="og:image" content="https://i.postimg.cc/qvpRYsP5/65973561.png">
+<meta property="og:image" content="https://i.postimg.cc/rwgmLdcF/22611405.png">
+<meta property="og:image" content="https://i.postimg.cc/PrWJ23RD/94840379.png">
+<meta property="og:updated_time" content="2018-10-26T15:28:37.973Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kalman Filter 卡尔曼滤波">
 <meta name="twitter:description" content="1960年，Kalman 发表了他著名的用递归方法解决离散数据线性滤波问题的文章，从那以后，得益于数字计算技术的进步，卡尔曼滤波器已成为推广研究和应用的主题，尤其是在自主或协助导航领域。">
-<meta name="twitter:image" content="http://ormnbkvfv.bkt.clouddn.com/18-5-7/4698982.jpg">
+<meta name="twitter:image" content="https://i.postimg.cc/mkMkx8Z0/4698982.png">
 
 
 <link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
@@ -279,16 +279,16 @@
 <p>假设每个状态分量受到的不确定因素都服从正态分布：</p>
 <h3 id="对小车的位置进行估计"><a class="markdownIt-Anchor" href="#对小车的位置进行估计"></a> 对小车的位置进行估计</h3>
 <p>下图：<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>t</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">t=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.64444em;"></span><span class="strut bottom" style="height:0.64444em;vertical-align:0em;"></span><span class="base"><span class="mord mathit">t</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">0</span></span></span></span> 时小车的位置服从红色的正态分布</p>
-<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-5-7/4698982.jpg" alt="1"></p>
+<p><img src="https://i.postimg.cc/mkMkx8Z0/4698982.png" alt="1"></p>
 <p>根据小车的位置、运动方向等，我们可以<strong>估计</strong>出 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t=1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.64444em;"></span><span class="strut bottom" style="height:0.64444em;vertical-align:0em;"></span><span class="base"><span class="mord mathit">t</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">1</span></span></span></span> 时刻它的位置：</p>
 <p><img src="http://ormnbkvfv.bkt.clouddn.com/18-5-7/41486730.jpg" alt="2"></p>
 <p>小车位置的分布变宽了，计算的过程中又加了新的噪声，所以不确定性变大了</p>
 <h3 id="估计中加入测量measurement"><a class="markdownIt-Anchor" href="#估计中加入测量measurement"></a> 估计中加入测量（measurement）</h3>
-<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-5-7/92198433.jpg" alt="3"></p>
+<p><img src="https://i.postimg.cc/ZRXnD1m8/92198433.png" alt="3"></p>
 <p>为了避免纯估计带来的偏差，我们在 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t=1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.64444em;"></span><span class="strut bottom" style="height:0.64444em;vertical-align:0em;"></span><span class="base"><span class="mord mathit">t</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">1</span></span></span></span> 时刻对小车的位置坐标进行一次雷达<strong>测量</strong>，当然雷达对小车距离的测量也会受到种种因素的影响，小车 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t=1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.64444em;"></span><span class="strut bottom" style="height:0.64444em;vertical-align:0em;"></span><span class="base"><span class="mord mathit">t</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mord rule" style="margin-right:0.2777777777777778em;"></span><span class="mord">1</span></span></span></span> 时的测量位置服从蓝色的正态分布：</p>
-<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-5-7/58423769.jpg" alt="4"></p>
+<p><img src="https://i.postimg.cc/RV5q15X9/58423769.png" alt="4"></p>
 <p>好了，现在我们得到两个不同的结果，估计的结果与测量的结果。Kalman先生，找到了相应权值，加权平均使红蓝分布合并为下图这个<strong>绿色的正态分布</strong></p>
-<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-5-7/50503158.jpg" alt="5"></p>
+<p><img src="https://i.postimg.cc/sfZvZDPw/50503158.png" alt="5"></p>
 <p>绿色分布不仅保证了在红蓝给定的条件下，小车位于该点的概率最大，而且它还是一个正态分布！</p>
 <p>正态分布就意味着，可以把它当做初值继续往下算！这就是 Kalman Filter 迭代的关键，即<strong>两个正态分布的融合仍是正态分布！</strong></p>
 <hr>
@@ -314,7 +314,7 @@ p(v) \sim N(0,R)
 <p>因此 Kalman Filter 可分为两个部分： <strong>时间更新方程</strong>和<strong>测量（状态）更新方程</strong>。</p>
 <p>时间更新方程负责及时向前推算当前状态变量和误差协方差估计的值，以便为下一个时间状态构造先验估计。测量更新方程负责反馈——也就是说，它将先验估计和新的测量变量结合以构造改进的后验估计。</p>
 <p>时间更新方程也可视为<strong>预估方程</strong>，测量更新方程可视为<strong>校正方程</strong>。最后的估计算法成为一种<strong>预估－校正算法</strong> ，如下图所示：</p>
-<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-5-8/65973561.jpg" alt="6"></p>
+<p><img src="https://i.postimg.cc/qvpRYsP5/65973561.png" alt="6"></p>
 <hr>
 <h4 id="时间更新方程"><a class="markdownIt-Anchor" href="#时间更新方程"></a> <strong>时间更新方程</strong></h4>
 <p>离散卡尔曼滤波器 时间更新方程：</p>
@@ -413,9 +413,9 @@ P_k = E[e_ke_k^T]
 <p>计算完时间更新方程和测量更新方程，整个过程再次重复。</p>
 <p>上一次计算得到的后验估计被作为下一次计算的先验估计。这种递归推算是卡尔曼滤波器最吸引人的特性之一——它比其它滤波器更容易实现：例如维纳滤波器 [Brown92] ，每次估计必须直接计算全部数据，而卡尔曼滤波器每次只根据以前的测量变量递归计算当前的状态估计。</p>
 <p>整个卡尔曼滤波器的过程如下图所示：</p>
-<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-5-8/22611405.jpg" alt="7"></p>
+<p><img src="https://i.postimg.cc/rwgmLdcF/22611405.png" alt="7"></p>
 <p>另一种来自 <a href="https://en.wikipedia.org/wiki/Kalman_filter" target="_blank" rel="noopener">Wiki</a> 的表示方式如下：</p>
-<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-5-8/94840379.jpg" alt="8"></p>
+<p><img src="https://i.postimg.cc/PrWJ23RD/94840379.png" alt="8"></p>
 <p>卡尔曼滤波器可以认为是一个时域中离散线性动态系统，可以看做含高斯噪声的误差的线性算子的马尔可夫链（<a href="https://en.wikipedia.org/wiki/Markov_chain" target="_blank" rel="noopener">Markov chain</a>）</p>
 <hr>
 <h2 id="实践估计随机常数"><a class="markdownIt-Anchor" href="#实践估计随机常数"></a> 实践：估计随机常数</h2>

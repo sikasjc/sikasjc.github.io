@@ -42,15 +42,15 @@
 <meta property="og:site_name" content="Sika">
 <meta property="og:description" content="NMS在计算机视觉领域有着非常重要的应用，如视频目标跟踪、数据挖掘、3D重建、目标识别以及纹理分析等......">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-6-12/23942260.jpg">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-6-12/11605202.jpg">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-6-12/18696447.jpg">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-6-12/66398683.jpg">
-<meta property="og:updated_time" content="2018-06-12T14:26:36.782Z">
+<meta property="og:image" content="https://i.postimg.cc/D0KFGFFM/23942260.png">
+<meta property="og:image" content="https://i.postimg.cc/Qt7hVVL7/11605202.png">
+<meta property="og:image" content="https://i.postimg.cc/rFMMF8fd/18696447.png">
+<meta property="og:image" content="https://i.postimg.cc/Kcnm2KDS/66398683.png">
+<meta property="og:updated_time" content="2018-10-26T15:15:25.915Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Non-Maximum Suppression（NMS）非最大抑制">
 <meta name="twitter:description" content="NMS在计算机视觉领域有着非常重要的应用，如视频目标跟踪、数据挖掘、3D重建、目标识别以及纹理分析等......">
-<meta name="twitter:image" content="http://ormnbkvfv.bkt.clouddn.com/18-6-12/23942260.jpg">
+<meta name="twitter:image" content="https://i.postimg.cc/D0KFGFFM/23942260.png">
 
 
 <link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
@@ -250,9 +250,9 @@
 <p>NMS(Non-Maximum Suppression)，非最大（极大）抑制。</p>
 <p>顾名思义，抑制不是最大值的元素，即抑制最大值以外的值，我们也可以理解为局部最大搜索。这里的局部可以代表一个有两个参数的邻域，一个参数为邻域的维度，另一个为邻域的大小。</p>
 <p>这里我们讨论用于二维图像中目标检测的NMS算法，选取邻域中分数最高的窗。例如在目标检测中，滑动窗经提取特征，经分类器识别后，每个窗都生成一个目标分数（检测到目标的概率）和对应的Bounding Box（对于滑动窗，Bounding Box的大小即为滑动窗大小）。但是滑动窗搜索方法会导致很多Bounding Box与其他Bounding Box存在包含或者大部分交叉的情况。这时就需要用到NMS来选取那些邻域中分数最高Bounding Box（是目标的概率最大），并且抑制那些分数低的Bounding Box。</p>
-<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-6-12/23942260.jpg" alt=""></p>
+<p><img src="https://i.postimg.cc/D0KFGFFM/23942260.png" alt=""></p>
 <p>经过NMS后，我们可以看到保留下来了分数最大的框。</p>
-<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-6-12/11605202.jpg" alt=""></p>
+<p><img src="https://i.postimg.cc/Qt7hVVL7/11605202.png" alt=""></p>
 <h2 id="nms原理"><a class="markdownIt-Anchor" href="#nms原理"></a> NMS原理</h2>
 <p>简单来说，如下所示：</p>
 <ol>
@@ -281,7 +281,7 @@
 <h2 id="soft-nms"><a class="markdownIt-Anchor" href="#soft-nms"></a> Soft-NMS</h2>
 <p>paper: <a href="https://arxiv.org/pdf/1704.04503.pdf" target="_blank" rel="noopener"><strong>Soft-NMS – Improving Object Detection With One Line of Code</strong></a></p>
 <p>github: <a href="https://github.com/bharatsingh430/soft-nms" target="_blank" rel="noopener"><strong>soft-nms</strong></a></p>
-<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-6-12/18696447.jpg" alt="soft-nms"></p>
+<p><img src="https://i.postimg.cc/rFMMF8fd/18696447.png" alt="soft-nms"></p>
 <p>如上图所示，之前的 NMS 会出现问题：</p>
 <ul>
 <li>IoU 的阈值如何确定</li>
@@ -295,10 +295,10 @@
 <p><strong>解决思路：降低大于 IoU 阈值的 Box 的目标分数，而不是直接删除IoU大于阈值的 Box。</strong></p>
 <h3 id="算法"><a class="markdownIt-Anchor" href="#算法"></a> 算法</h3>
 <p>论文中伪代码如下：</p>
-<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-6-12/66398683.jpg" alt="soft-nms"></p>
+<p><img src="https://i.postimg.cc/Kcnm2KDS/66398683.png" alt="soft-nms"></p>
 <p>如文章题目而言，就是用一行代码来替换掉原来的NMS。<strong>但Soft-nms仍需指定一个置信度阈值，然后最后得分大于该阈值的检测框得以保留</strong>。</p>
 <p>在该算法中，基于重叠部分的大小为相邻检测框设置一个衰减函数而非彻底将其分数置为零。</p>
-<p><strong>简单来讲，如果一个检测框与 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>M</mi></mrow><annotation encoding="application/x-tex">M</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.68333em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.10903em;">M</span></span></span></span> 有大部分重叠，它会有很低的分数；而如果检测框与 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>M</mi></mrow><annotation encoding="application/x-tex">M</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.68333em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.10903em;">M</span></span></span></span> 只有小部分重叠，那么它的原有检测分数不会受太大影响</strong>。</p>
+<p><strong>简单来讲，如果一个检测框与 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>M</mi></mrow><annotation encoding="application/x-tex">M</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.68333em;vertical-align:0em;"></span><span class="base"><span class="mord mathit" style="margin-right:0.10903em;">M</span></span></span></span> 有大部分重叠，它会有很低的分数；而如果检测框与 M​ 只有小部分重叠，那么它的原有检测分数不会受太大影响</strong>。</p>
 <p>具体而言：</p>
 <p>传统的NMS处理方法可以通过以下的分数重置函数（Rescoring Function）来表达：</p>
 <p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>s</mi><mi>i</mi></msub><mo>=</mo><mrow><mo fence="true">{</mo><mtable><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><msub><mi>s</mi><mi>i</mi></msub><mo separator="true">,</mo><mspace width="0.277778em"></mspace><mi>i</mi><mi>o</mi><mi>u</mi><mo>(</mo><mi>M</mi><mo separator="true">,</mo><msub><mi>b</mi><mi>i</mi></msub><mo>)</mo><mo>&lt;</mo><msub><mi>N</mi><mi>t</mi></msub></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mn>0</mn><mo separator="true">,</mo><mspace width="0.277778em"></mspace><mi>i</mi><mi>o</mi><mi>u</mi><mo>(</mo><mi>M</mi><mo separator="true">,</mo><msub><mi>b</mi><mi>i</mi></msub><mo>)</mo><mo>≥</mo><msub><mi>N</mi><mi>t</mi></msub></mrow></mstyle></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">s_i = \left\{\begin{matrix}

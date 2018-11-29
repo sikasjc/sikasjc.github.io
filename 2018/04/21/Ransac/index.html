@@ -42,13 +42,13 @@
 <meta property="og:site_name" content="Sika">
 <meta property="og:description" content="RANSAC为Random Sample Consensus的缩写，它是根据一组包含异常数据的样本数据集，计算出数据的数学模型参数，得到有效样本数据的算法。它于1981年由Fischler和Bolles最先提出">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-4-21/87060280.jpg">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/18-4-22/92143570.jpg">
-<meta property="og:updated_time" content="2018-04-26T16:53:49.248Z">
+<meta property="og:image" content="https://i.postimg.cc/fbBM11c3/87060280.png">
+<meta property="og:image" content="https://i.postimg.cc/3RN3h91t/92143570.png">
+<meta property="og:updated_time" content="2018-10-26T15:36:06.640Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RANSAC 随机采样一致">
 <meta name="twitter:description" content="RANSAC为Random Sample Consensus的缩写，它是根据一组包含异常数据的样本数据集，计算出数据的数学模型参数，得到有效样本数据的算法。它于1981年由Fischler和Bolles最先提出">
-<meta name="twitter:image" content="http://ormnbkvfv.bkt.clouddn.com/18-4-21/87060280.jpg">
+<meta name="twitter:image" content="https://i.postimg.cc/fbBM11c3/87060280.png">
 
 
 <link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
@@ -260,7 +260,7 @@
 <p>一般的参数估计算法基于数据点中的噪声（离群outliers）服从零均值的高斯分布，因此，在对所有数据点进行平均的参数优化，就可以对噪声有很大的抑制，线性最小二乘（Linear least squares），便是这样的思想。</p>
 <p>然而显而易见，这个假设在存在大量误差时，是不成立的，服从其他分布的噪声、严重的噪声值、采样过程中错误的测量值等等，都可能导致这样的大量误差。这样的噪声在我们进行参数估计时，应该被排除在外，以便我们获得更好的模型参数的估计值。</p>
 <p>如下图所示：<br>
-<img src="http://ormnbkvfv.bkt.clouddn.com/18-4-21/87060280.jpg" alt=""></p>
+<img src="https://i.postimg.cc/fbBM11c3/87060280.png" alt=""></p>
 <h2 id="overview-概述"><a class="markdownIt-Anchor" href="#overview-概述"></a> Overview 概述</h2>
 <h3 id="motivation"><a class="markdownIt-Anchor" href="#motivation"></a> Motivation</h3>
 <p>RANSAC就是解决这种问题一个算法，或者说一种思想，通过排除可能存在的错误数据，来估计模型参数。</p>
@@ -280,17 +280,17 @@
 <p>因此，在使用RANSAC之前，必须确定模型，距离函数和优化算法。不过，这也使得RANSAC完全模块化，允许它与任何估算模型，任何距离函数和任何优化方法一起工作。从这个角度说，RANSAC也可以被认为是一种思想。</p>
 <h3 id="flow"><a class="markdownIt-Anchor" href="#flow"></a> Flow</h3>
 <p>RANSAC算法流程的一般描述如下所示：</p>
-<p><strong>Given:</strong></p>
-<pre><code>data - a set of observed data points
-model - a model that can be fitted to data points
-n - the minimum number of data values required to fit the model
-k - the maximum number of iterations allowed in the algorithm
-t - a threshold value for determining when a data point fits a model
-d - the number of close data values required to assert that a model fits well to data
-</code></pre>
-<p><strong>Return:</strong></p>
-<pre><code>bestfit - model parameters which best fit the data (or nil if no good model is found)
-</code></pre>
+<p><strong>Given:</strong><br>
+​<br>
+data - a set of observed data points<br>
+model - a model that can be fitted to data points<br>
+n - the minimum number of data values required to fit the model<br>
+k - the maximum number of iterations allowed in the algorithm<br>
+t - a threshold value for determining when a data point fits a model<br>
+d - the number of close data values required to assert that a model fits well to data</p>
+<p><strong>Return:</strong><br>
+​<br>
+bestfit - model parameters which best fit the data (or nil if no good model is found)</p>
 <hr>
 <p><strong>RUN</strong></p>
 <pre><code>iterations = 0
@@ -405,7 +405,7 @@ return bestfit
 ================= Time =================
 3.3 msecs mean time spent per iteration
 </code></pre>
-<p><img src="http://ormnbkvfv.bkt.clouddn.com/18-4-22/92143570.jpg" alt="RANSAC"></p>
+<p><img src="https://i.postimg.cc/3RN3h91t/92143570.png" alt="RANSAC"></p>
 
       
     </div>

@@ -42,18 +42,18 @@
 <meta property="og:site_name" content="Sika">
 <meta property="og:description" content="学习《计算机网络——自顶向下方法》总结，留以自用，打好基础">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/17-11-10/98649460.jpg">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/17-11-10/88952353.jpg">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/17-11-10/21730053.jpg">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/17-11-10/56311835.jpg">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/17-11-10/84470108.jpg">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/17-11-10/59530408.jpg">
-<meta property="og:image" content="http://ormnbkvfv.bkt.clouddn.com/17-11-10/6064865.jpg">
-<meta property="og:updated_time" content="2018-01-21T07:54:15.127Z">
+<meta property="og:image" content="https://i.postimg.cc/GhHTKx1J/98649460.png">
+<meta property="og:image" content="https://i.postimg.cc/Pf681F05/88952353.png">
+<meta property="og:image" content="https://i.postimg.cc/fbh3w4SB/21730053.png">
+<meta property="og:image" content="https://i.postimg.cc/8P9J0fp8/56311835.png">
+<meta property="og:image" content="https://i.postimg.cc/P5DpsfJC/84470108.png">
+<meta property="og:image" content="https://i.postimg.cc/BbwLsX2K/59530408.png">
+<meta property="og:image" content="https://i.postimg.cc/6qQ2Dd4K/6064865.png">
+<meta property="og:updated_time" content="2018-10-26T15:43:13.806Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="计算机网络的基础知识：应用层">
 <meta name="twitter:description" content="学习《计算机网络——自顶向下方法》总结，留以自用，打好基础">
-<meta name="twitter:image" content="http://ormnbkvfv.bkt.clouddn.com/17-11-10/98649460.jpg">
+<meta name="twitter:image" content="https://i.postimg.cc/GhHTKx1J/98649460.png">
 
 
 <link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
@@ -288,7 +288,7 @@
 </li>
 <li>
 <p>能为时间敏感应用提供满意的服务，但不提供任何定时(timing，感觉这个概念更接近于网络延时log)或带宽(throughput)保证<br>
-<img src="http://ormnbkvfv.bkt.clouddn.com/17-11-10/98649460.jpg" alt="常见应用所需应用层协议"><br>
+<img src="https://i.postimg.cc/GhHTKx1J/98649460.png" alt="常见应用所需应用层协议"><br>
 常见应用所需应用层协议</p>
 </li>
 </ul>
@@ -319,7 +319,7 @@
 <li>:port - 定义主机上的端口号（http 的默认端口号是 80）</li>
 <li>path - 定义服务器上的路径（如果省略，则文档必须位于网站的根目录中）。</li>
 <li>filename - 定义文档/资源的名称<br>
-<img src="http://ormnbkvfv.bkt.clouddn.com/17-11-10/88952353.jpg" alt="URL Schemes"></li>
+<img src="https://i.postimg.cc/Pf681F05/88952353.png" alt="URL Schemes"></li>
 </ul>
 <p><strong>HTTP概况</strong></p>
 <ul>
@@ -336,15 +336,15 @@
 <li>Round-trip time（RTT）往返时间——packet-propagation delays + packet queuing delays + packet-processing delays<br>
 请求与接收一个HTML对象所需的时间，如下图所示。一个TCP连接时间：2个RTT+传输HTML文件的时间</li>
 </ul>
-<p><img src="http://ormnbkvfv.bkt.clouddn.com/17-11-10/21730053.jpg" alt="简单示意图请求与接收一个HTML对象的时间"></p>
+<p><img src="https://i.postimg.cc/fbh3w4SB/21730053.png" alt="简单示意图请求与接收一个HTML对象的时间"></p>
 <p>1.采用非持续连接的HTTP</p>
 <ul>
 <li>每个TCP连接只传输一个请求报文和一个响应报文</li>
 <li>每个连接在客户和服务器都要分配TCP的缓冲区和保持TCP变量</li>
 <li>TCP连接三次握手，第三次握手向TCP连接发送一个HTTP请求报文</li>
 <li>缺点：<br>
-1.必须为每个请求建立和维护一个全新的连接，可能会给Web服务器带来严重的负担<br>
-2.每一个对象经受两倍RTT的交付时延，一个用于创建连接，一个用于请求和接收一个对象</li>
+​    1.必须为每个请求建立和维护一个全新的连接，可能会给Web服务器带来严重的负担<br>
+​    2.每一个对象经受两倍RTT的交付时延，一个用于创建连接，一个用于请求和接收一个对象</li>
 </ul>
 <p>2.采用持续连接的HTTP（default）</p>
 <p>服务器发送响应后保持该TCP连接打开，经过一定时间间隔（超时）未被使用，HTTP服务器关闭该连接</p>
@@ -419,7 +419,7 @@ Accept-language: fr----------------------------------------------Header line
 <p><strong>用户与服务器的交互：cookie</strong></p>
 <p>服务器希望限制用户访问，或希望把内容与用户身份联系起来<br>
 用户第一次请求服务器—&gt;响应报文的响应头（首部行）带一个cookie—&gt;浏览器管理cookie—&gt;请求报文带cookie—&gt;服务器根据cookie识别用户</p>
-<p><img src="http://ormnbkvfv.bkt.clouddn.com/17-11-10/56311835.jpg" alt="Keeping user state with cookies"></p>
+<p><img src="https://i.postimg.cc/8P9J0fp8/56311835.png" alt="Keeping user state with cookies"></p>
 <p><strong>Web缓存（proxy server代理服务器）</strong></p>
 <ul>
 <li>web cache是可以代表初始web服务器来满足HTTP请求的网络实体</li>
@@ -427,7 +427,7 @@ Accept-language: fr----------------------------------------------Header line
 <li>web cache既可以是server也可以是client</li>
 <li>可以显著的减少client的请求响应的时间</li>
 <li>大大减少接入链路到Internet的网络流量，同时整体上减少Internet上的web流量<br>
-<img src="http://ormnbkvfv.bkt.clouddn.com/17-11-10/84470108.jpg" alt="Clients requesting objects through a Web cache"><br>
+<img src="https://i.postimg.cc/P5DpsfJC/84470108.png" alt="Clients requesting objects through a Web cache"><br>
 与CDN（内容分发网络）结合，使大量流量实现了本地化</li>
 </ul>
 <p><strong>条件Get方法</strong><br>
@@ -458,7 +458,7 @@ Server: Apache/1.3.0 (Unix)
 <li>控制连接（control connection）：用于两主机之间传输控制信息，如：用户标识、口令、操作命令，贯穿整个用户会话期间，因此整个会话中，FTP服务器必须保存用户的状态信息</li>
 <li>数据连接（data connection）：传输文件，一个文件一个连接，非连续</li>
 <li>FTP的控制信息是带外传送的（如上），HTTP属于带内传送<br>
-<img src="http://ormnbkvfv.bkt.clouddn.com/17-11-10/59530408.jpg" alt="FTP"></li>
+<img src="https://i.postimg.cc/BbwLsX2K/59530408.png" alt="FTP"></li>
 </ul>
 <hr>
 <h4 id="电子邮件"><a class="markdownIt-Anchor" href="#电子邮件"></a> 电子邮件</h4>
@@ -500,7 +500,7 @@ Server: Apache/1.3.0 (Unix)
 邮件服务器别名，允许一个公司的邮件服务器和Web服务器使用相同主机名，可以利用主机别名来实现负载分配——一个站点若有多台服务器（多IP地址对应一个主机名），DNS服务器循环回答这些地址</p>
 <p><strong>DNS工作机理</strong></p>
 <p>分布式、层次数据库<br>
-<img src="http://ormnbkvfv.bkt.clouddn.com/17-11-10/6064865.jpg" alt="DNS Architecture"><br>
+<img src="https://i.postimg.cc/6qQ2Dd4K/6064865.png" alt="DNS Architecture"><br>
 层次结构</p>
 <ul>
 <li>根DNS服务器：13个根服务器（群），世界各地</li>
@@ -555,15 +555,9 @@ CNAME）</li>
 </ul>
 <p><strong>分布式散列表（DHT）</strong></p>
 <ul>
-<li>
-<p>分布式、P2P版本的key-value数据库，在大量对等方上存储key-value值（键值对）</p>
-</li>
-<li>
-<p>分布式数据库用来定位拥有某key-value的对等方，然后向查询方返回该键值对</p>
-</li>
-<li>
-<p>环形DHT、对等方扰动</p>
-</li>
+<li>分布式、P2P版本的key-value数据库，在大量对等方上存储key-value值（键值对）</li>
+<li>分布式数据库用来定位拥有某key-value的对等方，然后向查询方返回该键值对</li>
+<li>环形DHT、对等方扰动</li>
 </ul>
 
       
