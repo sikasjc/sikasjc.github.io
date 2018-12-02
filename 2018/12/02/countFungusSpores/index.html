@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="来自Stackoverflow，利用ostu自适应阈值化方法、一些滤波方法和分水岭算法计算细胞的个数，是一个很不错的学习基础算法并应用的例子。"/>
+
+
+
+
+  <meta name="keywords" content="python,算法,分水岭算法,watershed,ostu," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2018/12/02/countFungusSpores/"/>
+
+
+<meta name="description" content="来自Stackoverflow，利用ostu自适应阈值化方法、一些滤波方法和分水岭算法计算细胞的个数，是一个很不错的学习基础算法并应用的例子。">
+<meta name="keywords" content="python,算法,分水岭算法,watershed,ostu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算微观图像中细胞的个数">
+<meta property="og:url" content="http://sikasjc.github.io/2018/12/02/countFungusSpores/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="来自Stackoverflow，利用ostu自适应阈值化方法、一些滤波方法和分水岭算法计算细胞的个数，是一个很不错的学习基础算法并应用的例子。">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="https://s1.ax1x.com/2018/12/02/FuNRtH.jpg">
+<meta property="og:image" content="https://s1.ax1x.com/2018/12/02/FuN5ct.png">
+<meta property="og:image" content="https://s1.ax1x.com/2018/12/02/FuN41I.png">
+<meta property="og:image" content="https://s1.ax1x.com/2018/12/02/FuNc7D.png">
+<meta property="og:image" content="https://s1.ax1x.com/2018/12/02/FuN60O.png">
+<meta property="og:image" content="https://s1.ax1x.com/2018/12/02/FuN2Ae.png">
+<meta property="og:image" content="https://s1.ax1x.com/2018/12/02/FuNIjP.png">
+<meta property="og:image" content="https://s1.ax1x.com/2018/12/02/FuNh9A.png">
+<meta property="og:image" content="https://s1.ax1x.com/2018/12/02/FuNqAg.png">
+<meta property="og:image" content="https://s1.ax1x.com/2018/12/02/FuNHHS.png">
+<meta property="og:image" content="https://s1.ax1x.com/2018/12/02/FuN7B8.png">
+<meta property="og:image" content="https://s1.ax1x.com/2018/12/02/FuNTnf.png">
+<meta property="og:image" content="https://s1.ax1x.com/2018/12/02/FuNLNQ.png">
+<meta property="og:updated_time" content="2018-12-02T07:37:26.302Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="计算微观图像中细胞的个数">
+<meta name="twitter:description" content="来自Stackoverflow，利用ostu自适应阈值化方法、一些滤波方法和分水岭算法计算细胞的个数，是一个很不错的学习基础算法并应用的例子。">
+<meta name="twitter:image" content="https://s1.ax1x.com/2018/12/02/FuNRtH.jpg">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> 计算微观图像中细胞的个数 · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          计算微观图像中细胞的个数
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018年12月2日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/算法/">算法</a>
+            
+              <a href="/tags/分水岭算法/">分水岭算法</a>
+            
+              <a href="/tags/watershed/">watershed</a>
+            
+              <a href="/tags/ostu/">ostu</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#问题"><span class="toc-number">1.</span> <span class="toc-text"> 问题</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#解决的思路和方法"><span class="toc-number">2.</span> <span class="toc-text"> 解决的思路和方法</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#步骤和python代码"><span class="toc-number">3.</span> <span class="toc-text"> 步骤和Python代码</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#估计不确定性"><span class="toc-number">3.1.</span> <span class="toc-text"> 估计不确定性</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#reference"><span class="toc-number">4.</span> <span class="toc-text"> Reference</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p>这是在Stackoverflow上发现的一个通过图像处理计算细胞的例子，里面利用了很多基础的算法，Ostu、Watershed等，是一个很不错的学习的文章。</p>
+<p>原文地址：<a href="https://stackoverflow.com/questions/53519638/improve-accuracy-of-image-processing-to-count-fungus-spores/53566610#53566610?newreg=6d64c2a8cfd64e4396a31657ae8c5032" target="_blank" rel="noopener">点此</a></p>
+<h1 id="问题"><a class="markdownIt-Anchor" href="#问题"></a> 问题</h1>
+<p>从微观样本中计算一种疾病的孢子数量，但到目前为止还没有取得多大成功。因为孢子的颜色与背景相似，而且许多都很接近。<br>
+图片如下所示：</p>
+<p><img src="https://s1.ax1x.com/2018/12/02/FuNRtH.jpg" alt="fungus spores"></p>
+<h1 id="解决的思路和方法"><a class="markdownIt-Anchor" href="#解决的思路和方法"></a> 解决的思路和方法</h1>
+<p>一般来说，针对这种分离近距离或接触斑点或物体的问题，我们可以使用分水岭方法（<a href="https://www.mathworks.com/help/images/marker-controlled-watershed-segmentation.html;jsessionid=aa7d4024a4be7b12cceee0c74c91?prodcode=IP&amp;language=en" target="_blank" rel="noopener">Watershed</a>)，同时也可以找一些论文，来帮助我们研究这样的问题，如：<a href="https://pdfs.semanticscholar.org/17d2/25a971ae11098a9959e4da3a41776e898364.pdf" target="_blank" rel="noopener">Detection and Segmentation of Multiple Touching Product Inspection Items</a></p>
+<p>这里沿着Stackoverflow里的思路，我们来尝试解决这个问题</p>
+<h1 id="步骤和python代码"><a class="markdownIt-Anchor" href="#步骤和python代码"></a> 步骤和Python代码</h1>
+<p>首先，我们准备一些辅助代码，帮助我们显示图片</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> skimage.morphology <span class="keyword">import</span> watershed <span class="keyword">as</span> skwater</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">showImage</span><span class="params">(title, img, ctype)</span>:</span></span><br><span class="line">    plt.figure(figsize=(<span class="number">10</span>,<span class="number">10</span>))</span><br><span class="line">    <span class="keyword">if</span> ctype == <span class="string">"bgr"</span>:</span><br><span class="line">        rgb = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)</span><br><span class="line">        plt.imshow(rgb)</span><br><span class="line">    <span class="keyword">elif</span> ctype == <span class="string">"hsv"</span>:</span><br><span class="line">        hsv = cv2.cvtColor(img,cv2.COLOR_HSV2RGB)</span><br><span class="line">        plt.imshow(hsv)</span><br><span class="line">    <span class="keyword">elif</span> ctype == <span class="string">"gray"</span>:</span><br><span class="line">        plt.imshow(img, cmap=<span class="string">"gray"</span>)</span><br><span class="line">    <span class="keyword">elif</span> ctype == <span class="string">"rgb"</span>:</span><br><span class="line">        plt.imshow(img)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">raise</span> Exception(<span class="string">"Unknown color type."</span>)</span><br><span class="line">    plt.title(title)</span><br><span class="line">    plt.show()</span><br></pre></td></tr></table></figure>
+<p>下图就是我们的原始图像</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">img = cv2.imread(<span class="string">"cell.jpg"</span>)</span><br><span class="line">showImage(<span class="string">"Original"</span>, img, <span class="string">"bgr"</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://s1.ax1x.com/2018/12/02/FuN5ct.png" alt="png"></p>
+<p><a href="https://en.wikipedia.org/wiki/Otsu%27s_method" target="_blank" rel="noopener">Otsu</a>方法是一种自适应阈值化方法，可以用来分割颜色。一般来说，该方法假设可以将图像的像素强度绘制成双峰的直方图，找到灰度直方图的一个最佳的分离点，并以此找到该图的二值化阈值。采取的具体方法为两个部分的类间方差最大，也可以转化为两个部分的类内方差最小。</p>
+<p>(而对于假设为单峰的灰度直方图的图像，我们可以采用<a href="https://forum.image.sc/t/understanding-imagej-implementation-of-the-triangle-algorithm-for-threshold/752" target="_blank" rel="noopener">triangle</a>方法来进行自适应阈值化。)</p>
+<p>接下来我们用Ostu方法对图片做自适应阈值化</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)</span><br><span class="line">ret, thresh = cv2.threshold(gray, <span class="number">0</span>, <span class="number">255</span>, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)</span><br><span class="line">showImage(<span class="string">"Grayscale"</span>, gray, <span class="string">"gray"</span>)</span><br><span class="line">showImage(<span class="string">"Applying Otsu"</span>, thresh, <span class="string">"gray"</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://s1.ax1x.com/2018/12/02/FuN41I.png" alt="png"></p>
+<p><img src="https://s1.ax1x.com/2018/12/02/FuNc7D.png" alt="png"></p>
+<p>我们可以看到在图片里有很多的白色的噪声，并且在细胞的内部也出现了一些黑色的斑点，对于前者中值滤波是一个简单有效的办法，对于后者，我们可以使用dilate。<br>
+（这里也可以通过闭运算、开运算以及其他滤波方法来移除这些噪声，还可以通过计算区域面积来去除小区域，以及利用区域生长的方法来填充孔洞并去除小区域）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">median = cv2.medianBlur(thresh, <span class="number">5</span>)</span><br><span class="line">showImage(<span class="string">'MedianBlur'</span>, median, <span class="string">'gray'</span>)</span><br><span class="line"></span><br><span class="line">kernel  = np.ones((<span class="number">3</span>, <span class="number">3</span>), np.uint8)</span><br><span class="line">dilated = cv2.dilate(median, kernel, iterations=<span class="number">5</span>)</span><br><span class="line">showImage(<span class="string">'Dilated'</span>,dilated,<span class="string">'gray'</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://s1.ax1x.com/2018/12/02/FuN60O.png" alt="png"></p>
+<p><img src="https://s1.ax1x.com/2018/12/02/FuN2Ae.png" alt="png"></p>
+<p>我们现在需要确定分水岭(watershed)的峰值并给它们单独的标签。</p>
+<p>为此，执行距离变换，然后过滤掉距离单元中心太远的距离。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dist = cv2.distanceTransform(dilated, cv2.DIST_L2, <span class="number">5</span>)</span><br><span class="line">showImage(<span class="string">'Distance'</span>,dist,<span class="string">'gray'</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://s1.ax1x.com/2018/12/02/FuNIjP.png" alt="png"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">fraction_foreground = <span class="number">0.5</span></span><br><span class="line">ret, sure_fg = cv2.threshold(dist,fraction_foreground*dist.max(),<span class="number">255</span>,<span class="number">0</span>)</span><br><span class="line">showImage(<span class="string">'Surely Foreground'</span>,sure_fg,<span class="string">'gray'</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://s1.ax1x.com/2018/12/02/FuNh9A.png" alt="png"></p>
+<p>上述图像中的每个白色区域是单独的单元。</p>
+<p>现在我们通过减去最大值来识别未知区域，即由分水岭算法标记的区域：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">unknown = cv2.subtract(dilated,sure_fg.astype(np.uint8))</span><br><span class="line">showImage(<span class="string">'Unknown'</span>,unknown,<span class="string">'gray'</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://s1.ax1x.com/2018/12/02/FuNqAg.png" alt="png"></p>
+<p>未知区域应在每个细胞周围形成一个的甜甜圈样子的圆环。</p>
+<p>接下来，我们给出距离变换唯一标签产生的每个不同区域，然后在最终执行分水岭变换之前标记未知区域：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Marker labelling</span></span><br><span class="line">ret, markers = cv2.connectedComponents(sure_fg.astype(np.uint8))</span><br><span class="line">showImage(<span class="string">'Connected Components'</span>,markers,<span class="string">'rgb'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Add one to all labels so that sure background is not 0, but 1</span></span><br><span class="line">markers = markers+<span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Now, mark the region of unknown with zero</span></span><br><span class="line">markers[unknown == np.max(unknown)] = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">showImage(<span class="string">'markers'</span>,markers,<span class="string">'rgb'</span>)</span><br><span class="line"></span><br><span class="line">dist = cv2.distanceTransform(dilated,cv2.DIST_L2,<span class="number">5</span>)</span><br><span class="line">markers = skwater(-dist,markers,watershed_line=<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">showImage(<span class="string">'Watershed'</span>,markers,<span class="string">'rgb'</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://s1.ax1x.com/2018/12/02/FuNHHS.png" alt="png"></p>
+<p><img src="https://s1.ax1x.com/2018/12/02/FuN7B8.png" alt="png"></p>
+<p><img src="https://s1.ax1x.com/2018/12/02/FuNTnf.png" alt="png"></p>
+<p>现在，细胞的总数为标记的数量减去1（为了忽略背景）：</p>
+<p>这下再看看我们的原始图片。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">showImage(<span class="string">"Original"</span>, img, <span class="string">"bgr"</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://s1.ax1x.com/2018/12/02/FuNLNQ.png" alt="png"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">len(set(markers.flatten()))<span class="number">-1</span></span><br></pre></td></tr></table></figure>
+<pre><code>23
+</code></pre>
+<p>可以通过调整距离阈值，dilation的程度或者使用h-maxima（局部阈值最大值）来使得结果变得更准确。</p>
+<p>但要注意过度拟合; 也就是说，调整单个图像得到的最好结果，对其他图片可能并不起效果。</p>
+<h2 id="估计不确定性"><a class="markdownIt-Anchor" href="#估计不确定性"></a> 估计不确定性</h2>
+<p>还可以通过略微修改参数，以了解计数中的不确定性。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> itertools</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">CountCells</span><span class="params">(dilation=<span class="number">5</span>, fg_frac=<span class="number">0.6</span>)</span>:</span></span><br><span class="line">  <span class="comment">#Read in image</span></span><br><span class="line">  img         = cv2.imread(<span class="string">'cell.jpg'</span>)</span><br><span class="line">  <span class="comment">#Convert to a single, grayscale channel</span></span><br><span class="line">  gray        = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)</span><br><span class="line">  <span class="comment">#Threshold the image to binary using Otsu's method</span></span><br><span class="line">  ret, thresh = cv2.threshold(gray,<span class="number">0</span>,<span class="number">255</span>,cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)</span><br><span class="line">  <span class="comment">#Adjust iterations until desired result is achieved</span></span><br><span class="line">  kernel  = np.ones((<span class="number">3</span>,<span class="number">3</span>),np.uint8)</span><br><span class="line">  dilated = cv2.dilate(thresh, kernel, iterations=dilation)</span><br><span class="line">  <span class="comment">#Calculate distance transformation</span></span><br><span class="line">  dist         = cv2.distanceTransform(dilated,cv2.DIST_L2,<span class="number">5</span>)</span><br><span class="line">  <span class="comment">#Adjust this parameter until desired separation occurs</span></span><br><span class="line">  fraction_foreground = fg_frac</span><br><span class="line">  ret, sure_fg = cv2.threshold(dist,fraction_foreground*dist.max(),<span class="number">255</span>,<span class="number">0</span>)</span><br><span class="line">  <span class="comment"># Finding unknown region</span></span><br><span class="line">  unknown = cv2.subtract(dilated,sure_fg.astype(np.uint8))</span><br><span class="line">  <span class="comment"># Marker labelling</span></span><br><span class="line">  ret, markers = cv2.connectedComponents(sure_fg.astype(np.uint8))</span><br><span class="line">  <span class="comment"># Add one to all labels so that sure background is not 0, but 1</span></span><br><span class="line">  markers = markers+<span class="number">1</span></span><br><span class="line">  <span class="comment"># Now, mark the region of unknown with zero</span></span><br><span class="line">  markers[unknown==np.max(unknown)] = <span class="number">0</span>    </span><br><span class="line">  markers = skwater(-dist,markers,watershed_line=<span class="keyword">True</span>)</span><br><span class="line">  <span class="keyword">return</span> len(set(markers.flatten()))<span class="number">-1</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#Smaller numbers are noisier, which leads to many small blobs that get</span></span><br><span class="line"><span class="comment">#thresholded out (undercounting); larger numbers result in possibly fewer blobs,</span></span><br><span class="line"><span class="comment">#which can also cause undercounting.</span></span><br><span class="line">dilations = [<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>] </span><br><span class="line"><span class="comment">#Small numbers equal less separation, so undercounting; larger numbers equal</span></span><br><span class="line"><span class="comment">#more separation or drop-outs. This can lead to over-counting initially, but</span></span><br><span class="line"><span class="comment">#rapidly to under-counting.</span></span><br><span class="line">fracs     = [<span class="number">0.5</span>, <span class="number">0.6</span>, <span class="number">0.7</span>, <span class="number">0.8</span>] </span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> params <span class="keyword">in</span> itertools.product(dilations,fracs):</span><br><span class="line">  print(<span class="string">"Dilation=&#123;0&#125;, FG frac=&#123;1&#125;, Count=&#123;2&#125;"</span>.format(*params,CountCells(*params)))</span><br></pre></td></tr></table></figure>
+<pre><code>Dilation=4, FG frac=0.5, Count=22
+Dilation=4, FG frac=0.6, Count=23
+Dilation=4, FG frac=0.7, Count=17
+Dilation=4, FG frac=0.8, Count=12
+Dilation=5, FG frac=0.5, Count=21
+Dilation=5, FG frac=0.6, Count=23
+Dilation=5, FG frac=0.7, Count=20
+Dilation=5, FG frac=0.8, Count=13
+Dilation=6, FG frac=0.5, Count=20
+Dilation=6, FG frac=0.6, Count=23
+Dilation=6, FG frac=0.7, Count=24
+Dilation=6, FG frac=0.8, Count=14
+</code></pre>
+<p>最后针对这些数字做一些统计学上的数据处理，来得到我们想要的结果</p>
+<h1 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> Reference</h1>
+<p>Stackoverflow: <a href="https://stackoverflow.com/questions/53519638/improve-accuracy-of-image-processing-to-count-fungus-spores/53566610#53566610?newreg=6d64c2a8cfd64e4396a31657ae8c5032" target="_blank" rel="noopener">Improve accuracy of image processing to count fungus spores</a></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2018/12/02/countFungusSpores/">http://sikasjc.github.io/2018/12/02/countFungusSpores/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/算法/">算法</a>
+            
+              <a href="/tags/分水岭算法/">分水岭算法</a>
+            
+              <a href="/tags/watershed/">watershed</a>
+            
+              <a href="/tags/ostu/">ostu</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2018/10/24/curvefitting/">
+        <span class="next-text nav-default">多项式曲线拟合和最小二乘法</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMzQzMy85OTg5">
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>  
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/u/5605720030" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/si-qia-sika" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  
+
+  
+   <script type="text/javascript">
+	(function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>
