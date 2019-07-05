@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="解决虚拟机Debian 8/9 安装docker出现的`can't initialize iptables table `nat'`错误"/>
+
+
+
+
+  <meta name="keywords" content="虚拟机,docker,debian," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2019/06/08/install_docker_error/"/>
+
+
+<meta name="description" content="解决虚拟机Debian 8/9 安装docker出现的`can&apos;t initialize iptables table `nat&apos;`错误">
+<meta name="keywords" content="虚拟机,docker,debian">
+<meta property="og:type" content="article">
+<meta property="og:title" content="解决虚拟机Debian 8&#x2F;9 安装docker错误">
+<meta property="og:url" content="http://sikasjc.github.io/2019/06/08/install_docker_error/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="解决虚拟机Debian 8/9 安装docker出现的`can&apos;t initialize iptables table `nat&apos;`错误">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="https://i.postimg.cc/fLQGZBfT/20190628211300.png">
+<meta property="og:updated_time" content="2019-07-05T05:19:46.198Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="解决虚拟机Debian 8&#x2F;9 安装docker错误">
+<meta name="twitter:description" content="解决虚拟机Debian 8/9 安装docker出现的`can&apos;t initialize iptables table `nat&apos;`错误">
+<meta name="twitter:image" content="https://i.postimg.cc/fLQGZBfT/20190628211300.png">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> 解决虚拟机Debian 8/9 安装docker错误 · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          解决虚拟机Debian 8/9 安装docker错误
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2019年6月8日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/虚拟机/">虚拟机</a>
+            
+              <a href="/tags/docker/">docker</a>
+            
+              <a href="/tags/debian/">debian</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#解决虚拟机debian-89-安装docker错误"><span class="toc-number">1.</span> <span class="toc-text"> 解决虚拟机Debian 8/9 安装docker错误</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#发现问题"><span class="toc-number">1.1.</span> <span class="toc-text"> 发现问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解决问题"><span class="toc-number">1.2.</span> <span class="toc-text"> 解决问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#继续学习"><span class="toc-number">1.3.</span> <span class="toc-text"> 继续学习</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#iptables"><span class="toc-number">1.3.1.</span> <span class="toc-text"> iptables</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#iptable-nat"><span class="toc-number">1.3.2.</span> <span class="toc-text"> iptable nat</span></a></li></ol></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h1 id="解决虚拟机debian-89-安装docker错误"><a class="markdownIt-Anchor" href="#解决虚拟机debian-89-安装docker错误"></a> 解决虚拟机Debian 8/9 安装docker错误</h1>
+<h2 id="发现问题"><a class="markdownIt-Anchor" href="#发现问题"></a> 发现问题</h2>
+<p>最近需要在虚拟机上跑一个程序, 基于docker的, 实习公司只提供了Debian 8/9 的虚拟机镜像, 所以需要安装docker。</p>
+<p>安装的时候出现错误：</p>
+<p><img src="https://i.postimg.cc/fLQGZBfT/20190628211300.png" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">INFO[2019-06-30T14:16:01.754253188+08:00] Loading containers: start.</span><br><span class="line">INFO[2019-06-30T14:16:01.797813479+08:00] stopping event stream following graceful shutdown error=&quot;&lt;nil&gt;&quot; module=libcontainerd namespace=moby</span><br><span class="line">Error starting daemon: Error initializing network controller: error obtaining controller instance: failed to create NAT chain DOCKER: iptables failed: iptables --wait -t nat -N DOCKER: iptables v1.6.0: can&apos;t initialize iptables table `nat&apos;: Table does not exist (do you need to insmod?)</span><br><span class="line">Perhaps iptables or your kernel needs to be upgraded.</span><br><span class="line"> (exit status 3)</span><br></pre></td></tr></table></figure>
+<p>发现可能与NAT、iptables有关, 直接从错误信息中, 可以看出原因是<code>can't initialize iptables table 'nat'</code>。</p>
+<p>但在网上找了很多, 发现也有很多人遇到这样的问题, 并没解决, 然后使用官网上的其他安装方法, 不论哪种安装方法都会有这种问题。</p>
+<p>之后尝试运行 <code>dockerd</code> , 发现 docker-ce 实际上是已经安装好了的, 但是在启动的时候出现了同样的问题, 有什么东西禁止了docker启动。</p>
+<h2 id="解决问题"><a class="markdownIt-Anchor" href="#解决问题"></a> 解决问题</h2>
+<p>找到一位资深人士, 在他的帮助下, 找到了问题, 并解决（非常感谢）。</p>
+<p>确定问题应该是iptables被虚拟机禁用了, 而Debian每次加载模块是根据<code>/etc/modprob.d/</code>目录下的配置文件。</p>
+<p>我们可以看下nf-blacklist.conf文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">alias iptable_nat none</span><br><span class="line"></span><br><span class="line">blacklist iptable_nat</span><br><span class="line">blacklist nf_nat</span><br><span class="line">blacklist nf_conntrack_ipv4</span><br><span class="line">blacklist nf_defrag_ipv4</span><br><span class="line">blacklist nf_conntrack</span><br></pre></td></tr></table></figure>
+<p>这下一下子就发现问题所在, iptable_nat被禁用了, 删掉跟iptable_nat有关的语句就好了。更方便一点的话, 其实可以直接将nf-blacklist.conf改个名字。</p>
+<p>最后运行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run hello-world</span><br></pre></td></tr></table></figure>
+<p>确定docker安装成功！</p>
+<h2 id="继续学习"><a class="markdownIt-Anchor" href="#继续学习"></a> 继续学习</h2>
+<h3 id="iptables"><a class="markdownIt-Anchor" href="#iptables"></a> iptables</h3>
+<p>iptables是我们在实际生产环境中大量的使用的工具, 它能对进出主机的数据进行过滤以及转发等等。</p>
+<p>iptables用于在Linux内核中设置、维护和检查IP包的过滤规则(rules)表。可以定义几个不同的规则表(table), 同时每个表包含许多内置链(chain), 也可能包含用户定义的链。</p>
+<p>每个链则是一系列可以匹配一组数据包的规则, 就是说“如果数据包头符合这样的条件, 就这样处理这个数据包”。</p>
+<p>简而言之, iptables是一个用于IPv4数据包过滤和NAT的管理工具。</p>
+<p>参考:</p>
+<p><a href="https://linux.die.net/man/8/iptables" target="_blank" rel="noopener">iptables(8) - Linux man page</a></p>
+<h3 id="iptable-nat"><a class="markdownIt-Anchor" href="#iptable-nat"></a> iptable nat</h3>
+<p>iptables利用nat表, 能够实现NAT功能, 将内网地址与外网地址进行转换, 完成内外网之间的通信。</p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2019/06/08/install_docker_error/">http://sikasjc.github.io/2019/06/08/install_docker_error/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/虚拟机/">虚拟机</a>
+            
+              <a href="/tags/docker/">docker</a>
+            
+              <a href="/tags/debian/">debian</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2018/12/02/countFungusSpores/">
+        <span class="next-text nav-default">计算微观图像中细胞的个数</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMzQzMy85OTg5">
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>  
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/u/5605720030" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/si-qia-sika" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  
+
+  
+   <script type="text/javascript">
+	(function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>
