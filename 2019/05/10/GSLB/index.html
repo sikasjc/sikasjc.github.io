@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="GSLB全称为Global Server Load Balance。它实现了在互联网上不同地域的服务器间的流量调配，保证使用最佳的服务器服务离自己最近的客户，从而确保访问质量"/>
+
+
+
+
+  <meta name="keywords" content="DNS,计算机网络,GSLB," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2019/05/10/GSLB/"/>
+
+
+<meta name="description" content="GSLB全称为Global Server Load Balance。它实现了在互联网上不同地域的服务器间的流量调配，保证使用最佳的服务器服务离自己最近的客户，从而确保访问质量">
+<meta name="keywords" content="DNS,计算机网络,GSLB">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GSLB 全局负载均衡">
+<meta property="og:url" content="http://sikasjc.github.io/2019/05/10/GSLB/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="GSLB全称为Global Server Load Balance。它实现了在互联网上不同地域的服务器间的流量调配，保证使用最佳的服务器服务离自己最近的客户，从而确保访问质量">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="https://i.postimg.cc/8Cj1QT8D/SLB.png">
+<meta property="og:image" content="https://i.postimg.cc/SNhN2097/GSLB-DNS.png">
+<meta property="og:image" content="https://i.postimg.cc/rwh8PKPQ/http-redirection.png">
+<meta property="og:image" content="https://i.postimg.cc/XYNjLwQr/GSLB-ip-tun.png">
+<meta property="og:image" content="https://i.postimg.cc/65f6CHLs/GSLB-schedule-layer.png">
+<meta property="og:updated_time" content="2019-07-06T10:09:02.226Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GSLB 全局负载均衡">
+<meta name="twitter:description" content="GSLB全称为Global Server Load Balance。它实现了在互联网上不同地域的服务器间的流量调配，保证使用最佳的服务器服务离自己最近的客户，从而确保访问质量">
+<meta name="twitter:image" content="https://i.postimg.cc/8Cj1QT8D/SLB.png">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> GSLB 全局负载均衡 · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          GSLB 全局负载均衡
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2019年5月10日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/DNS/">DNS</a>
+            
+              <a href="/tags/计算机网络/">计算机网络</a>
+            
+              <a href="/tags/GSLB/">GSLB</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#slb"><span class="toc-number">1.</span> <span class="toc-text"> SLB</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#关键技术"><span class="toc-number">1.1.</span> <span class="toc-text"> 关键技术</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#what-is-gslb"><span class="toc-number">2.</span> <span class="toc-text"> What is GSLB？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#why-gslb"><span class="toc-number">3.</span> <span class="toc-text"> Why GSLB？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#how-implements-gslb"><span class="toc-number">4.</span> <span class="toc-text"> How implements GSLB？</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#dns"><span class="toc-number">4.1.</span> <span class="toc-text"> DNS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#how-gslb-provides-dns"><span class="toc-number">4.1.1.</span> <span class="toc-text"> How GSLB Provides DNS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#特点"><span class="toc-number">4.1.2.</span> <span class="toc-text"> 特点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#http-redirection"><span class="toc-number">4.2.</span> <span class="toc-text"> HTTP redirection</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#特点-2"><span class="toc-number">4.2.1.</span> <span class="toc-text"> 特点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ip-route"><span class="toc-number">4.3.</span> <span class="toc-text"> IP Route</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#特点-3"><span class="toc-number">4.3.1.</span> <span class="toc-text"> 特点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#统一调度服务层"><span class="toc-number">4.4.</span> <span class="toc-text"> 统一调度服务层</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#特点-4"><span class="toc-number">4.4.1.</span> <span class="toc-text"> 特点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#常见策略实现"><span class="toc-number">4.5.</span> <span class="toc-text"> 常见策略实现</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#reference"><span class="toc-number">5.</span> <span class="toc-text"> Reference</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h1 id="slb"><a class="markdownIt-Anchor" href="#slb"></a> SLB</h1>
+<p>负载均衡(Server Load Balance, SLB)，其含义是将负载(工作任务)平衡分散到多个服务器上。<strong>CDN</strong>是典型的负载均衡集群系统。</p>
+<p><img src="https://i.postimg.cc/8Cj1QT8D/SLB.png" alt="img"></p>
+<p>也就是说，客户端发出的请求，首先会到负载均衡设备的IP地址上。因为该IP地址并不负责处理实际的业务，所以通常将该地址称为【虚拟IP】(Virtual IP, <strong>VIP</strong>)。</p>
+<p>后端真正的业务服务器被称为【真实服务器】(Real Server, <strong>RS</strong>)，其IP地址被称为【真实IP】(Real IP, <strong>RIP</strong>)，负责处理业务。</p>
+<h2 id="关键技术"><a class="markdownIt-Anchor" href="#关键技术"></a> 关键技术</h2>
+<ul>
+<li>
+<p>请求分发</p>
+</li>
+<li>
+<p>会话保持</p>
+</li>
+<li>
+<ul>
+<li>客户端IP</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>cookie</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>HTTP报文头</li>
+</ul>
+</li>
+<li>
+<p>服务器健康检查</p>
+</li>
+<li>
+<ul>
+<li>传输层 ICMP、TCP协议，能否建立TCP连接，回响是否正常，等等</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>应用层 HTTP协议</li>
+</ul>
+</li>
+</ul>
+<h1 id="what-is-gslb"><a class="markdownIt-Anchor" href="#what-is-gslb"></a> What is GSLB？</h1>
+<p>Global Server Load Balancing，全局（服务器）负载均衡</p>
+<ul>
+<li>
+<p>SLB(Server Load Balancing)</p>
+</li>
+<li>
+<ul>
+<li>对集群内物理主机的负载均衡</li>
+</ul>
+</li>
+<li>
+<p>GSLB</p>
+</li>
+<li>
+<ul>
+<li>对物理集群的负载均衡</li>
+</ul>
+</li>
+</ul>
+<p>GSLB 监控每个集群的运行状况（health）和响应能力，与SLB一样，将流量引导至具有最佳响应时间的集群去。</p>
+<p>GSLB是依赖于用户和实际部署环境的互联网资源的分发技术，不同的目的对应着一系列不同的技术实现。</p>
+<blockquote>
+<p>这里的负载均衡不只是简单的对流量的均匀分布，也包括了根据策略的不同实现不同场景的应用交付。</p>
+</blockquote>
+<p>GSLB包括以下服务：</p>
+<ul>
+<li>
+<p>将流量路由到最合适的数据中心</p>
+</li>
+<li>
+<p>监控每个数据中心的运行状况、可用性、负载</p>
+</li>
+<li>
+<p>将流量从失败或者不健康的数据中心移走</p>
+</li>
+<li>
+<p>使用策略来控制和优化多数据中心的部署</p>
+</li>
+<li>
+<p>传递给用户SLA期望（服务提供商与受服务用户之间具体达成了承诺的服务指标——质量、可用性，责任）</p>
+</li>
+<li>
+<p>满足不同国家或地区的监管要求</p>
+</li>
+<li>
+<p>提供特定于国家或地区、语言的自定义内容</p>
+</li>
+</ul>
+<h1 id="why-gslb"><a class="markdownIt-Anchor" href="#why-gslb"></a> Why GSLB？</h1>
+<ul>
+<li>
+<p>高可用，高容灾，持续服务</p>
+</li>
+<li>
+<p>更快的响应时间，更好的用户体验</p>
+</li>
+<li>
+<p>可扩展性，多版本分发，多种资源和服务组合</p>
+</li>
+</ul>
+<p>具体</p>
+<ol>
+<li>
+<p>Disaster Recovery</p>
+</li>
+<li>
+<p>Load Sharing，基于不同条件（地理、网络状况等）的流量分发</p>
+</li>
+<li>
+<ol>
+<li>可以节省带宽</li>
+</ol>
+</li>
+<li>
+<ol>
+<li>控制给定节点的能力</li>
+</ol>
+</li>
+<li>
+<ol>
+<li>容灾</li>
+</ol>
+</li>
+<li>
+<p>Performance，增强用户体验</p>
+</li>
+<li>
+<p>多版本，根据不同的政策提供不同版本的资源，或者根据自定义的规则提供为特殊用户提供特殊版本，如灰度交付等。</p>
+</li>
+</ol>
+<h1 id="how-implements-gslb"><a class="markdownIt-Anchor" href="#how-implements-gslb"></a> How implements GSLB？</h1>
+<p>主流技术实现</p>
+<h2 id="dns"><a class="markdownIt-Anchor" href="#dns"></a> DNS</h2>
+<blockquote>
+<p>术语：A (Address) 记录：将特定的主机名映射到对应主机的IP地址上。</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>CNAME：将某个别名指向到某个A记录上。</li>
+</ul>
+</blockquote>
+<p>GSLB会替代权威DNS服务器从而实现自己的解析策略，返回给用户最合适的IP（列表）</p>
+<p>How Standard DNS Works</p>
+<ol>
+<li>
+<p>客户端web浏览器尝试使用URL访问该站点</p>
+</li>
+<li>
+<p>客户端查询本地ISP提供的DNS服务器（Local DNS）</p>
+</li>
+<li>
+<p>ISP DNS服务器在Root DNS中查询该站点的权威DNS服务器（在这之中，应该包括查询TLB顶级域DNS服务器，然后再从TLB顶级域DNS查询权威DNS）</p>
+</li>
+<li>
+<p>本地ISP的Local DNS查询权威DNS服务器并接受IP地址</p>
+</li>
+</ol>
+<blockquote>
+<p>从local DNS想权威DNS进行查询称为递归DNS查询</p>
+</blockquote>
+<ol>
+<li>现在Web浏览器有了IP地址，开始于该站点服务器通信</li>
+</ol>
+<h3 id="how-gslb-provides-dns"><a class="markdownIt-Anchor" href="#how-gslb-provides-dns"></a> How GSLB Provides DNS</h3>
+<p>因为客户端流量时基于DNS检索的IP地址，路由到服务器，因此可以扩展DNS服务以智能地将客户端流量定向到托管服务的任意数量的数据中心站点。</p>
+<p>因此，<strong>GSLB系统充当权威DNS服务器</strong>**。**当客户端查询DNS服务器时（标准DNS服务第3步），GSLB系统可以智能的计算最合适的站点以提供服务。</p>
+<p><img src="https://i.postimg.cc/SNhN2097/GSLB-DNS.png" alt="img"></p>
+<ul>
+<li>
+<p>客户端web浏览器尝试使用URL访问该站点</p>
+</li>
+<li>
+<p>客户端查询本地ISP提供的DNS服务器（Local DNS）</p>
+</li>
+<li>
+<p>ISP提供的Local DNS查询该站点的GSLB服务器。GSLB计算指向客户端流量的最佳站点，并使用该站点服务器IP地址进行回复。</p>
+</li>
+</ul>
+<blockquote>
+<p>使用负载平衡算法，流量控制策略和客户端的地理位置，GSLB可以智能地将客户端定向到最佳站点。</p>
+</blockquote>
+<ul>
+<li>现在Web浏览器有了IP地址，开始于该站点服务器通信</li>
+</ul>
+<h3 id="特点"><a class="markdownIt-Anchor" href="#特点"></a> 特点</h3>
+<ul>
+<li>
+<p>对原业务的侵入性最小</p>
+</li>
+<li>
+<p>可以得到的信息有限，客户端IP的定位只能定位到Local DNS，拿不到客户端IP</p>
+</li>
+</ul>
+<h2 id="http-redirection"><a class="markdownIt-Anchor" href="#http-redirection"></a> HTTP redirection</h2>
+<p>利用HTTP重定向将内容转发到不同位置</p>
+<ul>
+<li>
+<p>客户端查询本地ISP提供的DNS服务器</p>
+</li>
+<li>
+<p>Local DNS查询权威DNS服务器并接受IP地址，此IP地址均为GSLB机器的IP地址</p>
+</li>
+<li>
+<p>GSLB根据客户端IP等信息解析出新的IP并使用HTTP重定向技术将用户请求重定向到目标主机</p>
+</li>
+</ul>
+<p><img src="https://i.postimg.cc/rwh8PKPQ/http-redirection.png" alt="img"></p>
+<p>请求过程：</p>
+<ol>
+<li>
+<p>客户端提交域名给Local DNS</p>
+</li>
+<li>
+<p>Local DNS查询权威DNS</p>
+</li>
+<li>
+<p>权威DNS解析域名为GSLB，并返回给Local DNS</p>
+</li>
+<li>
+<p>客户端从Local DNS拿到GSLB的IP地址，请求GSLB服务器</p>
+</li>
+<li>
+<p>GSLB从HTTP请求中解析出客户端IP并发起HTTP重定向（302）</p>
+</li>
+<li>
+<p>客户端重定向至目标服务器IP</p>
+</li>
+<li>
+<p>开始通信</p>
+</li>
+</ol>
+<h3 id="特点-2"><a class="markdownIt-Anchor" href="#特点-2"></a> 特点</h3>
+<ul>
+<li>
+<p>只适用于HTTP，可能会产生性能瓶颈</p>
+</li>
+<li>
+<p>可以用L7负载均衡工具如Nginx、HTTPD等来实现</p>
+</li>
+</ul>
+<h2 id="ip-route"><a class="markdownIt-Anchor" href="#ip-route"></a> IP Route</h2>
+<p>更改IP首部并实现使用跳转，并利用IP tunneling技术实现只对请求负载均衡（响应直接返回）</p>
+<ol>
+<li>
+<p>和HTTP重定向技术一样，请求的域名均可解析为GSLB服务器的IP</p>
+</li>
+<li>
+<p>GSLB解析出目标地址，然后封装IP包发给目标地址</p>
+</li>
+<li>
+<p>目标服务器收到请求包并处理，解析出被封装的IP包，得到客户端IP，然后把响应直接返回</p>
+</li>
+</ol>
+<p><img src="https://i.postimg.cc/XYNjLwQr/GSLB-ip-tun.png" alt="img"></p>
+<p>请求过程：</p>
+<ol>
+<li>
+<p>客户端提交域名给Local DNS</p>
+</li>
+<li>
+<p>Local DNS查询权威DNS</p>
+</li>
+<li>
+<p>权威DNS解析域名为GSLB，并返回给Local DNS</p>
+</li>
+<li>
+<p>客户端从Local DNS拿到GSLB的IP地址，请求GSLB服务器</p>
+</li>
+<li>
+<p>GSLB服务器发送请求到目标服务器</p>
+</li>
+<li>
+<p>目标服务器直接返回请求给客户端</p>
+</li>
+</ol>
+<h3 id="特点-3"><a class="markdownIt-Anchor" href="#特点-3"></a> 特点</h3>
+<ul>
+<li>
+<p>可以解决不能获得客户端IP和HTTP only的问题，也不会成为性能瓶颈</p>
+</li>
+<li>
+<p>由于时IP层的负载均衡，因此得到的信息有限，也就是说分发的策略有限</p>
+</li>
+<li>
+<p>实现方式主要是LVS的VS/TUN模式，可以自行实现</p>
+</li>
+</ul>
+<h2 id="统一调度服务层"><a class="markdownIt-Anchor" href="#统一调度服务层"></a> 统一调度服务层</h2>
+<p>客户端SDK+调度服务完成GSLB系统的功能</p>
+<p><img src="https://i.postimg.cc/65f6CHLs/GSLB-schedule-layer.png" alt="img"></p>
+<ul>
+<li>
+<p>客户端使用原地址请求服务时，SDK会交付一个解析过的地址给客户端.(或对网络请求模块做Proxy)</p>
+</li>
+<li>
+<p>SDK会通过一定的策略从调度服务中获取解析地址(一个或多个)</p>
+</li>
+<li>
+<p>SDK和调度服务会某种形式保持联系(HTTP or TCP)</p>
+</li>
+<li>
+<p>出于性能考虑，SDK本身有Cache功能同时有时效限制(TTL)</p>
+</li>
+<li></li>
+</ul>
+<p>调用试请求过程:</p>
+<ul>
+<li>
+<p>客户端请求</p>
+</li>
+<li>
+<p>调用SDK</p>
+</li>
+<li>
+<p>SDK没有命中缓存</p>
+</li>
+<li>
+<p>SDK请求调度服务</p>
+</li>
+<li>
+<p>调度服务返回新地址</p>
+</li>
+<li>
+<p>客户端用新地址发起请求</p>
+</li>
+</ul>
+<p>代理式请求过程:</p>
+<ul>
+<li>
+<p>客户端发起请求</p>
+</li>
+<li>
+<p>网络请求Proxy拦截请求</p>
+</li>
+<li>
+<p>Proxy没有命中缓存</p>
+</li>
+<li>
+<p>Proxy请求调度服务</p>
+</li>
+<li>
+<p>调度服务返回新地址</p>
+</li>
+<li>
+<p>Proxy请求新地址</p>
+</li>
+</ul>
+<h3 id="特点-4"><a class="markdownIt-Anchor" href="#特点-4"></a> 特点</h3>
+<ul>
+<li>让客户端(SDK)具备了负载均衡知识,而因此让服务端可以获得任何想要知道的信息，从而可以做更全面的解析策略，但侵入性是最大的</li>
+</ul>
+<h2 id="常见策略实现"><a class="markdownIt-Anchor" href="#常见策略实现"></a> 常见策略实现</h2>
+<ol>
+<li>
+<p>地理区域，ISP</p>
+</li>
+<li>
+<p>IP权重，不同IP不同权重，权重决定流量比例</p>
+</li>
+<li>
+<p>往返时间RTT，分active RTT(请求时ping，DNS Query等)和passive RTT(采集TCP的syn-&gt;act的时间)</p>
+</li>
+<li>
+<p>业务自定义，根据语言、User ID等等</p>
+</li>
+</ol>
+<h1 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> Reference</h1>
+<p><a href="https://chongit.github.io/2015/04/15/GSLB%E6%A6%82%E8%A6%81%E5%92%8C%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" target="_blank" rel="noopener">GSLB概要和实现原理</a></p>
+<p><a href="https://jjayyyyyyy.github.io/2017/05/17/GSLB.html" target="_blank" rel="noopener">全局负载均衡GSLB学习笔记</a></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2019/05/10/GSLB/">http://sikasjc.github.io/2019/05/10/GSLB/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/DNS/">DNS</a>
+            
+              <a href="/tags/计算机网络/">计算机网络</a>
+            
+              <a href="/tags/GSLB/">GSLB</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2019/06/08/install_docker_error/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">解决虚拟机Debian 8/9 安装docker错误</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2018/12/02/countFungusSpores/">
+        <span class="next-text nav-default">计算微观图像中细胞的个数</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMzQzMy85OTg5">
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>  
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/u/5605720030" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/si-qia-sika" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  
+
+  
+   <script type="text/javascript">
+	(function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>
