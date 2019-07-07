@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="测试和类型"/>
+
+
+
+
+  <meta name="keywords" content="测试,类型系统,类型提示," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2019/07/07/tests-and-types/"/>
+
+
+<meta name="description" content="最近用Python和Go各写了一个小项目，在工作量上都差不多，可能是我自身的问题，在开发Python的项目时，发现虽然单元测试覆盖率很快就能上去，但是在使用过程中还是会遇到许多代码安全方面的问题。实际上，Python已经在逐渐开始解决这方面的问题，详见我的这篇文章。">
+<meta name="keywords" content="测试,类型系统,类型提示">
+<meta property="og:type" content="article">
+<meta property="og:title" content="测试和类型">
+<meta property="og:url" content="http://sikasjc.github.io/2019/07/07/tests-and-types/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="最近用Python和Go各写了一个小项目，在工作量上都差不多，可能是我自身的问题，在开发Python的项目时，发现虽然单元测试覆盖率很快就能上去，但是在使用过程中还是会遇到许多代码安全方面的问题。实际上，Python已经在逐渐开始解决这方面的问题，详见我的这篇文章。">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2019-07-07T05:54:43.023Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="测试和类型">
+<meta name="twitter:description" content="最近用Python和Go各写了一个小项目，在工作量上都差不多，可能是我自身的问题，在开发Python的项目时，发现虽然单元测试覆盖率很快就能上去，但是在使用过程中还是会遇到许多代码安全方面的问题。实际上，Python已经在逐渐开始解决这方面的问题，详见我的这篇文章。">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> 测试和类型 · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          测试和类型
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2019年7月7日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/测试/">测试</a>
+            
+              <a href="/tags/类型系统/">类型系统</a>
+            
+              <a href="/tags/类型提示/">类型提示</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#注意事项"><span class="toc-number">1.</span> <span class="toc-text"> 注意事项</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#tests-are-just-moved"><span class="toc-number">1.1.</span> <span class="toc-text"> Tests are just moved</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#verbosity"><span class="toc-number">1.2.</span> <span class="toc-text"> Verbosity</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#example-in-isolation"><span class="toc-number">1.3.</span> <span class="toc-text"> Example in isolation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#limitations"><span class="toc-number">1.4.</span> <span class="toc-text"> Limitations</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p>最近用Python和Go各写了一个小项目，在工作量上都差不多，可能是我自身的问题，在开发Python的项目时，发现虽然单元测试覆盖率很快就能上去，但是在使用过程中还是会遇到许多代码安全方面的问题。实际上，Python已经在逐渐开始解决这方面的问题，详见我的<a href="https://sikasjc.github.io/2018/07/14/type-hint-in-python/">这篇文章</a>。</p>
+<a id="more"></a>
+<p>而在Go项目中，天然的强类型系统给代码安全带来了巨大的好处。越来越感受到一个良好的类型系统，可以大大减少测试的工作量开发。在<a href="http://www.ruanyifeng.com/blog/2019/07/weekly-issue-63.html" target="_blank" rel="noopener">阮一峰的博客</a>中，看到了这篇文章，很好的说明了测试与类型的关系。</p>
+<blockquote>
+<p>翻译自 <a href="https://stitcher.io/blog/tests-and-types" target="_blank" rel="noopener">Tests and types</a></p>
+</blockquote>
+<p>考虑一个简单的函数：rgbToHex，它需要三个参数，都是0到255之间的整数，然后将其转换为十六进制字符串。</p>
+<p>这个函数在动态弱类型语言的定义可能如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rgbToHex(red, green, blue) &#123;</span><br><span class="line">    // … </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我确信我们都同意“程序正确性”是至关重要的。 我们不想要任何的Bug，那么就得编写测试。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">assert(rgbToHex(0, 0, 0) == &apos;000000&apos;)  </span><br><span class="line">assert(rgbToHex(255, 255, 255) == &apos;ffffff&apos;)  </span><br><span class="line">assert(rgbToHex(238, 66, 244) == &apos;ee42f4&apos;)</span><br></pre></td></tr></table></figure>
+<p>由于我们的测试，可以确定函数实现是按预期工作的。</p>
+<p>但是真的是这样吗？</p>
+<p>我们实际上只测试了 16777216 种颜色组合中的三种。但人类的逻辑能力告诉我们，如果函数对这三种情况起作用，那么对于所有颜色组合都是有效的。</p>
+<p>但如果我们传入double而不是int呢？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rgbToHex(1.5, 20.2, 100.1)</span><br></pre></td></tr></table></figure>
+<p>或者传入允许范围之外的数字呢？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rgbToHex(-504, 305, -59)</span><br></pre></td></tr></table></figure>
+<p>传入null呢？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rgbToHex(null, null, null)</span><br></pre></td></tr></table></figure>
+<p>传入strings呢？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rgbToHex(&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;)</span><br></pre></td></tr></table></figure>
+<p>传入的参数数量不正确呢？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rgbToHex()  </span><br><span class="line">rgbToHex(1, 2)  </span><br><span class="line">rgbToHex(1, 2, 3, 4)</span><br></pre></td></tr></table></figure>
+<p>如果是上面情况的组合呢？</p>
+<p>我可以很容易地想到我们测试的五个边缘情况，然后才能确定我们的程序做了它需要做的事情。 这说明我们至少需要编写八个测试——相信还可以想出一些其他的测试。</p>
+<p>这些是类型系统旨在部分解决的问题。 请注意“部分”，之后我们会看到为什么是“部分”。</p>
+<p>如果我们按类型来过滤输入，你会发现很多测试都是不需要的。</p>
+<p>假设我们只允许参数类型为int</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">rgbToHex(Int red, Int green, Int blue)  </span><br><span class="line">&#123;</span><br><span class="line">    // … </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>让我们来看看由于已经知道是int类型而不再需要进行的测试：</p>
+<ul>
+<li>
+<p>输入是否为数字</p>
+</li>
+<li>
+<p>输入是否是整数</p>
+</li>
+<li>
+<p>输入是否为空</p>
+</li>
+</ul>
+<p>实际上，我们可以做得更好：我们仍然需要检查输入数字是否在0到255之间。</p>
+<p>不幸的是，在这一点上，许多类型系统的限制都是无法做到的。</p>
+<p>当然我们可以使用int，虽然在很多情况下（和我们一样），这种类型描述的类别对于我们的业务逻辑来说，范围仍然太大了。 有些语言有uint或“无符号整数”类型; 但这仍然是“数字类型数据”的一个子集。</p>
+<p>幸运的是，有很多方法可以解决这个问题。</p>
+<p>一种方法可以是使用“可配置（configurable）”或泛型类型，例如int &lt;min，max&gt;。 泛型的概念在许多编程语言中都是提供的。</p>
+<p>尽管我不知道是不是所有语言可以让你配置标量类型，例如int。但是，从理论上讲，类型可以预先配置，使其足够聪明，可以了解你的业务逻辑。</p>
+<p>缺少此类泛型类型的语言通常需要构建自定义类型。 作为一名OO程序员，我会用类来做这件事。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">class MinMaxInt </span><br><span class="line">&#123;    </span><br><span class="line">    public MinMaxInt(Int min, Int max, Int value)    </span><br><span class="line">    &#123;        </span><br><span class="line">        assert(min &lt;= value &lt;= max)                </span><br><span class="line">        this.value = value    </span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果我们使用MinMaxInt的实例，我们可以确定它的值被限制在int的子集中。</p>
+<p>尽管如此，这个MinMaxInt类对我们来说还是太宽泛了。 如果我们用它作为rgbToHex的参数，我们仍然不确定具体的的整数范围是什么：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">rgbToHex(MinMaxInt red, MinMaxInt green, MinMaxInt blue)  </span><br><span class="line">&#123;</span><br><span class="line">    // … </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们需要一个更具体的类型：RgbValue。 添加它同样取决于编程语言和个人偏好。 我会扩展MinMaxInt，但随意做任何最适合你的事情。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">class RgbValue extends MinMaxInt </span><br><span class="line">&#123;</span><br><span class="line">    public RgbValue(Int value)    </span><br><span class="line">    &#123;        </span><br><span class="line">        parent(0, 255, value)    </span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>现在我们已经找到了一个有效的解决方案。 通过使用RgbValue类型，我们的大多数测试都不在需要了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">rgbToHex(RgbValue red, RgbValue green, RgbValue blue)  </span><br><span class="line">&#123;</span><br><span class="line">    // … </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们现在可以通过一个测试来测试整个函数的业务逻辑：给定三种RGB有效颜色，此函数是否返回正确的HEX值？</p>
+<p>这是一个很大的改进！</p>
+<h1 id="注意事项"><a class="markdownIt-Anchor" href="#注意事项"></a> 注意事项</h1>
+<p>一些读者已经可以想到一两个反驳论点，让我们来解决它们。、</p>
+<h2 id="tests-are-just-moved"><a class="markdownIt-Anchor" href="#tests-are-just-moved"></a> Tests are just moved</h2>
+<p>如果我们正在构建自定义类型，我们仍然需要测试它们。 这在我的例子中是正确的，这受到我工作的语言的影响。</p>
+<p>这取决于语言的功能。 给定一种允许这样的语言：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">rgbToHex(</span><br><span class="line">    Int&lt;0, 255&gt; red,</span><br><span class="line">    Int&lt;0, 255&gt; green, </span><br><span class="line">    Int&lt;0, 255&gt; blue </span><br><span class="line">) &#123;</span><br><span class="line">    // … </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么额外测试就都不需要了，因为这些功能已融入语言本身。</p>
+<p>但即使我们不得不构建自定义类型并测试它们：不要忘记它们在整个代码库中都是可重用的。</p>
+<p>尽可能重复使用你正在制作的大部分类型; 因为这些自定义类别最有可能适用于您的业务，并在整个过程中都在使用。</p>
+<h2 id="verbosity"><a class="markdownIt-Anchor" href="#verbosity"></a> Verbosity</h2>
+<p>接下来，许多人会在实际使用它时认为我的解决方案过于冗长：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">rgbToHex(    </span><br><span class="line">    new RgbValue(60),    </span><br><span class="line">    new RgbValue(102),    </span><br><span class="line">    new RgbValue(79) </span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>虽然我个人并不介意这种冗长 - 我知道更强大的类型系统的好处。</p>
+<p>我想请你仔细思考一下。 这个论点不是针对强类型的，而是针对你的编程语言的。</p>
+<p>冗长是由于语言缺乏适当的语法造成的。 幸运的是，我可以想出问题可以解决的方法。</p>
+<p>一种解决方案是type juggling。 动态语言实际上非常擅长。 假设您传递一个简单的整数作为输入，编译器可以尝试将该整数转换为RgbValue的对象。 它甚至可以知道可以转换为RgbValue的可能类型，因此您仍然需要编译时错误检测。</p>
+<h2 id="example-in-isolation"><a class="markdownIt-Anchor" href="#example-in-isolation"></a> Example in isolation</h2>
+<p>另一个反对意见可能是真实代码库明显不同于简单的rgbToHex函数。</p>
+<p>我更赞同相反的观点：这个例子背后的推理可以应用于代码的任何部分。实际的困难在于使用的语言和框架：如果强大的类型不是从头开始构建的，那么你将很难充分利用它们。</p>
+<p>这是我应该建议你观看Gary Bernhardt的演讲，不到30分钟。在其中，他采用类型系统的主题，并用我们自己的偏见和意识形态来探讨这些问题。之后，您可以将这种思维应用于您正在使用的当前框架和语言。</p>
+<p>虽然我的示例是孤立的示例，但如果基础结构支持，则可以轻松扩展更强类型解决的基础问题。</p>
+<p>所以我在建议你应该抛弃你的整个语言栈，或者你是一个使用弱类型语言的坏程序员？</p>
+<p><strong>当然不是！</strong></p>
+<p>我自己每天用PHP编程，它没有以前那么糟糕了。 PHP引入了一个opt-in类型的系统，因此可以编写相当强类型的代码，即使该语言最初并不是为它构建的。想到的另一个例子是使用TypeScript的JavaScript。</p>
+<p>因此，尽可能利用类型系统，即使是最初并非为其构建的。但这需要你转变你的思维方式。根据我的经验，这是值得的。</p>
+<h2 id="limitations"><a class="markdownIt-Anchor" href="#limitations"></a> Limitations</h2>
+<p>最后，让我们在类型系统中解决一个显而易见的问题。 强类型语言就不需要测试了吗？</p>
+<p>我希望很明显，由于强大的类型系统可能会省略许多测试，但仍是需要编写测试。声称你不必用强类型语言编写测试的人是绝对错误的。</p>
+<p>还记得前面提到的部分内容吗？</p>
+<p>在理想的世界中，完美的类型系统将能够解释您的业务所需的所有特定类别。 但这是不可能的，因为计算机和编程语言只有有限的资源可供使用。</p>
+<p>因此，虽然强类型可以帮助我们确保程序的正确性，但是一些测试始终是确保业务正确性的必要条件。 这是“and”的问题，而不是“or”。</p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2019/07/07/tests-and-types/">http://sikasjc.github.io/2019/07/07/tests-and-types/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/测试/">测试</a>
+            
+              <a href="/tags/类型系统/">类型系统</a>
+            
+              <a href="/tags/类型提示/">类型提示</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2019/06/08/install_docker_error/">
+        <span class="next-text nav-default">解决虚拟机Debian 8/9 安装docker错误</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMzQzMy85OTg5">
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>  
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/u/5605720030" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/si-qia-sika" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  
+
+  
+   <script type="text/javascript">
+	(function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>
