@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="控制反转（Inversion of Control，缩写为IoC），是面向对象编程中的一种设计原则，可以用来减低计算机代码之间的耦合度。其中最常见的方式叫做依赖注入（Dependency Injection，简称DI）"/>
+
+
+
+
+  <meta name="keywords" content="设计模式," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2019/11/12/IOC&DI/"/>
+
+
+<meta name="description" content="控制反转（Inversion of Control，缩写为IoC），是面向对象编程中的一种设计原则，可以用来减低计算机代码之间的耦合度。其中最常见的方式叫做依赖注入（Dependency Injection，简称DI）">
+<meta name="keywords" content="设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="控制反转(IOC)和依赖注入(DI)">
+<meta property="og:url" content="http://sikasjc.github.io/2019/11/12/IOC&DI/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="控制反转（Inversion of Control，缩写为IoC），是面向对象编程中的一种设计原则，可以用来减低计算机代码之间的耦合度。其中最常见的方式叫做依赖注入（Dependency Injection，简称DI）">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2019-11-12T15:15:24.430Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="控制反转(IOC)和依赖注入(DI)">
+<meta name="twitter:description" content="控制反转（Inversion of Control，缩写为IoC），是面向对象编程中的一种设计原则，可以用来减低计算机代码之间的耦合度。其中最常见的方式叫做依赖注入（Dependency Injection，简称DI）">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> 控制反转(IOC)和依赖注入(DI) · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          控制反转(IOC)和依赖注入(DI)
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2019年11月12日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/设计模式/">设计模式</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#控制反转ioc"><span class="toc-number">1.</span> <span class="toc-text"> 控制反转IOC</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#举个例子"><span class="toc-number">1.1.</span> <span class="toc-text"> 举个例子</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#另一个例子"><span class="toc-number">1.2.</span> <span class="toc-text"> 另一个例子</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#依赖注入di"><span class="toc-number">2.</span> <span class="toc-text"> 依赖注入DI</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#依赖倒置原则dip"><span class="toc-number">3.</span> <span class="toc-text"> 依赖倒置原则DIP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ioc-容器ioc-container"><span class="toc-number">4.</span> <span class="toc-text"> IoC 容器(IoC Container)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-number">5.</span> <span class="toc-text"> Reference</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <blockquote>
+<p>IoC — Inversion of Control，控制反转</p>
+<p>DI — Dependency Injection，依赖注入</p>
+</blockquote>
+<p>IOC，是一种设计原则：</p>
+<blockquote>
+<p>通过将<strong>组件(Components)的设置和使用</strong>分开，来降低类别或模组之间的耦合度(即，解耦)</p>
+</blockquote>
+<blockquote>
+<p>Martin Fowler，因认为“IoC”的意义易使人困惑，于2000年初，与多位IoC提倡者，给实际实践IOC的方式起一个更具体的名称— — “Dependency Injection (依赖注入)”。</p>
+</blockquote>
+<h2 id="控制反转ioc"><a class="markdownIt-Anchor" href="#控制反转ioc"></a> 控制反转IOC</h2>
+<p>控制反转，指实例依赖成员的『控制流程(Control Flow)』，由主动控制变成被动控制，因此被称为控制反转。</p>
+<h3 id="举个例子"><a class="markdownIt-Anchor" href="#举个例子"></a> 举个例子</h3>
+<p>小明有一台iPhone手机，他写了个程序来控制这个iphone手机来抢红包，自动发短信，自动抢购等等，这些过程可以用如下方式简单描述：</p>
+<ul>
+<li>打开iPhone，打开微信，进入群聊，抢红包</li>
+<li>打开iPhone，打开短信，编辑短信内容，选择收件人，发送短信</li>
+<li>打开iPhone，打开小米商城，选择需要抢购的商品，等待到达抢购时间，开始抢购</li>
+<li>······</li>
+</ul>
+<p>大家很容易就能看出来问题，这些过程和iPhone耦合的很紧密，如果小明需要换手机了，那么那需要在每个过程中都将iPhone换为新手机。<strong>这时，就需要控制反转，我们不再主动去获得手机，而是被动的接收一个手机。</strong></p>
+<p>这样这些流程就可以更改为：</p>
+<ul>
+<li>接收手机
+<ul>
+<li>打开手机，打开微信，进入群聊，抢红包</li>
+<li>打开手机，打开短信，编辑短信内容，选择收件人，发送短信</li>
+<li>打开手机，打开小米商城，选择需要抢购的商品，等待到达抢购时间，开始抢购</li>
+</ul>
+</li>
+</ul>
+<p>这样，我们发现，过程和具体的一个手机（例如，iPhone）耦合度降低了，可以很简单的更改手机的实例。</p>
+<h3 id="另一个例子"><a class="markdownIt-Anchor" href="#另一个例子"></a> 另一个例子</h3>
+<p>我们去网咖打游戏，是不可能自己带游戏去网咖的，而是网咖都把这些游戏提供好了。</p>
+<blockquote>
+<p>需要的游戏，不用自己下载，而是网咖提供给你。</p>
+<p>==&gt;</p>
+<p><strong>需要的依赖实例，不用主动(Active)建立，而是被动(Passive)接收。</strong></p>
+</blockquote>
+<p>这就是控制反转(Inversion of Control)</p>
+<p>简单来说，A依赖B，但A无法控制B的创建和销毁，仅使用B，那么B的控制权交给C（A以外）处理</p>
+<ul>
+<li>第一个例子，小明是A，依赖手机B，C可以是其他任何给小明手机的人（可能有点牵强）</li>
+<li>第二个例子，我们是A，依赖游戏B，C则是网吧</li>
+</ul>
+<h2 id="依赖注入di"><a class="markdownIt-Anchor" href="#依赖注入di"></a> 依赖注入DI</h2>
+<p>刚才那两个例子中，小明需要手机，我们需要玩游戏，那么有哪些方法可以让我们被动接收这些东西呢？假设小明是A，手机是B</p>
+<ul>
+<li>通过A的接口，把B传入</li>
+<li>通过A的构造，把B传入</li>
+<li>通过设置A的属性，把B传入</li>
+</ul>
+<p>这个过程就是依赖注入，即A啥都没干，就可以直接使用B，比如我们啥也不用干，就可以直接玩游戏，真香。</p>
+<p>也可以说，依赖注入是实现控制反转的一种方式，它们之间有着密切的联系</p>
+<h2 id="依赖倒置原则dip"><a class="markdownIt-Anchor" href="#依赖倒置原则dip"></a> 依赖倒置原则DIP</h2>
+<p>实际上，之前所说的控制反转是非常像：</p>
+<p>依赖倒置原则(Dependency Inversion Principle, DIP)</p>
+<p>这个原则是指，高阶模块不要依赖低阶模块，而是依赖抽象。</p>
+<p>比如：</p>
+<ul>
+<li>我们喜欢吃油泼面</li>
+<li>我们也喜欢吃鱼香肉丝盖饭</li>
+<li>我们还喜欢吃江边城外烤全鱼</li>
+<li>······</li>
+</ul>
+<p>那么，这些如果写到代码里，将会是非常紧密的耦合，假如有一天我们不喜欢吃油泼面，或者无法吃到油泼面，则代码非常多的地方需要更改</p>
+<p>因此可以进一步抽象，</p>
+<ul>
+<li>我们喜欢吃面，我们→面←油泼面</li>
+<li>我们也喜欢吃盖饭，我们→盖饭←鱼香肉丝盖饭</li>
+<li>我们还喜欢吃烤鱼，我们→烤鱼←江边城外烤全鱼</li>
+<li>······</li>
+</ul>
+<p>还可以更进一步的抽象</p>
+<ul>
+<li>我们喜欢吃食物，我们→食物←面，盖饭，烤鱼······</li>
+</ul>
+<p><strong>我们真正所需要的、依赖的，其实不是实际的类别与物件，而是它所拥有的功能</strong>。 其实这就是依赖倒置原则DIP (Dependency Inversion Principle)</p>
+<p>进一步地：</p>
+<ul>
+<li><strong>高阶模块不应该依赖于低阶模块，两者都该依赖抽象</strong></li>
+<li><strong>抽象不应该依赖于具体实现方式</strong></li>
+<li><strong>而是具体实作方式应该依赖抽象</strong></li>
+</ul>
+<p>实际上，面向接口编程就是一个具体地实践方法</p>
+<h2 id="ioc-容器ioc-container"><a class="markdownIt-Anchor" href="#ioc-容器ioc-container"></a> IoC 容器(IoC Container)</h2>
+<p>IoC容器(又称：服务容器Service Container)，随着依赖注入的频繁使用，来实现控制反转，会有很多重复代码，甚至随着技术的发展，有更多新的实现方法和方案，那么有人就把这些实现控制反转的代码打包成组件或框架，来避免人们重复造轮子。</p>
+<p>广义上来说， IoC容器，就是有进行依赖注入的地方，你随便写一个类别，透过它将所需元件注入给高阶模组，便可说是容器。</p>
+<p>但现在所说的『容器』，往往是泛指那些强大『框架』的容器</p>
+<ul>
+<li>动态生成实例，create，resolve，make等，为当前实例注入依赖</li>
+<li>注册依赖关系，利用配置或其他方式查找依赖关系，例如bind，register，link</li>
+<li>······</li>
+</ul>
+<h2 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> Reference</h2>
+<ul>
+<li><a href="https://notfalse.net/3/ioc-di" target="_blank" rel="noopener">控制反转(IoC) 与依赖注入(DI)</a></li>
+<li><a href="https://notfalse.net/1/dip" target="_blank" rel="noopener">依赖倒置原则(Dependency-Inversion Principle, DIP)</a></li>
+<li><a href="https://www.zhihu.com/question/32108444" target="_blank" rel="noopener">如何用最简单的方式解释依赖注入？依赖注入是如何实现解耦的?</a></li>
+</ul>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2019/11/12/IOC&DI/">http://sikasjc.github.io/2019/11/12/IOC&DI/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/设计模式/">设计模式</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2019/11/12/Networking-devices/">
+        <span class="next-text nav-default">Networking devices</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMzQzMy85OTg5">
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>  
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/u/5605720030" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/si-qia-sika" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  
+
+  
+   <script type="text/javascript">
+	(function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>
