@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="tail -f & less +F"/>
+
+
+
+
+  <meta name="keywords" content="工具," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2019/11/12/tail-f-less-F/"/>
+
+
+<meta name="description" content="翻译整理自文章Stop using tail -f (mostly)和来自此文章评论。  我仍然看到很多人使用tail -f来监视正在更改的文件，主要是日志文件。如果您是其中之一，请允许我向您展示一个更好的选择：less +F">
+<meta name="keywords" content="工具">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tail -f &amp; less +F">
+<meta property="og:url" content="http://sikasjc.github.io/2019/11/12/tail-f-less-F/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="翻译整理自文章Stop using tail -f (mostly)和来自此文章评论。  我仍然看到很多人使用tail -f来监视正在更改的文件，主要是日志文件。如果您是其中之一，请允许我向您展示一个更好的选择：less +F">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2019-11-12T15:27:42.354Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="tail -f &amp; less +F">
+<meta name="twitter:description" content="翻译整理自文章Stop using tail -f (mostly)和来自此文章评论。  我仍然看到很多人使用tail -f来监视正在更改的文件，主要是日志文件。如果您是其中之一，请允许我向您展示一个更好的选择：less +F">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> tail -f & less +F · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          tail -f & less +F
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2019年11月12日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/工具/">工具</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#less-f"><span class="toc-number">1.</span> <span class="toc-text"> Less +F</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#截断"><span class="toc-number">1.1.</span> <span class="toc-text"> 截断</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#高亮"><span class="toc-number">1.2.</span> <span class="toc-text"> 高亮</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#着色"><span class="toc-number">1.3.</span> <span class="toc-text"> 着色</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#什么时候不应使用less"><span class="toc-number">2.</span> <span class="toc-text"> 什么时候不应使用less</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#同时查看多个文件"><span class="toc-number">2.1.</span> <span class="toc-text"> 同时查看多个文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#管道"><span class="toc-number">2.2.</span> <span class="toc-text"> 管道</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#效率"><span class="toc-number">2.3.</span> <span class="toc-text"> 效率</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-number">3.</span> <span class="toc-text"> Reference</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <blockquote>
+<p>翻译整理自文章<a href="https://www.brianstorti.com/stop-using-tail/" target="_blank" rel="noopener">Stop using tail -f (mostly)</a>和来自此文章评论。</p>
+</blockquote>
+<p>我仍然看到很多人使用<code>tail -f</code>来监视正在更改的文件，主要是日志文件。如果您是其中之一，请允许我向您展示一个更好的选择：<code>less +F</code></p>
+<a id="more"></a> 
+<h2 id="less-f"><a class="markdownIt-Anchor" href="#less-f"></a> Less +F</h2>
+<p><code>less</code>的文档很好地说明了<code>+F</code>参数的内容</p>
+<blockquote>
+<p>Scroll forward, and keep trying to read when the end of file is reached. Normally this command would be used when already at the end of the file. It is a way to monitor the tail of a file which is growing while it is being viewed. (The behavior is similar to the “tail -f” command.)</p>
+</blockquote>
+<blockquote>
+<p>向前滚动，并在到达文件末尾时尝试继续读取。通常在文件末尾使用此命令。这是一种监视正在更改的文件尾部的方法。（该行为类似于<code>tail -f</code>命令。）</p>
+</blockquote>
+<p>看起来它与<code>tail -f</code>非常相似， 但是为什么我认为它更好呢？</p>
+<p>简而言之，它允许您在导航和观看模式之间切换。 我们都有过这样的经历：</p>
+<p>正在用<code>tail -f</code>查看文件，然后需要在此文件中搜索某些内容，或者只是上下翻看。 现在，您需要退出<code>tail</code>（或打开新的shell），并用<code>ack</code>处理文件或使用<code>vim</code>打开它以查找所需内容。 之后，您再次运行<code>tail</code>以继续查看文件。 而使用<code>less</code>时无需这样做。</p>
+<p>假设查看文件production.log</p>
+<pre><code>$ less +F production.log
+
+Important
+log
+information
+here
+
+Waiting for data... (interrupt to abort)
+</code></pre>
+<p>在这里，使用方法和<code>tail</code>是一样的。</p>
+<p>现在，假设出现了一些有趣的事情，并且您想搜索所有出现的“ foo”。您只需按一下<code>Ctrl-c</code>就可以进入“正常” <code>less</code> 模式（就像您打开文件时，没有带<code>+F</code>参数一样），然后便拥有了所需的所有正常<code>less</code>功能，包括使用<code>/foo</code>来搜索。可以使用<code>n</code>或<code>N</code>转到下一个或上一个出现的位置，使用<code>j</code>和<code>k</code>向上和向下移动，使用<code>m</code>来创建标记，并执行<code>less</code>可以做的所有事情。</p>
+<p>完成后，只需按F键再次回到观看模式。就是这么简单</p>
+<h3 id="截断"><a class="markdownIt-Anchor" href="#截断"></a> 截断</h3>
+<p>对于<code>less +F</code>，可以使用<code>-S</code>选项在屏幕宽度处截断行，而<code>tail</code>无论行有多长，您都只能选择显示整个行。</p>
+<h3 id="高亮"><a class="markdownIt-Anchor" href="#高亮"></a> 高亮</h3>
+<pre><code>less -W +F somelogfile
+</code></pre>
+<p>使用<code>-W</code>可以突出显示任何向前滚动(如滚动到下一页)后的第一个(未读)的新行。</p>
+<h3 id="着色"><a class="markdownIt-Anchor" href="#着色"></a> 着色</h3>
+<pre><code>less -r +F somelogfile
+</code></pre>
+<p><code>-r</code>告诉<code>less</code>始终尝试解释颜色输出。</p>
+<h2 id="什么时候不应使用less"><a class="markdownIt-Anchor" href="#什么时候不应使用less"></a> 什么时候不应使用less</h2>
+<h3 id="同时查看多个文件"><a class="markdownIt-Anchor" href="#同时查看多个文件"></a> 同时查看多个文件</h3>
+<p>当您需要同时查看多个文件时，<code>tail -f</code>实际上可以提供更好的输出。</p>
+<pre><code>$ tail -f *.txt
+
+==&gt; file1.txt &lt;==
+content for first file
+
+==&gt; file2.txt &lt;==
+content for second file
+
+==&gt; file3.txt &lt;==
+content for third file
+</code></pre>
+<p>当发生更改时，它会打印文件名和新内容，这非常方便。</p>
+<p>使用less，它将像这样：</p>
+<pre><code>$ less +F *.txt
+
+content for first file
+</code></pre>
+<p>它一次只显示一个文件的内容。<br>
+如果要查看第二个文件中发生的情况，则需要首先<code>Ctrl-c</code>进入普通模式，然后键入<code>:n</code>以进入下一个缓冲区，然后<code>F</code>再次键入以返回观看模式。</p>
+<p>根据您的需求，可能仍然值得使用<code>less</code>查看多个文件，但是在大多数情况下，我只是<code>tail</code>处理这些情况。</p>
+<p>或者可以使用工具<a href="https://www.vanheusden.com/multitail/" target="_blank" rel="noopener">multitail</a>，非常好用的一个工具</p>
+<p><strong>重要的是要了解我们可使用的工具，并使用合适的工具来完成当前的工作。</strong></p>
+<h3 id="管道"><a class="markdownIt-Anchor" href="#管道"></a> 管道</h3>
+<p><code>less</code>无法配合Pipe使用，例如像下面的命令是无法运行的</p>
+<pre><code>less +F /var/log/exim_mainlog | grep &quot;something&quot;
+</code></pre>
+<p>不过<code>less</code>可以使用<code>&amp;pattern</code>来进行模式匹配，可以查看<a href="https://linux.die.net/man/1/less" target="_blank" rel="noopener">man page</a>获得更多帮助</p>
+<h3 id="效率"><a class="markdownIt-Anchor" href="#效率"></a> 效率</h3>
+<p><code>less +F</code>实际上会读取整个文件，而在许多系统上，<code>tail -f</code>仅读取文件的末尾，即使在读取整个文件的系统上，至少也不会保留整个文件在内存中。这样导致<code>less +F</code>对于非常大的文件来说是不切实际的。</p>
+<p>但是，可以运行<code>less -n +F</code>，从而使<code>less</code>只读取文件的结尾，但这不显示行号。</p>
+<p>且在<code>less -n +F</code>和<code>tail -f</code>之间，主要区别在于<code>tail</code>在某些平台上使用文件更改通知服务（例如，在Linux上是inotify），该服务允许它立即显示新数据，而<code>less</code>最多可能需要1秒钟才能显示新数据。因为它会循环检查新数据并在两次检查之间休眠。</p>
+<p><code>less +F</code>和<code>tail -f</code>之间的另一个区别是less将调用它的输入过滤器，但这通常不会对日志文件产生任何影响</p>
+<h2 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> Reference</h2>
+<ul>
+<li><a href="https://www.brianstorti.com/stop-using-tail/" target="_blank" rel="noopener">Stop using tail -f (mostly)</a></li>
+<li><a href="https://www.vanheusden.com/multitail/" target="_blank" rel="noopener">multitail</a></li>
+</ul>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2019/11/12/tail-f-less-F/">http://sikasjc.github.io/2019/11/12/tail-f-less-F/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/工具/">工具</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2019/11/12/IOC-DI/">
+        <span class="next-text nav-default">控制反转(IOC)和依赖注入(DI)</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMzQzMy85OTg5">
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>  
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/u/5605720030" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/si-qia-sika" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  
+
+  
+   <script type="text/javascript">
+	(function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>
