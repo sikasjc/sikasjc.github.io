@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="理解网络设备的关键在于——理清这些设备运作的网络层级，与其解决的问题"/>
+
+
+
+
+  <meta name="keywords" content="Computer Networking,计算机网络," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2019/11/12/Networking-devices/"/>
+
+
+<meta name="description" content="理解网络设备的关键在于——理清这些设备运作的网络层级，与其解决的问题">
+<meta name="keywords" content="Computer Networking,计算机网络">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Networking devices">
+<meta property="og:url" content="http://sikasjc.github.io/2019/11/12/Networking-devices/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="理解网络设备的关键在于——理清这些设备运作的网络层级，与其解决的问题">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="https://i.postimg.cc/nrMzmdKc/osi.png">
+<meta property="og:image" content="https://i.postimg.cc/j5M2LV7F/bus.png">
+<meta property="og:image" content="https://i.postimg.cc/htmXM3kX/broadcast.png">
+<meta property="og:image" content="https://i.postimg.cc/L57s3zvk/repeater.png">
+<meta property="og:image" content="https://i.postimg.cc/hPkjJ1Xc/hub.png">
+<meta property="og:image" content="https://i.postimg.cc/R0zNYLmX/bridge.png">
+<meta property="og:image" content="https://i.postimg.cc/qv2726Kn/switch.png">
+<meta property="og:image" content="https://i.postimg.cc/BZwt30s8/hub-vs-switch.png">
+<meta property="og:image" content="https://i.postimg.cc/RFSqSCNt/forward.png">
+<meta property="og:image" content="https://i.postimg.cc/8CBjgfPD/loop.png">
+<meta property="og:image" content="https://i.postimg.cc/5NYyNRNs/VLAN.png">
+<meta property="og:updated_time" content="2019-11-12T15:07:22.102Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Networking devices">
+<meta name="twitter:description" content="理解网络设备的关键在于——理清这些设备运作的网络层级，与其解决的问题">
+<meta name="twitter:image" content="https://i.postimg.cc/nrMzmdKc/osi.png">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> Networking devices · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Networking devices
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2019年11月12日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/Computer-Networking/">Computer Networking</a>
+            
+              <a href="/tags/计算机网络/">计算机网络</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#以太网"><span class="toc-number">1.</span> <span class="toc-text"> 以太网</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#总线拓扑bus-topology"><span class="toc-number">1.1.</span> <span class="toc-text"> 总线拓扑(Bus Topology)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#中继器repeater"><span class="toc-number">2.</span> <span class="toc-text"> 中继器(Repeater)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#集线器hub"><span class="toc-number">3.</span> <span class="toc-text"> 集线器(Hub)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#桥接器bridge"><span class="toc-number">4.</span> <span class="toc-text"> 桥接器(Bridge)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#交换机switch"><span class="toc-number">5.</span> <span class="toc-text"> 交换机(Switch)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#转发"><span class="toc-number">5.1.</span> <span class="toc-text"> 转发</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#广播域broadcast-domain"><span class="toc-number">6.</span> <span class="toc-text"> 广播域(Broadcast Domain)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#广播风暴broadcast-storm"><span class="toc-number">6.1.</span> <span class="toc-text"> 广播风暴(broadcast storm)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#切割广播域"><span class="toc-number">7.</span> <span class="toc-text"> 切割广播域</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#路由器router"><span class="toc-number">8.</span> <span class="toc-text"> 路由器(Router)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#路由器与三层交换机"><span class="toc-number">8.1.</span> <span class="toc-text"> 路由器与三层交换机</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-number">9.</span> <span class="toc-text"> Reference</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p>理解网络设备的关键在于</p>
+<blockquote>
+<p>理清这些设备运作的网络层级，与其解决的问题</p>
+</blockquote>
+<p>首先，让我们看一下OSI模型，可以看到以传输层为界，分为软件层和硬件层，拥有良好的职责划分。</p>
+<p><img src="https://i.postimg.cc/nrMzmdKc/osi.png" alt="osi"></p>
+<p>从底层往上，每一层用的设备是：</p>
+<ul>
+<li>物理层：集线器(Hub)，中继器(Repeater)</li>
+<li>链路层：桥接器(Bridge)，网卡(Network card)，2层交换机(2-layer switch)</li>
+<li>网络层：路由器(Router)，3层交换机(3-layer switch)</li>
+<li>传输层：防火墙(Firewall)</li>
+<li>会话层及以上：防火墙(Firewall)，终端设备(如PC，Phone，Server等)</li>
+</ul>
+<p>在这其中，网关(Gateway)可以被使用在任何一层。</p>
+<blockquote>
+<p><em>顾名思义，网关(Gateway)是将两个网络连接在一起的通道，可以在不同的网络模型上工作。它们基本上是一种代理，从一个系统中获取数据，解释数据并将其传输到另一系统。网关也称为协议转换器，可以在任何网络层上运行。网关通常比交换机或路由器复杂。</em></p>
+</blockquote>
+<p>本文依次从物理层开始，逐层介绍以下常见的网络设备：</p>
+<p>中继器、集线器、桥接器、交换机、路由器 ······</p>
+<h2 id="以太网"><a class="markdownIt-Anchor" href="#以太网"></a> 以太网</h2>
+<p>说到网络，那肯定要提及以太网(Ethernet)</p>
+<blockquote>
+<p>以太网标准最初订于1983年<a href="https://en.wikipedia.org/wiki/IEEE_802.3" target="_blank" rel="noopener">IEEE 802.3</a>，历经了多个附加标准后，从最初龟速的10 Mbit/s，发展至今日超神速的400Gbit/s的<a href="https://en.wikipedia.org/wiki/Terabit_Ethernet" target="_blank" rel="noopener">太比特以太网(Terabit Ethernet，TbE)</a>，或者被称为万兆以太网。</p>
+</blockquote>
+<h3 id="总线拓扑bus-topology"><a class="markdownIt-Anchor" href="#总线拓扑bus-topology"></a> 总线拓扑(Bus Topology)</h3>
+<p><img src="https://i.postimg.cc/j5M2LV7F/bus.png" alt="bus"></p>
+<p>传统以太网常使用总线拓扑。将一同轴电缆布于建筑物内，并透过收发器(transceiver)将多台主机连结至此主干网路，其简单、便宜的特性，在当时很快就得到广泛的使用。</p>
+<p>若节点A想发送以太网帧讯给节点D，只需在帧的目的地址(destination address)栏位，填上节点D的MAC地址。然而，因为共享介质的关系，传统以太网是以**广播(broadcast)**方式进行传输，尽管节点A只是想发送帧给节点D，但是线路上的『所有节点』也都将会收到该帧。</p>
+<p><img src="https://i.postimg.cc/htmXM3kX/broadcast.png" alt="broadcast"></p>
+<p>这也带来了安全问题，例如，若<strong>节点C</strong>想拦截经过的帧时，只需开启<a href="https://en.wikipedia.org/wiki/Promiscuous_mode" target="_blank" rel="noopener">混杂模式(promiscuous mode)</a>，就能监听、甚至修改帧内容。</p>
+<h2 id="中继器repeater"><a class="markdownIt-Anchor" href="#中继器repeater"></a> 中继器(Repeater)</h2>
+<p>中继器在物理层运行，由于「信号衰减和时序」的问题，每个版本的以太网都在不同缆线之上有最大传输距离的限制。</p>
+<p>它的任务是在信号变得太弱或损坏之前，在同一网络上重新生成信号，以延长信号可以在同一网络上传输的长度。</p>
+<p>当信号变弱时，他们会一点一点地复制信号并以原始强度重新生成信号，通常是一个2端口设备。</p>
+<p><img src="https://i.postimg.cc/L57s3zvk/repeater.png" alt="repeater"></p>
+<h2 id="集线器hub"><a class="markdownIt-Anchor" href="#集线器hub"></a> 集线器(Hub)</h2>
+<p>集线器基本上是多端口中hub继器，并且通常是一种中央节点(central node)的概念。集线器连接来自不同分支的多条电线，例如星形拓扑结构中连接不同站点的连接器。</p>
+<p><img src="https://i.postimg.cc/hPkjJ1Xc/hub.png" alt="hu'b"></p>
+<p>但是集线器无法过滤数据，因此数据包还将发送到所有连接的设备。换句话说，通过集线器连接的所有主机的冲突域仍然是一个。而且，他们没有智能来找出数据包的最佳路径，这会导致效率低下和浪费。</p>
+<blockquote>
+<p>因此，集线器连接起来的以太网可以被认为是「伪」星形拓朴，<em>逻辑上仍属于总线(bus topology)。</em></p>
+</blockquote>
+<p>同时也有，<strong>主动集线器：中继器+集线器</strong></p>
+<p>这些集线器具有自己的电源，可以清理，增强和中继信号以及网络。它既可以用作中继器，也可以用作布线中心，用于扩展节点之间的最大距离。</p>
+<h2 id="桥接器bridge"><a class="markdownIt-Anchor" href="#桥接器bridge"></a> 桥接器(Bridge)</h2>
+<p>因为存在碰撞(collision)的问题，提出了CSMA/CD来避免碰撞，但是不但速度慢、浪费频宽使用率，也带来布线上的诸多限制。</p>
+<p>根本原因是因为这些节点都处在同一个冲突域中，因此就有了一个自然的想法</p>
+<p>「尽量」让每个节点都有一个自己冲突域！</p>
+<p>因此，就有了桥接器，用于连接多个传统以太网，成为『一个』大型以太网，同时还可以切开冲突域，进而减少碰撞机率，提升平均带宽。</p>
+<p><img src="https://i.postimg.cc/R0zNYLmX/bridge.png" alt="bridge"></p>
+<p>图中，共有四个冲突域(但是是一个局域网)</p>
+<p>那么何不多加几个端口，将冲突域切得更细呢？</p>
+<h2 id="交换机switch"><a class="markdownIt-Anchor" href="#交换机switch"></a> 交换机(Switch)</h2>
+<p>多端口桥接器(multiport bridge)便被称为交换器(switch)，也因此桥接器(bridge)与交换器(switch)</p>
+<p>时常被视为等价的。</p>
+<p>这里指的是2层交换机，因此位于链路层，并且具有缓冲区，可以提高其效率（大量端口意味着每个端口更少的流量）和性能。</p>
+<p><img src="https://i.postimg.cc/qv2726Kn/switch.png" alt="switch"></p>
+<p>所有的端口都是独立处理，为了让每个端口都是独立的冲突域</p>
+<p>交换机可以在转发数据之前执行错误检查，这使得它非常高效，因为它不会转发有错误的数据包，而仅将正确的数据包转发到正确的端口，这也意味着交换机带有过滤功能（filtering）。</p>
+<p>换句话说，交换机划分主机的冲突域，但广播域保持不变。</p>
+<p><img src="https://i.postimg.cc/BZwt30s8/hub-vs-switch.png" alt="hub-vs-switch"></p>
+<h3 id="转发"><a class="markdownIt-Anchor" href="#转发"></a> 转发</h3>
+<p><img src="https://i.postimg.cc/RFSqSCNt/forward.png" alt="forward"></p>
+<blockquote>
+<p>注意这里的转发是针对MAC地址转发的</p>
+</blockquote>
+<p>当交换器欲转发以太网帧时，便查询转发表中是否有该目的地址的对应的端口条目，有的话，就直接转发至该端口；否则，将采取<a href="https://en.wikipedia.org/wiki/Flooding_(computer_networking)" target="_blank" rel="noopener">泛洪演算法(flooding algorithm)</a>：也就是说，复制以太网帧并传送到「除了来源端口以外」的「所有端口」。</p>
+<p>这也被称之为<strong>单播泛洪(unicast flood)</strong>，其本质上还是单播，若下个接收泛洪帧的交换器知道目的地址的端口，即可直接进行点对点转送，这点与**广播(broadcast )**截然不同。</p>
+<h2 id="广播域broadcast-domain"><a class="markdownIt-Anchor" href="#广播域broadcast-domain"></a> 广播域(Broadcast Domain)</h2>
+<p>之前提到了广播和单播，与之对应MAC地址也有单播地址(unicast address)，广播地址(broadcast address)以及多播地址(multicast address)</p>
+<blockquote>
+<p>单播：指封包在计算机网络的传输中，目的地址为单一目标的一种传输方式。</p>
+</blockquote>
+<blockquote>
+<p>广播：IPv6不支持广播，广播相应的功能由任播(anycast)代替<code>ff:ff:ff:ff:ff:ff</code> (广播地址)</p>
+</blockquote>
+<blockquote>
+<p>多播：是指把信息同时传递给一组目的地址。它使用的策略是最高效的，因为消息在每条网络链路上只需传递一次，且只有在链路分叉的时候，消息才会被复制。</p>
+</blockquote>
+<blockquote>
+<p>任播(anycast)：是一种网络寻址和路由的策略，使得可以根据路由拓朴来决定送到“最近”或“最好”的目的地</p>
+</blockquote>
+<h3 id="广播风暴broadcast-storm"><a class="markdownIt-Anchor" href="#广播风暴broadcast-storm"></a> 广播风暴(broadcast storm)</h3>
+<p>尽管交换机能切割冲突域，刚才提到交换机不能分割广播域，若节点们位于相同的广播域，它们都将被迫处理、丢弃未知目的单播(泛洪)帧，以及广播、群播帧。</p>
+<p>若帧数量较多，将导致整体网络效率降低，极端数量的帧，更可能瘫痪网络，此情形便被称为广播风暴(broadcast storm)。</p>
+<p>广播风暴(broadcast storm)通常是因交换器之间的的连接方式中存在回圈、并联所造成，这不一定表示拓朴方式是错的，相反地，在业务上上常需要这些备用链结，以预防主交换器故障所造成的损失。</p>
+<p><img src="https://i.postimg.cc/8CBjgfPD/loop.png" alt="loop"></p>
+<p>为避免交换机连接方式中存在回圈，导致帧被无止境的复制、转送，<a href="https://en.wikipedia.org/wiki/Radia_Perlman" target="_blank" rel="noopener">Radia Perlman</a>于1985年发明了著名的<strong>生成树协议(Spanning Tree Protocol, STP)</strong>。随后，IEEE则引进了<a href="https://en.wikipedia.org/wiki/Spanning_Tree_Protocol#Rapid_Spanning_Tree_Protocol" target="_blank" rel="noopener">RSTP</a>(802.1w)以及<a href="https://en.wikipedia.org/wiki/Multiple_Spanning_Tree_Protocol" target="_blank" rel="noopener">MSTP</a>(802.1s)，以改善STP的收敛时间(convergence time)</p>
+<h2 id="切割广播域"><a class="markdownIt-Anchor" href="#切割广播域"></a> 切割广播域</h2>
+<p>连接至相连的交换机的设备，皆位于相同的广播网域，意味着随着服务器的增加，将使整个局域网的广播帧增加、效率下降。</p>
+<p>因此，有了VLAN。VLAN则使得网络设备拥有了切割广播网域的功能。</p>
+<p><strong>VLAN，Virtual LAN，VLAN所指的LAN特指使用三层交换机分割的网络——也就是广播域</strong>。</p>
+<blockquote>
+<p>由于交换机（这里指2层交换机）的任务是转送同一局域网帧到对应的端口，「不同VLAN」的成员因为已位于不同的 (虚拟) 局域网，它们将无法透过交换机直接通信，只能借由外部设备或三层交换机通信</p>
+</blockquote>
+<p><img src="https://i.postimg.cc/5NYyNRNs/VLAN.png" alt="VLAN"></p>
+<p>依照端口 or MAC来分配VLAN ID，其中1号ID是预设VLAN</p>
+<h2 id="路由器router"><a class="markdownIt-Anchor" href="#路由器router"></a> 路由器(Router)</h2>
+<p>路由器是一种类似于三层交换机的设备，可以根据其IP地址路由数据包，因此是网络层设备。</p>
+<p>路由器通常将LAN和WAN连接在一起，并具有动态更新的路由表，并根据此路由表来决定对数据包进行路由，这使网络可以跨越不同的协议。 路由器也划分通过它连接的主机的广播域。</p>
+<h3 id="路由器与三层交换机"><a class="markdownIt-Anchor" href="#路由器与三层交换机"></a> 路由器与三层交换机</h3>
+<p><strong>相同之处</strong></p>
+<p>三层交换机既是交换机又是路由器：它可以被视为具有多个以太网端口并具有交换功能的路由器。3层交换机通过检查IP地址和MAC地址来启用数据包交换。因此，第3层交换机能够将端口隔离到单独的VLAN中，并在它们之间执行路由。与传统路由器一样，第3层交换机也可以配置为支持路由协议，例如RIP，OSPF和EIGRP。</p>
+<p><strong>不同之处</strong></p>
+<ul>
+<li>路由器的功能是同时连接各种网络，三层交换机的主要功能是同时连接各种设备。</li>
+<li>路由器支持MPLS和VPN服务，而三层交换机不支持MPLS和VPN服务。</li>
+<li>路由器一般端口数量小于三层交换机</li>
+<li>路由器吞吐量低于三层交换机，因此交换能力低于三层交换机</li>
+<li>路由器一般价格高于三层交换机</li>
+<li>路由器支持诸如NAT，隧道，防火墙，IP地址分配（DHCP）等边缘技术，三层交互机并不支持</li>
+<li>在路由器中，转发由软件执行，而在三层交互机中，一般为ASIC实现（即硬件实现）</li>
+<li>此外，路由器是将LAN连接到WAN的设备，而交换机只是LAN设备</li>
+</ul>
+<h2 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> Reference</h2>
+<ul>
+<li><a href="https://www.quora.com/What-devices-are-used-in-each-layer-of-the-OSI-model" target="_blank" rel="noopener">What devices are used in each layer of the OSI model?</a></li>
+<li><a href="https://notfalse.net/66/repeater-hub-bridge-switch" target="_blank" rel="noopener">中继器(Repeater)、集线器(Hub)、桥接器(Bridge)、交换器(Switch) 原理与介绍</a></li>
+<li><a href="https://community.fs.com/blog/layer-3-switch-vs-router-what-is-your-best-bet.html" target="_blank" rel="noopener">Layer 3 Switch Vs Router: What Is Your Best Bet?</a></li>
+</ul>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2019/11/12/Networking-devices/">http://sikasjc.github.io/2019/11/12/Networking-devices/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/Computer-Networking/">Computer Networking</a>
+            
+              <a href="/tags/计算机网络/">计算机网络</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2019/07/07/tests-and-types/">
+        <span class="next-text nav-default">测试和类型</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMzQzMy85OTg5">
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>  
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="http://weibo.com/u/5605720030" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/si-qia-sika" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  
+
+  
+   <script type="text/javascript">
+	(function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>
