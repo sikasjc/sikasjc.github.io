@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="在Stackoverflow上看到了这个问题：Recursively combine dictionaries"/>
+
+
+
+
+  <meta name="keywords" content="python,递归," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2019/05/07/resolve/"/>
+
+
+<meta name="description" content="在Stackoverflow上看到了这个问题：Recursively combine dictionaries">
+<meta name="keywords" content="python,递归">
+<meta property="og:type" content="article">
+<meta property="og:title" content="递归组合字典">
+<meta property="og:url" content="http://sikasjc.github.io/2019/05/07/resolve/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="在Stackoverflow上看到了这个问题：Recursively combine dictionaries">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2019-11-13T15:09:10.339Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="递归组合字典">
+<meta name="twitter:description" content="在Stackoverflow上看到了这个问题：Recursively combine dictionaries">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> 递归组合字典 · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          递归组合字典
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2019年5月7日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/递归/">递归</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#问题"><span class="toc-number">1.</span> <span class="toc-text"> 问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#思路与代码"><span class="toc-number">2.</span> <span class="toc-text"> 思路与代码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#另一个更简单直观的代码"><span class="toc-number">2.1.</span> <span class="toc-text"> 另一个更简单直观的代码</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h2 id="问题"><a class="markdownIt-Anchor" href="#问题"></a> 问题</h2>
+<p>在Stackoverflow上看到了这个问题：<a href="https://stackoverflow.com/questions/55236698/recursively-combine-dictionaries" target="_blank" rel="noopener">Recursively combine dictionaries</a></p>
+<p>就是说，对于这样的两个字典：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">groups = &#123;</span><br><span class="line">    <span class="string">'servers'</span>: [<span class="string">'unix_servers'</span>, <span class="string">'windows_servers'</span>],</span><br><span class="line">    <span class="string">'unix_servers'</span>: [<span class="string">'server_a'</span>, <span class="string">'server_b'</span>, <span class="string">'server_group'</span>],</span><br><span class="line">    <span class="string">'windows_servers'</span>: [<span class="string">'server_c'</span>, <span class="string">'server_d'</span>],</span><br><span class="line">    <span class="string">'server_group'</span>: [<span class="string">'server_e'</span>, <span class="string">'server_f'</span>]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">hosts = &#123;</span><br><span class="line">    <span class="string">'server_a'</span>: <span class="string">'10.0.0.1'</span>,</span><br><span class="line">    <span class="string">'server_b'</span>: <span class="string">'10.0.0.2'</span>,</span><br><span class="line">    <span class="string">'server_c'</span>: <span class="string">'10.0.0.3'</span>,</span><br><span class="line">    <span class="string">'server_d'</span>: <span class="string">'10.0.0.4'</span>,</span><br><span class="line">    <span class="string">'server_e'</span>: <span class="string">'10.0.0.5'</span>,</span><br><span class="line">    <span class="string">'server_f'</span>: <span class="string">'10.0.0.6'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如何递归组合成如下形式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">'servers'</span>: &#123;</span><br><span class="line">        <span class="string">'unix_servers'</span>: &#123;</span><br><span class="line">            <span class="string">'server_a'</span>: <span class="string">'10.0.0.1'</span>,</span><br><span class="line">            <span class="string">'server_b'</span>: <span class="string">'10.0.0.2'</span>,</span><br><span class="line">            <span class="string">'server_group'</span>: &#123;</span><br><span class="line">                <span class="string">'server_e'</span>: <span class="string">'10.0.0.5'</span>,</span><br><span class="line">                <span class="string">'server_f'</span>: <span class="string">'10.0.0.6'</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="string">'windows_servers'</span>: &#123;</span><br><span class="line">            <span class="string">'server_c'</span>: <span class="string">'10.0.0.3'</span>,</span><br><span class="line">            <span class="string">'server_d'</span>: <span class="string">'10.0.0.4'</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="思路与代码"><a class="markdownIt-Anchor" href="#思路与代码"></a> 思路与代码</h2>
+<p>思路在问题中实际已经提及了，就是用递归来实现，但是需要注意一些细节：会有一些非根结点也出现在字典中，所以要记录在<code>servers</code>中出现的那些非根的结点，然后在输出前将其去除。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">resolve</span><span class="params">(groups, hosts)</span>:</span></span><br><span class="line">    <span class="comment"># Groups that have already been solved</span></span><br><span class="line">    resolved_groups = &#123;&#125;</span><br><span class="line">    <span class="comment"># Group names that are not root</span></span><br><span class="line">    non_root = set()</span><br><span class="line">    <span class="comment"># Make dict with resolution of each group</span></span><br><span class="line">    result = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> name <span class="keyword">in</span> groups:</span><br><span class="line">        result[name] = _resolve_rec(name, groups, hosts, resolved_groups, non_root)</span><br><span class="line">    <span class="keyword">for</span> name <span class="keyword">in</span> groups:</span><br><span class="line">        <span class="keyword">if</span> name <span class="keyword">in</span> non_root:</span><br><span class="line">            <span class="keyword">del</span> result[name]</span><br><span class="line">    <span class="keyword">return</span> result</span><br></pre></td></tr></table></figure>
+<p>这部分很简单，下面是递归部分：</p>
+<p>实际上，就是对<code>group</code>里的每一层，都进行查找，若出现在<code>hosts</code>中，则完成组合；如不在<code>hosts</code>中，说明<code>group</code>中递归还未结束。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_resolve_rec</span><span class="params">(name, groups, hosts, resolved_groups, non_root)</span>:</span></span><br><span class="line">    <span class="comment"># If group has already been resolved, finish</span></span><br><span class="line">    <span class="keyword">if</span> name <span class="keyword">in</span> resolved_groups:</span><br><span class="line">        <span class="keyword">return</span> resolved_groups[name]</span><br><span class="line">    <span class="comment"># If it is a host, finish</span></span><br><span class="line">    <span class="keyword">if</span> name <span class="keyword">in</span> hosts:</span><br><span class="line">        <span class="keyword">return</span> hosts[name]</span><br><span class="line">    <span class="comment"># new group resolution</span></span><br><span class="line">    resolved = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> child <span class="keyword">in</span> groups[name]:</span><br><span class="line">        <span class="comment"># Resolve each child</span></span><br><span class="line">        resolved[child] = _resolve_rec(child, groups, hosts, resolved_groups, non_root)</span><br><span class="line">        <span class="comment"># Mark child as non_root</span></span><br><span class="line">        non_root.add(child)</span><br><span class="line">    <span class="comment"># Save to resolved groups</span></span><br><span class="line">    resolved_groups[name] = resolved</span><br><span class="line">    <span class="keyword">return</span> resolved</span><br></pre></td></tr></table></figure>
+<p>看看输出的结果</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">groups = &#123;</span><br><span class="line"><span class="string">'servers'</span>: [<span class="string">'unix_servers'</span>, <span class="string">'windows_servers'</span>],</span><br><span class="line"><span class="string">'unix_servers'</span>: [<span class="string">'server_a'</span>, <span class="string">'server_b'</span>, <span class="string">'server_group'</span>],</span><br><span class="line"><span class="string">'windows_servers'</span>: [<span class="string">'server_c'</span>, <span class="string">'server_d'</span>],</span><br><span class="line"><span class="string">'server_group'</span>: [<span class="string">'server_e'</span>, <span class="string">'server_f'</span>]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">hosts = &#123;</span><br><span class="line">    <span class="string">'server_a'</span>: <span class="string">'10.0.0.1'</span>,</span><br><span class="line">    <span class="string">'server_b'</span>: <span class="string">'10.0.0.2'</span>,</span><br><span class="line">    <span class="string">'server_c'</span>: <span class="string">'10.0.0.3'</span>,</span><br><span class="line">    <span class="string">'server_d'</span>: <span class="string">'10.0.0.4'</span>,</span><br><span class="line">    <span class="string">'server_e'</span>: <span class="string">'10.0.0.5'</span>,</span><br><span class="line">    <span class="string">'server_f'</span>: <span class="string">'10.0.0.6'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">print(resolve(groups, hosts))</span><br></pre></td></tr></table></figure>
+<p>和预想的一致：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">'servers'</span>: &#123;<span class="string">'unix_servers'</span>: &#123;<span class="string">'server_a'</span>: <span class="string">'10.0.0.1'</span>, <span class="string">'server_b'</span>: <span class="string">'10.0.0.2'</span>, <span class="string">'server_group'</span>: &#123;<span class="string">'server_e'</span>: <span class="string">'10.0.0.5'</span>, <span class="string">'server_f'</span>: <span class="string">'10.0.0.6'</span>&#125;&#125;, <span class="string">'windows_servers'</span>: &#123;<span class="string">'server_c'</span>: <span class="string">'10.0.0.3'</span>, <span class="string">'server_d'</span>: <span class="string">'10.0.0.4'</span>&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>不过需要注意的是，若group A中包含group B，且group B也包含group A的话可能会出现无限递归</strong></p>
+<h3 id="另一个更简单直观的代码"><a class="markdownIt-Anchor" href="#另一个更简单直观的代码"></a> 另一个更简单直观的代码</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">build</span><span class="params">(val)</span>:</span> </span><br><span class="line">  <span class="keyword">return</span> &#123;i:build(i) <span class="keyword">for</span> i <span class="keyword">in</span> groups[val]&#125; <span class="keyword">if</span> val <span class="keyword">in</span> groups <span class="keyword">else</span> hosts[val]</span><br><span class="line"></span><br><span class="line">&#123;<span class="string">"servers"</span>:build(<span class="string">'servers'</span>)&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2019/05/07/resolve/">http://sikasjc.github.io/2019/05/07/resolve/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/递归/">递归</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2019/05/10/GSLB/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">GSLB 全局负载均衡</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2019/03/15/mat/">
+        <span class="next-text nav-default">矩阵方程求解</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMzQzMy85OTg5">
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>  
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  
+
+  
+   <script type="text/javascript">
+	(function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>

@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="如何在树中识别根节点和所有的子节点"/>
+
+
+
+
+  <meta name="keywords" content="python,递归,Tree,栈," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2019/11/09/root-parents/"/>
+
+
+<meta name="description" content="在Stackoverflow上看到了这个问题：Identifying root parents and all their children in trees——如何在树中识别根节点和所有的子节点">
+<meta name="keywords" content="python,递归,Tree,栈">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何在树中识别根节点和所有的子节点">
+<meta property="og:url" content="http://sikasjc.github.io/2019/11/09/root-parents/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="在Stackoverflow上看到了这个问题：Identifying root parents and all their children in trees——如何在树中识别根节点和所有的子节点">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2019-11-13T15:14:56.111Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何在树中识别根节点和所有的子节点">
+<meta name="twitter:description" content="在Stackoverflow上看到了这个问题：Identifying root parents and all their children in trees——如何在树中识别根节点和所有的子节点">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> 如何在树中识别根节点和所有的子节点 · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          如何在树中识别根节点和所有的子节点
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2019年11月9日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/递归/">递归</a>
+            
+              <a href="/tags/Tree/">Tree</a>
+            
+              <a href="/tags/栈/">栈</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#问题"><span class="toc-number">1.</span> <span class="toc-text"> 问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解决办法"><span class="toc-number">2.</span> <span class="toc-text"> 解决办法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#递归"><span class="toc-number">2.1.</span> <span class="toc-text"> 递归</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#利用第三方库networkx"><span class="toc-number">3.</span> <span class="toc-text"> 利用第三方库：networkx</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-number">4.</span> <span class="toc-text"> Reference</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p>在Stackoverflow上看到了这个问题：<a href="https://stackoverflow.com/questions/58415183/identifying-root-parents-and-all-their-children-in-trees" target="_blank" rel="noopener">Identifying root parents and all their children in trees</a>——如何在树中识别根节点和所有的子节点</p>
+<a id="more"></a> 
+<h2 id="问题"><a class="markdownIt-Anchor" href="#问题"></a> 问题</h2>
+<p>如下，有这样的一个树：（原问题是一个pandas dataframe）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">parent   child   parent_level   child_level</span><br><span class="line">A        B       <span class="number">0</span>              <span class="number">1</span></span><br><span class="line">B        C       <span class="number">1</span>              <span class="number">2</span></span><br><span class="line">B        D       <span class="number">1</span>              <span class="number">2</span></span><br><span class="line">X        Y       <span class="number">0</span>              <span class="number">2</span></span><br><span class="line">X        D       <span class="number">0</span>              <span class="number">2</span> </span><br><span class="line">Y        Z       <span class="number">2</span>              <span class="number">3</span></span><br></pre></td></tr></table></figure>
+<p>它表示的树是这样的：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">    A  X</span><br><span class="line">   /  / \</span><br><span class="line">  B  /   \</span><br><span class="line"> /\ /     \</span><br><span class="line">C  D       Y</span><br><span class="line">           |</span><br><span class="line">           Z</span><br></pre></td></tr></table></figure>
+<p>如何将这个树表示为：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root    children</span><br><span class="line">A       [B,C,D]</span><br><span class="line">X       [D,Y,Z]</span><br></pre></td></tr></table></figure>
+<h2 id="解决办法"><a class="markdownIt-Anchor" href="#解决办法"></a> 解决办法</h2>
+<p>方便起见，我们把上面的数据表示为一个数组</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># parent   child   parent_level   child_level</span></span><br><span class="line">data = [[<span class="string">'A'</span>, <span class="string">'B'</span>, <span class="number">0</span>, <span class="number">1</span>],</span><br><span class="line">        [<span class="string">'B'</span>, <span class="string">'C'</span>, <span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="string">'B'</span>, <span class="string">'D'</span>, <span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="string">'X'</span>, <span class="string">'Y'</span>, <span class="number">0</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="string">'X'</span>, <span class="string">'D'</span>, <span class="number">0</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="string">'Y'</span>, <span class="string">'Z'</span>, <span class="number">2</span>, <span class="number">3</span>]]</span><br></pre></td></tr></table></figure>
+<h3 id="递归"><a class="markdownIt-Anchor" href="#递归"></a> 递归</h3>
+<p>一个简单的思路就是我们先找到所有子节点的父节点，可以用一个字典来表示，因此，<code>data</code>可以表示为<code>{'B': {'A'}, 'C': {'B'}, 'D': {'B', 'X'}, 'Y': {'X'}, 'Z': {'Y'}}</code>。</p>
+<p>然后再通过递归的方式，查看每个子节点的父节点是否在这个字典里</p>
+<ul>
+<li>若在，说明该父节点还有父节点，则继续递归查找</li>
+<li>若不再，说明该父节点已经是根节点，结束</li>
+</ul>
+<p>Python代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">data = [[<span class="string">'A'</span>, <span class="string">'B'</span>, <span class="number">0</span>, <span class="number">1</span>],</span><br><span class="line">        [<span class="string">'B'</span>, <span class="string">'C'</span>, <span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="string">'B'</span>, <span class="string">'D'</span>, <span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="string">'X'</span>, <span class="string">'Y'</span>, <span class="number">0</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="string">'X'</span>, <span class="string">'D'</span>, <span class="number">0</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="string">'Y'</span>, <span class="string">'Z'</span>, <span class="number">2</span>, <span class="number">3</span>]]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">process</span><span class="params">(data)</span>:</span></span><br><span class="line">    tree = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> l <span class="keyword">in</span> data:</span><br><span class="line">        parent, child = l[<span class="number">0</span>], l[<span class="number">1</span>]</span><br><span class="line">        tree.setdefault(child, set()).add(parent)</span><br><span class="line">	<span class="comment"># tree: &#123;'B': &#123;'A'&#125;, 'C': &#123;'B'&#125;, 'D': &#123;'B', 'X'&#125;, 'Y': &#123;'X'&#125;, 'Z': &#123;'Y'&#125;&#125;</span></span><br><span class="line">    descendents = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> child <span class="keyword">in</span> tree:</span><br><span class="line">        <span class="keyword">for</span> parent <span class="keyword">in</span> find_root(tree, child):</span><br><span class="line">            descendents.setdefault(parent, set()).add(child)</span><br><span class="line">    <span class="keyword">return</span> descendents</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find_root</span><span class="params">(tree, child)</span>:</span></span><br><span class="line">	<span class="comment"># 返回根节点列表，注意可能会有多个根节点</span></span><br><span class="line">    <span class="keyword">if</span> child <span class="keyword">in</span> tree:</span><br><span class="line">        <span class="keyword">return</span> &#123;p <span class="keyword">for</span> parent <span class="keyword">in</span> tree[child] <span class="keyword">for</span> p <span class="keyword">in</span> find_root(tree, parent)&#125;</span><br><span class="line">    <span class="keyword">return</span> &#123;child&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    print(process(data))</span><br><span class="line">   </span><br><span class="line"><span class="comment"># &#123;'A': &#123;'B', 'C', 'D'&#125;, 'X': &#123;'Y', 'Z', 'D'&#125;&#125;</span></span><br></pre></td></tr></table></figure>
+<p>当然，我们也可以把<code>find_root</code>改写为生成器</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find_root</span><span class="params">(tree, child)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> child <span class="keyword">in</span> tree:</span><br><span class="line">        <span class="keyword">for</span> x <span class="keyword">in</span> tree[child]:</span><br><span class="line">            <span class="keyword">yield</span> <span class="keyword">from</span> find_root(tree, x)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">yield</span> child</span><br></pre></td></tr></table></figure>
+<p>也可以把递归改为栈，来避免递归深度的问题，可以使用 <a href="http://garethrees.org/2016/09/28/pattern/" target="_blank" rel="noopener">“stack of iterators” pattern</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find_root</span><span class="params">(tree, child)</span>:</span></span><br><span class="line">    stack = [iter([child])]</span><br><span class="line">    <span class="keyword">while</span> stack:</span><br><span class="line">        <span class="keyword">for</span> node <span class="keyword">in</span> stack[<span class="number">-1</span>]:</span><br><span class="line">            <span class="keyword">if</span> node <span class="keyword">in</span> tree:</span><br><span class="line">                stack.append(iter(tree[node]))</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">yield</span> node</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        <span class="comment"># yes!  that is an `else` clause on a for loop</span></span><br><span class="line">        <span class="keyword">else</span>: </span><br><span class="line">            stack.pop()</span><br></pre></td></tr></table></figure>
+<p>关于<a href="https://www.runoob.com/python/python-for-loop.html" target="_blank" rel="noopener">for…else</a>见此</p>
+<h2 id="利用第三方库networkx"><a class="markdownIt-Anchor" href="#利用第三方库networkx"></a> 利用第三方库：networkx</h2>
+<p>因为这是一个图问题，所以也可以使用<a href="https://networkx.github.io/" target="_blank" rel="noopener">networkx</a>来解决这个问题，特别是 <a href="https://networkx.github.io/documentation/networkx-1.9/reference/generated/networkx.algorithms.dag.descendants.html" target="_blank" rel="noopener">descendants(G, source)</a>函数，可以返回有向无环图<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>G</mi></mrow><annotation encoding="application/x-tex">G</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.68333em;vertical-align:0em;"></span><span class="base"><span class="mord mathit">G</span></span></span></span>中的所有可以达到<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>s</mi><mi>o</mi><mi>u</mi><mi>r</mi><mi>c</mi><mi>e</mi></mrow><annotation encoding="application/x-tex">source</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.43056em;vertical-align:0em;"></span><span class="base"><span class="mord mathit">s</span><span class="mord mathit">o</span><span class="mord mathit">u</span><span class="mord mathit" style="margin-right:0.02778em;">r</span><span class="mord mathit">c</span><span class="mord mathit">e</span></span></span></span>的节点，对于这个问题，就是可以获得所有可以到达根节点的子节点。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> networkx <span class="keyword">as</span> nx</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line">data = [[<span class="string">'A'</span>, <span class="string">'B'</span>, <span class="number">0</span>, <span class="number">1</span>],</span><br><span class="line">        [<span class="string">'B'</span>, <span class="string">'C'</span>, <span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="string">'B'</span>, <span class="string">'D'</span>, <span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="string">'X'</span>, <span class="string">'Y'</span>, <span class="number">0</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="string">'X'</span>, <span class="string">'D'</span>, <span class="number">0</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="string">'Y'</span>, <span class="string">'Z'</span>, <span class="number">2</span>, <span class="number">3</span>]]</span><br><span class="line"></span><br><span class="line">df = pd.DataFrame(data=data, columns=[<span class="string">'parent'</span>, <span class="string">'child'</span>, <span class="string">'parent_level'</span>, <span class="string">'child_level'</span>])</span><br><span class="line"></span><br><span class="line">roots = df.parent[df.parent_level.eq(<span class="number">0</span>)].unique()</span><br><span class="line">dg = nx.from_pandas_edgelist(df, source=<span class="string">'parent'</span>, target=<span class="string">'child'</span>, create_using=nx.DiGraph)</span><br><span class="line"></span><br><span class="line">result = pd.DataFrame(data=[[root, nx.descendants(dg, root)] <span class="keyword">for</span> root <span class="keyword">in</span> roots], columns=[<span class="string">'root'</span>, <span class="string">'children'</span>])</span><br><span class="line">print(result)</span><br></pre></td></tr></table></figure>
+<h2 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> Reference</h2>
+<p><a href="https://stackoverflow.com/questions/58415183/identifying-root-parents-and-all-their-children-in-trees" target="_blank" rel="noopener">Identifying root parents and all their children in trees</a></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2019/11/09/root-parents/">http://sikasjc.github.io/2019/11/09/root-parents/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/递归/">递归</a>
+            
+              <a href="/tags/Tree/">Tree</a>
+            
+              <a href="/tags/栈/">栈</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2019/11/12/Networking-devices/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Networking devices</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2019/07/07/tests-and-types/">
+        <span class="next-text nav-default">测试和类型</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMzQzMy85OTg5">
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>  
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  
+
+  
+   <script type="text/javascript">
+	(function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>

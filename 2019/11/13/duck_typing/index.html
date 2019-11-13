@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="Duck-typing Programming"/>
+
+
+
+
+  <meta name="keywords" content="鸭子类型,翻译,范式," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2019/11/13/duck_typing/"/>
+
+
+<meta name="description" content="翻译自Duck Typing">
+<meta name="keywords" content="鸭子类型,翻译,范式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Duck-typing Programming">
+<meta property="og:url" content="http://sikasjc.github.io/2019/11/13/duck_typing/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="翻译自Duck Typing">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="https://i.postimg.cc/kM2P8fCC/duck.png">
+<meta property="og:image" content="https://i.postimg.cc/C5B71RWy/image.png">
+<meta property="og:image" content="https://i.postimg.cc/gjCD6YWx/1.png">
+<meta property="og:updated_time" content="2019-11-13T15:01:48.543Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Duck-typing Programming">
+<meta name="twitter:description" content="翻译自Duck Typing">
+<meta name="twitter:image" content="https://i.postimg.cc/kM2P8fCC/duck.png">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> Duck-typing Programming · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Duck-typing Programming
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2019年11月13日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/鸭子类型/">鸭子类型</a>
+            
+              <a href="/tags/翻译/">翻译</a>
+            
+              <a href="/tags/范式/">范式</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#概念"><span class="toc-number">1.</span> <span class="toc-text"> 概念</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#sample-code"><span class="toc-number">1.1.</span> <span class="toc-text"> SAMPLE CODE</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#讨论"><span class="toc-number">2.</span> <span class="toc-text"> 讨论</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#名字由来"><span class="toc-number">2.1.</span> <span class="toc-text"> 名字由来</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#duck-typing-优势"><span class="toc-number">2.2.</span> <span class="toc-text"> Duck-typing 优势</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#duck-typing-和-late-binding"><span class="toc-number">2.3.</span> <span class="toc-text"> Duck typing 和 Late binding</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#duck-typing-和-structural-typing"><span class="toc-number">2.4.</span> <span class="toc-text"> Duck typing 和 Structural typing</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#duck-typing-和-implied-interfaces"><span class="toc-number">2.5.</span> <span class="toc-text"> Duck typing 和 implied interfaces</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#duck-typing-与-lbyl-eafp"><span class="toc-number">2.6.</span> <span class="toc-text"> Duck typing 与 LBYL, EAFP</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#reference"><span class="toc-number">3.</span> <span class="toc-text"> Reference</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <blockquote>
+<p>翻译自<a href="https://devopedia.org/duck-typing" target="_blank" rel="noopener">Duck Typing</a></p>
+</blockquote>
+<p><img src="https://i.postimg.cc/kM2P8fCC/duck.png" alt=""></p>
+<a id="more"></a> 
+<h1 id="概念"><a class="markdownIt-Anchor" href="#概念"></a> 概念</h1>
+<p>Duck Typing是一种编程方式，其中传递给函数或方法的对象，期望在运行时，该对象满足函数或方法所需对象的所有方法签名和属性。 <strong>即只关注行为，而不关注类型</strong>。</p>
+<p>对象的类型本身并不重要。相反，该对象应该支持所有函数或方法在其上调用的所有方法签名/属性。</p>
+<blockquote>
+<p>出于这个原因，Duck typing 有时被视为“一种思考方式而不是一种类型系统”。</p>
+</blockquote>
+<p>在Duck typing中，我们不在函数原型或方法中声明参数类型。 这意味着编译器无法进行类型检查。</p>
+<p>真正重要的是这种编程方式认为对象在运行时具有特定的方法/属性。</p>
+<p>因此，动态语言通常支持Duck typing。 然而，一些静态语言开始通过结构类型“模仿”这种编程范式。</p>
+<h2 id="sample-code"><a class="markdownIt-Anchor" href="#sample-code"></a> SAMPLE CODE</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Source: Wikipedia, 2017.</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Sparrow</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">fly</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">"Sparrow flying"</span>)</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Airplane</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">fly</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">"Airplane flying"</span>)</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Whale</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">swim</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">"Whale swimming"</span>)</span><br><span class="line">        </span><br><span class="line"><span class="comment"># The type of entity is not specified</span></span><br><span class="line"><span class="comment"># We expect entity to have a callable named fly at run time</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">lift_off</span><span class="params">(entity)</span>:</span></span><br><span class="line">    entity.fly()</span><br><span class="line"> </span><br><span class="line">sparrow = Sparrow()</span><br><span class="line">airplane = Airplane()</span><br><span class="line">whale = Whale()</span><br><span class="line"> </span><br><span class="line">lift_off(sparrow) <span class="comment"># prints `Sparrow flying`</span></span><br><span class="line">lift_off(airplane) <span class="comment"># prints `Airplane flying`</span></span><br><span class="line">lift_off(whale) <span class="comment"># Throws the error `'Whale' object has no attribute 'fly'`</span></span><br></pre></td></tr></table></figure>
+<h1 id="讨论"><a class="markdownIt-Anchor" href="#讨论"></a> 讨论</h1>
+<h2 id="名字由来"><a class="markdownIt-Anchor" href="#名字由来"></a> 名字由来</h2>
+<blockquote>
+<p>如果它像鸭子一样走路，像鸭子一样游泳，像鸭子一样嘎嘎叫，那么它就是一只鸭子。</p>
+</blockquote>
+<blockquote>
+<p>If it walks like a duck, swims like a duck, and quacks like a duck, then it probably is a duck.</p>
+</blockquote>
+<p>即像鸭子一样的非鸭子实体也可以被视为鸭子，因为重点在于<strong>行为</strong>。</p>
+<p>因此通过类比，<strong>只要对象的行为符合预期，对象的类型就不重要了</strong>。</p>
+<p>例如，Book类具有属性numPages和方法getPage(number)，其中number是整数。假设函数searchPhrase(book, phrase)用于搜索书中的给定短语。这个函数会调用给定book中的numPages和getPage()。</p>
+<p>Newspaper显然不是Book，但是对于Duck typing这不重要。如果Newspaper已经实现了numPages和getPage(number)，那么它就可以传递给searchPhrase(book, phrase)。</p>
+<h2 id="duck-typing-优势"><a class="markdownIt-Anchor" href="#duck-typing-优势"></a> Duck-typing 优势</h2>
+<p><img src="https://i.postimg.cc/C5B71RWy/image.png" alt="img"></p>
+<p><strong>便捷 &gt; 类型安全</strong></p>
+<p>Duck-typing 不是类型系统，它为程序员提供了巨大的灵活性，常见于动态类型语言。 例如，在Python中，许多地方都容易编码。</p>
+<p>一般而言，动态类型(dynamic typing)通常会缩短开发时间。 更少的冗余而又不得不写的代码，并且代码也更容易理解。 使用静态类型，编译时的类型检查降低了开发速度，但是在之后使用静态类型可以获得更好的性能。 因此有些人推荐建议Duck-typing仅用于原型设计，而不用于生产。</p>
+<p>虽然编译时检查对于尽早发现潜在问题很有用，不过Duck-typing也可以通过强制执行编码约定，文档和测试驱动方法来确保代码的健壮。</p>
+<h2 id="duck-typing-和-late-binding"><a class="markdownIt-Anchor" href="#duck-typing-和-late-binding"></a> Duck typing 和 Late binding</h2>
+<p>Late binding 是指在运行时将对象或方法绑定到指定的名字上。Duck typing看起来类似于Late binding，但是有一个微妙的差别，Duck typing基于<strong>行为</strong>而不是声明的类型。</p>
+<h2 id="duck-typing-和-structural-typing"><a class="markdownIt-Anchor" href="#duck-typing-和-structural-typing"></a> Duck typing 和 Structural typing</h2>
+<p><img src="https://i.postimg.cc/gjCD6YWx/1.png" alt="img"></p>
+<p>Duck typing 可以分为静态Duck typing和动态Duck typing，对于后者，跳过编译时检查，这就是一般提及Duck typing时的含义。</p>
+<p>静态Duck typing和一些静态类型语言（Scala，F＃）支持的Structural typing很相似。 Structural typing允许进行一些编译时检查，注意检测的不是类型，而是支持的方法/属性。 Structural typing可以看作是由编译器保证的Duck typing的子集。 但是，我们还应该注意Structural typing基本上是静态类型，而Duck typing是动态的。</p>
+<h2 id="duck-typing-和-implied-interfaces"><a class="markdownIt-Anchor" href="#duck-typing-和-implied-interfaces"></a> Duck typing 和 implied interfaces</h2>
+<p>静态类型语言使用显式接口。 在C＃中，可以使用interface：任何实现interface的类型都可以传递给接受该接口的方法/函数。 这就是如何将灵活性构建到静态类型语言中，但这需要接口声明。</p>
+<p>Python则没有显式接口：隐含接口。 对于Python，隐式接口与Duck typing没有什么不同。</p>
+<p>但是，对于C++，在其STL库中支持隐含接口。 鉴于C++进行编译时检查，我们通常不能说隐含的接口与Duck typing相同。 请注意，当接口为隐式时，没有正式的接口定义，一般而言只有接口文档。</p>
+<h2 id="duck-typing-与-lbyl-eafp"><a class="markdownIt-Anchor" href="#duck-typing-与-lbyl-eafp"></a> Duck typing 与 LBYL, EAFP</h2>
+<p>LBYL: <em>Look Before You Leap</em></p>
+<p>EAFP: <em>Easy to Ask for Forgiveness than Permission</em></p>
+<p>这是两个相反的概念，都可以用Python来讨论，虽然Python更喜欢EAFP方法。</p>
+<p>对于LBYL，我们通常在对象执行操作之前检查对象是否是可兼容类型，例如调用其方法。Python有一个内置函数isinstance()来做到这一点。</p>
+<p>对于EAFP，我们只需调用对象的方法，期望该方法存在。如果不存在，则Python解释器将抛出异常，代码应该处理该异常。</p>
+<p>在Python的Duck typing中，验证对象的类型的行为很不Pythonic。 因此，尽管可以使用hasattr()来验证对象是否含有某个属性，但Python更喜欢EAFP，这也正好和Duck typing的思想一致。</p>
+<h1 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> Reference</h1>
+<p>DEVOPEDIA <a href="https://devopedia.org/duck-typing" target="_blank" rel="noopener">Duck Typing</a></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2019/11/13/duck_typing/">http://sikasjc.github.io/2019/11/13/duck_typing/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/鸭子类型/">鸭子类型</a>
+            
+              <a href="/tags/翻译/">翻译</a>
+            
+              <a href="/tags/范式/">范式</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2019/11/12/tail-f-less-F/">
+        <span class="next-text nav-default">tail -f & less +F</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMzQzMy85OTg5">
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>  
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  
+
+  
+   <script type="text/javascript">
+	(function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>
