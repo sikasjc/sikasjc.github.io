@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="Linux Signals"/>
+
+
+
+
+  <meta name="keywords" content="Linux,Signal," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2019/07/21/linux-signals/"/>
+
+
+<meta name="description" content="翻译自Linux Signals">
+<meta name="keywords" content="Linux,Signal">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux Signals">
+<meta property="og:url" content="http://sikasjc.github.io/2019/07/21/linux-signals/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="翻译自Linux Signals">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="https://i.postimg.cc/YSrvbYT5/signal.png">
+<meta property="og:image" content="https://i.postimg.cc/XvsphXbp/signal2.png">
+<meta property="og:image" content="https://i.postimg.cc/pLth5gCX/d2f17a49-a846-4a25-88e7-93d8203ac636.png">
+<meta property="og:image" content="https://i.postimg.cc/3xCyXnfj/21cfa88e-bee4-45b2-a635-972113374b7e.png">
+<meta property="og:image" content="https://i.postimg.cc/YqFL9p1s/44d283cf-5896-4812-b1ad-cceaa76cb36f.png">
+<meta property="og:updated_time" content="2019-11-13T15:39:56.767Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux Signals">
+<meta name="twitter:description" content="翻译自Linux Signals">
+<meta name="twitter:image" content="https://i.postimg.cc/YSrvbYT5/signal.png">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> Linux Signals · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          Linux Signals
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2019年7月21日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/Linux/">Linux</a>
+            
+              <a href="/tags/Signal/">Signal</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#概念"><span class="toc-number">1.</span> <span class="toc-text"> 概念</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#讨论"><span class="toc-number">2.</span> <span class="toc-text"> 讨论</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#signals-分类"><span class="toc-number">2.1.</span> <span class="toc-text"> Signals 分类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#signals如何影响linux进程状态"><span class="toc-number">2.2.</span> <span class="toc-text"> Signals如何影响linux进程状态</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#signal与异常"><span class="toc-number">2.3.</span> <span class="toc-text"> Signal与异常</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#同步和异步"><span class="toc-number">2.4.</span> <span class="toc-text"> 同步和异步</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#同步"><span class="toc-number">2.4.1.</span> <span class="toc-text"> 同步</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#异步"><span class="toc-number">2.4.2.</span> <span class="toc-text"> 异步</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#signal的典型生命周期"><span class="toc-number">2.5.</span> <span class="toc-text"> Signal的典型生命周期</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#generation"><span class="toc-number">2.5.1.</span> <span class="toc-text"> Generation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#delivery"><span class="toc-number">2.5.2.</span> <span class="toc-text"> Delivery</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#processing"><span class="toc-number">2.5.3.</span> <span class="toc-text"> Processing</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#阻塞和非阻塞"><span class="toc-number">2.6.</span> <span class="toc-text"> 阻塞和非阻塞</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#多个待处理signal"><span class="toc-number">2.7.</span> <span class="toc-text"> 多个待处理Signal</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sample-code"><span class="toc-number">2.8.</span> <span class="toc-text"> SAMPLE CODE</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reference"><span class="toc-number">2.9.</span> <span class="toc-text"> Reference</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p>翻译自<a href="https://devopedia.org/linux-signals" target="_blank" rel="noopener">Linux Signals</a></p>
+<a id="more"></a> 
+<h1 id="概念"><a class="markdownIt-Anchor" href="#概念"></a> 概念</h1>
+<p>Linux计算机系统具有许多不同状态的进程。 这些进程属于用户应用程序或操作系统。 我们需要一种内核机制和这些进程来协调它们的活动。 实现此目的的一种方法是在重要事件发生时通知其他人的过程。 这就是我们有Signals的原因。</p>
+<p>Signals基本上是单向通知。 内核可以将Signals发送到进程，或者由一个进程发送到另一个进程，或者进程将Signals发送给自身。</p>
+<p>Linux Signals追溯到Unix Signals。 在后来的Linux版本中，添加了实时Signals。 Signals是一种简单而轻量级的进程间通信，因此适用于嵌入式系统。</p>
+<p><img src="https://i.postimg.cc/YSrvbYT5/signal.png" alt="img"></p>
+<blockquote>
+<p>Common sources of Linux signals</p>
+</blockquote>
+<h1 id="讨论"><a class="markdownIt-Anchor" href="#讨论"></a> 讨论</h1>
+<h2 id="signals-分类"><a class="markdownIt-Anchor" href="#signals-分类"></a> Signals 分类</h2>
+<p><img src="https://i.postimg.cc/XvsphXbp/signal2.png" alt="img"></p>
+<p>共有31个标准Signals，编号为1-31。 每个Signal都被命名为“SIG”，后跟一个后缀。 从2.2版开始，Linux内核支持33种不同的实时Signals。 这些数字为32-64，但程序员应使用SIGRTMIN + n来表示。 标准Signals具有特定目的，但SIGUSR1和SIGUSR2的使用可由应用程序定义。 实时Signals也由应用程序定义。</p>
+<p>编号为0的Signal，被POSIX.1称为空信号，一般不使用，但可以作为kill函数一个特例。 没有Signal被发送但可以使用它（相当不可靠）来检查进程是否仍然存在。</p>
+<p>Linux Signal的实现完全符合POSIX标准。 较新的实现应该优先使用sigaction而不是传统的signal接口。</p>
+<p>正如硬件子系统可以中断处理器一样，Signal中断进程执行。 因此，它们被视为软中断(<em>software interrupts</em>)。 正如中断处理程序处理硬件中断，Signal处理程序处理Signal。</p>
+<p>一些Signal被映射到特定的输入：</p>
+<ul>
+<li>
+<p>ctrl + c -&gt; SIGINT 发送给给前台进程组中的所有进程。常用于终止正在运行的程序。</p>
+</li>
+<li>
+<p>ctrl + z -&gt; SIGSTOP 发送给给前台进程组中的所有进程，常用于挂起一个进程</p>
+</li>
+<li>
+<p>ctrl + \ -&gt; SIGQUIT 发送给前台进程组中的所有进程，终止前台进程并生成 core 文件</p>
+</li>
+</ul>
+<h2 id="signals如何影响linux进程状态"><a class="markdownIt-Anchor" href="#signals如何影响linux进程状态"></a> Signals如何影响linux进程状态</h2>
+<p>一些Signal终止接收此Signal的process：SIGHUP，SIGINT，SIGTERM，SIGKILL。</p>
+<p>一些Signal终止进程以及核心转储（core dump）以帮助程序员调试出错的地方：SIGABRT（中止信号），SIGBUS（总线错误），SIGILL（非法指令），SIGSEGV（无效内存引用），SIGSYS（系统调用错误）。</p>
+<blockquote>
+<p>Core dump：操作系统在进程收到某些信号而终止运行时，将此时进程地址空间的内容以及有关进程状态的其他信息写出的一个磁盘文件</p>
+</blockquote>
+<p>其他停止进程的Signal还有：SIGSTOP，SIGTSTP。</p>
+<p>SIGCONT则是一个恢复已停止进程的Signal。</p>
+<p>程序可以覆盖Signal的默认行为。 例如，可以编写交互式程序来忽略SIGINT（由ctrl + c输入生成）。 两个值得注意的例外是SIGKILL和SIGSTOP信号，这些信号不能被忽略，阻止或覆盖。</p>
+<p>让我们考虑父进程及其子进程的示例。</p>
+<p>假设孩子将SIGSTOP发送给自己，子进程将被停止。 这反过来触发SIGCHLD到父母。 然后父母可以通知孩子继续使用SIGCONT。 当孩子离开停止状态时，另一个SIGCHLD被发送给父母。 如果稍后，子进程退出，则最终的SIGCHLD将发送给父进程。</p>
+<p><img src="https://i.postimg.cc/pLth5gCX/d2f17a49-a846-4a25-88e7-93d8203ac636.png" alt="img"></p>
+<blockquote>
+<p>Example exchange of signals between parent and child processes</p>
+</blockquote>
+<h2 id="signal与异常"><a class="markdownIt-Anchor" href="#signal与异常"></a> Signal与异常</h2>
+<p>一些编程语言能够使用诸如try-throw-catch之类的结构进行异常处理。</p>
+<p>信号则与异常不同。 相反，失败的系统或库调用返回非零的退出码。 当进程终止时，它的退出代码将是128加Signal编号。 例如，由SIGKILL杀死的进程将返回137（128 + 9）。</p>
+<h2 id="同步和异步"><a class="markdownIt-Anchor" href="#同步和异步"></a> 同步和异步</h2>
+<p>生成信号时，可以将它们视为同步或异步。</p>
+<h3 id="同步"><a class="markdownIt-Anchor" href="#同步"></a> 同步</h3>
+<p>由于指令导致不可恢复的错误（例如非法地址访问）则发生同步Signal。 这些Signal被发送到导致它的线程。 这些也称为<em>traps</em>，因为它们也会导致陷入内核。</p>
+<h3 id="异步"><a class="markdownIt-Anchor" href="#异步"></a> 异步</h3>
+<p>异步Signal位于当前执行上下文的外部。 从另一个进程发送SIGKILL就是一个例子。 这些也称为软中断。</p>
+<h2 id="signal的典型生命周期"><a class="markdownIt-Anchor" href="#signal的典型生命周期"></a> Signal的典型生命周期</h2>
+<p>Signal经历三个阶段：</p>
+<p><img src="https://i.postimg.cc/3xCyXnfj/21cfa88e-bee4-45b2-a635-972113374b7e.png" alt="img"></p>
+<h3 id="generation"><a class="markdownIt-Anchor" href="#generation"></a> Generation</h3>
+<p>内核或任何进程都可以生成Signal。无论谁生成Signal，都将其发送到特定进程。Signal由其编号表示，没有额外的数据或参数。因此，Signal是轻量级的。但是，可以为POSIX实时Signal传递额外的数据。可以生成Signal的系统调用和函数包括raise，kill，killpg，pthread_kill，tgkill和sigqueue。</p>
+<h3 id="delivery"><a class="markdownIt-Anchor" href="#delivery"></a> Delivery</h3>
+<p>Signal在传递之前被称为pending。通常情况下，内核会尽快将Signal传递给进程。但是，如果进程阻止了Signal，它将保持挂起状态直到解除阻塞。</p>
+<h3 id="processing"><a class="markdownIt-Anchor" href="#processing"></a> Processing</h3>
+<p>一旦传递Signal，就会以多种方式之一进行处理。每个Signal都有一个相关的默认动作：</p>
+<ul>
+<li>
+<p>忽略Signal</p>
+</li>
+<li>
+<p>终止流程</p>
+</li>
+<li>
+<p>core dump</p>
+</li>
+<li>
+<p>停止/继续进程。</p>
+</li>
+</ul>
+<p>对于非默认行为，相应的处理函数将被调用。具体行为则通过sigaction函数指定。</p>
+<h2 id="阻塞和非阻塞"><a class="markdownIt-Anchor" href="#阻塞和非阻塞"></a> 阻塞和非阻塞</h2>
+<p><img src="https://i.postimg.cc/YqFL9p1s/44d283cf-5896-4812-b1ad-cceaa76cb36f.png" alt="img"></p>
+<p>Signal中断正常的程序执行流程。 当进程执行某些关键代码或更新与Signal处理程序共享的数据时，此时不应该接受信号。 阻塞正是为了解决了这个问题，代价则是Signal的处理被延迟了。</p>
+<p>每个进程都可以指定是否要阻塞特定Signal。 如果阻塞并且Signal确实发生，操作系统将把Signal保持为挂起状态。 一旦进程解除阻塞，就会传递Signal。 当前被阻塞的信号集合称为Signal mask。</p>
+<p>没有必要无限期地阻塞Signal。 为此，该进程可以在Signal被接受后忽略该Signal。</p>
+<p>被一个进程阻塞的Signal不会影响其他进程的正常接收Signal。</p>
+<p>可以使用sigprocmask（单线程）或pthread_sigmask（多线程）设置Signal mask。 当进程具有多个线程时，可以基于每个线程阻止Signal。 Signal将被传递到任何未阻止它的线程上。即：</p>
+<blockquote>
+<p>Signal handlers are per process, signal masks are per thread.</p>
+</blockquote>
+<h2 id="多个待处理signal"><a class="markdownIt-Anchor" href="#多个待处理signal"></a> 多个待处理Signal</h2>
+<p>许多标准Signal可以等待进程的处理（pending for process）。 但是，给定Signal类型时，只有一个实例可以挂起。 这是因为Signal的挂起和阻塞实现为位掩码，每个Signal类型一位。</p>
+<p>例如，我们可以同时将SIGALRM和SIGTERM挂起，但我们不能有两个SIGALRM信号等待进程处理。 即使有多个SIGALRM，该过程也只会收到一个SIGALRM信号。</p>
+<p>对于实时Signal，Signal可以与数据一起进入队列，从而可以单独传送和处理Signal的每个实例。</p>
+<p>POSIX没有规定标准Signal的传送顺序，也没有规定如果标准Signal和实时Signal都处于pending状态会发生什么。 Linux优先考虑标准Signal。 对于实时Signal，首先传送较低编号的Signal，如果许多同一个类型Signal在队列中等待，则发送最早的Signal，即先进先出。</p>
+<h2 id="sample-code"><a class="markdownIt-Anchor" href="#sample-code"></a> SAMPLE CODE</h2>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">*<span class="comment">// Adapted from source:* *http://www.firmcodes.com/signals-in-linux///* *Accessed: 2019-07-09*</span></span><br><span class="line">*<span class="comment">// Example shows a custom handler for SIGINT// but the handler reverts to default action for future signals.// Thus, first ctrl+c will allow program to continue// and second ctrl+c will terminate the program.*</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sig_handler1</span><span class="params">(<span class="keyword">int</span> num)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"You are here becoz of signal: %d**\n**"</span>, num);</span><br><span class="line">    signal(SIGINT, SIG_DFL);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    signal(SIGINT, sig_handler1);</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Hello**\n**"</span>);</span><br><span class="line">        sleep(<span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> Reference</h2>
+<p><a href="https://devopedia.org/linux-signals" target="_blank" rel="noopener">Linux Signals</a></p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2019/07/21/linux-signals/">http://sikasjc.github.io/2019/07/21/linux-signals/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/Linux/">Linux</a>
+            
+              <a href="/tags/Signal/">Signal</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2019/11/09/root-parents/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">如何在树中识别根节点和所有的子节点</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2019/07/07/tests-and-types/">
+        <span class="next-text nav-default">测试和类型</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMzQzMy85OTg5">
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>  
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2019
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  
+
+  
+   <script type="text/javascript">
+	(function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+  </script>
+
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>
