@@ -17,7 +17,7 @@
 
 
 
-  <meta name="keywords" content="Computer Networking,计算机网络," />
+  <meta name="keywords" content="计算机网络,Computer Networking," />
 
 
 
@@ -35,7 +35,7 @@
 
 
 <meta name="description" content="理解网络设备的关键在于——理清这些设备运作的网络层级，与其解决的问题">
-<meta name="keywords" content="Computer Networking,计算机网络">
+<meta name="keywords" content="计算机网络,Computer Networking">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Networking devices">
 <meta property="og:url" content="http://sikasjc.github.io/2019/11/12/Networking-devices/index.html">
@@ -231,9 +231,9 @@
         
           <div class="post-tags">
             
-              <a href="/tags/Computer-Networking/">Computer Networking</a>
-            
               <a href="/tags/计算机网络/">计算机网络</a>
+            
+              <a href="/tags/Computer-Networking/">Computer Networking</a>
             
           </div>
         
@@ -406,9 +406,9 @@
         
           <div class="post-tags">
             
-              <a href="/tags/Computer-Networking/">Computer Networking</a>
-            
               <a href="/tags/计算机网络/">计算机网络</a>
+            
+              <a href="/tags/Computer-Networking/">Computer Networking</a>
             
           </div>
         
@@ -527,16 +527,18 @@
     
 <!-- valine Comments -->
 <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
-<script src="//cdn.jsdelivr.net/gh/xcss/valine@v1.1.7/dist/Valine.min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
 <script type="text/javascript">
-    new Valine({
+var valine = new Valine();
+    valine.init({
         el: '#vcomments',
         notify: false,
         verify: false,
         app_id: "x8lD1gvsE8QmIPccHVLe6RmR-gzGzoHsz",
         app_key: "Fgn21BcUswUD2zT3xMg4bRmX",
         placeholder: "欢迎~",
-        avatar: 'hide'
+        avatar: 'hide',
+        meta: ['nick', 'mail']
     });
 </script>
 

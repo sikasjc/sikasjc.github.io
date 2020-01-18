@@ -528,16 +528,18 @@
     
 <!-- valine Comments -->
 <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
-<script src="//cdn.jsdelivr.net/gh/xcss/valine@v1.1.7/dist/Valine.min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
 <script type="text/javascript">
-    new Valine({
+var valine = new Valine();
+    valine.init({
         el: '#vcomments',
         notify: false,
         verify: false,
         app_id: "x8lD1gvsE8QmIPccHVLe6RmR-gzGzoHsz",
         app_key: "Fgn21BcUswUD2zT3xMg4bRmX",
         placeholder: "欢迎~",
-        avatar: 'hide'
+        avatar: 'hide',
+        meta: ['nick', 'mail']
     });
 </script>
 
