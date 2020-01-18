@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="sync.Once 是一个只执行一次动作的对象"/>
+
+
+
+
+  <meta name="keywords" content="Go,并发,源码," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2020/01/18/syncOnce/"/>
+
+
+<meta name="description" content="sync.Once 是一个只执行一次动作的对象">
+<meta name="keywords" content="Go,并发,源码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="学习sync.Once">
+<meta property="og:url" content="http://sikasjc.github.io/2020/01/18/syncOnce/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="sync.Once 是一个只执行一次动作的对象">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2020-01-18T08:50:09.107Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="学习sync.Once">
+<meta name="twitter:description" content="sync.Once 是一个只执行一次动作的对象">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> 学习sync.Once · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          学习sync.Once
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2020年1月18日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/Go/">Go</a>
+            
+              <a href="/tags/并发/">并发</a>
+            
+              <a href="/tags/源码/">源码</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#synconce"><span class="toc-number">1.</span> <span class="toc-text"> sync.Once</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#what-is-hot-path"><span class="toc-number">1.1.</span> <span class="toc-text"> What is hot path？</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#func-once-do"><span class="toc-number">2.</span> <span class="toc-text"> func (*Once) Do</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#一种错误实现"><span class="toc-number">2.1.</span> <span class="toc-text"> 一种错误实现</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#init和synconce"><span class="toc-number">3.</span> <span class="toc-text"> init()和sync.Once</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#程序启动时初始化"><span class="toc-number">3.1.</span> <span class="toc-text"> 程序启动时初始化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#synconce实现单例延迟初始化"><span class="toc-number">3.2.</span> <span class="toc-text"> Sync.Once实现单例延迟初始化</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#reference"><span class="toc-number">4.</span> <span class="toc-text"> Reference</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h1 id="synconce"><a class="markdownIt-Anchor" href="#synconce"></a> sync.Once</h1>
+<p>基于Go 1.13</p>
+<p>sync.Once 是一个只执行一次动作的对象</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Once <span class="keyword">struct</span>&#123;</span><br><span class="line">    <span class="comment">// done indicates whether the action has been performed.</span></span><br><span class="line">    <span class="comment">// It is first in the struct because it is used in the hot path.</span></span><br><span class="line">    <span class="comment">// The hot path is inlined at every call site.</span></span><br><span class="line">    <span class="comment">// Placing done first allows more compact instructions on some architectures (amd64/x86),</span></span><br><span class="line">    <span class="comment">// and fewer instructions (to calculate offset) on other architectures.</span></span><br><span class="line">    done <span class="keyword">uint32</span></span><br><span class="line">    m    Mutex</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="what-is-hot-path"><a class="markdownIt-Anchor" href="#what-is-hot-path"></a> What is hot path？</h2>
+<p>hot path 是一系列被非常频繁执行的指令</p>
+<ul>
+<li>当需要访问struct的第一个字段时，我们可以直接对指针解引用来访问第一个字段。</li>
+<li>要访问其他字段时，除了结构指针之外， 还需要提供与第一个字段的偏移量</li>
+</ul>
+<p>在机器码中，这个偏移量是传递指令的附加值，这会使指令变得更长。对性能的影响是，CPU必须对结构指针添加偏移量以获取想要访问的字段的地址。</p>
+<p><strong>因此访问struct的第一个字段的机器码更快，更加紧凑。</strong></p>
+<p>这里假设字段在内存中的布局与结构定义中的布局相同，因为编译器可以决定改变内存中结构的字段顺序来优化存储空间，目前go编译器未做这样的优化。</p>
+<p>这是一个小优化，只有性能非常重要才值得付出这样的努力。</p>
+<h1 id="func-once-do"><a class="markdownIt-Anchor" href="#func-once-do"></a> func (*Once) Do</h1>
+<p>Go1.13的源码如下，非常的简洁</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Do calls the function f if and only if Do is being called for the</span></span><br><span class="line"><span class="comment">// first time for this instance of Once. In other words, given</span></span><br><span class="line"><span class="comment">// 	var once Once</span></span><br><span class="line"><span class="comment">// if once.Do(f) is called multiple times, only the first call will invoke f,</span></span><br><span class="line"><span class="comment">// even if f has a different value in each invocation. A new instance of</span></span><br><span class="line"><span class="comment">// Once is required for each function to execute.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Do is intended for initialization that must be run exactly once. Since f</span></span><br><span class="line"><span class="comment">// is niladic, it may be necessary to use a function literal to capture the</span></span><br><span class="line"><span class="comment">// arguments to a function to be invoked by Do:</span></span><br><span class="line"><span class="comment">// 	config.once.Do(func() &#123; config.init(filename) &#125;)</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Because no call to Do returns until the one call to f returns, if f causes</span></span><br><span class="line"><span class="comment">// Do to be called, it will deadlock.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// If f panics, Do considers it to have returned; future calls of Do return</span></span><br><span class="line"><span class="comment">// without calling f.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(o *Once)</span> <span class="title">Do</span><span class="params">(f <span class="keyword">func</span>()</span>)</span> &#123;</span><br><span class="line">    <span class="comment">// Note: Here is an incorrect implementation of Do:</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">//	if atomic.CompareAndSwapUint32(&amp;o.done, 0, 1) &#123;</span></span><br><span class="line">    <span class="comment">//		f()</span></span><br><span class="line">    <span class="comment">//	&#125;</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// Do guarantees that when it returns, f has finished.</span></span><br><span class="line">    <span class="comment">// This implementation would not implement that guarantee:</span></span><br><span class="line">    <span class="comment">// given two simultaneous calls, the winner of the cas would</span></span><br><span class="line">    <span class="comment">// call f, and the second would return immediately, without</span></span><br><span class="line">    <span class="comment">// waiting for the first's call to f to complete.</span></span><br><span class="line">    <span class="comment">// This is why the slow path falls back to a mutex, and why</span></span><br><span class="line">    <span class="comment">// the atomic.StoreUint32 must be delayed until after f returns.</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> atomic.LoadUint32(&amp;o.done) == <span class="number">0</span> &#123;</span><br><span class="line">            <span class="comment">// Outlined slow-path to allow inlining of the fast-path.</span></span><br><span class="line">            o.doSlow(f)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(o *Once)</span> <span class="title">doSlow</span><span class="params">(f <span class="keyword">func</span>()</span>)</span> &#123;</span><br><span class="line">    o.m.Lock()</span><br><span class="line">    <span class="keyword">defer</span> o.m.Unlock()</span><br><span class="line">    <span class="keyword">if</span> o.done == <span class="number">0</span> &#123;</span><br><span class="line">            <span class="keyword">defer</span> atomic.StoreUint32(&amp;o.done, <span class="number">1</span>)</span><br><span class="line">            f()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>简单来说，<a href="http://once.do/" target="_blank" rel="noopener">once.Do</a> 中的函数只会执行一次，并保证 <a href="http://once.do/" target="_blank" rel="noopener">once.Do</a> 返回时，传入Do的函数已经执行完成。（多个 goroutine 同时执行 <a href="http://once.do/" target="_blank" rel="noopener">once.Do</a> 的时候，可以保证抢占到 <a href="http://once.do/" target="_blank" rel="noopener">once.Do</a> 执行权的 goroutine 执行完 <a href="http://once.do/" target="_blank" rel="noopener">once.Do</a> 后，其他 goroutine 才能得到返回 ）</p>
+<p>从代码流程中，我们可以很清楚的看到，<a href="http://Once.Do" target="_blank" rel="noopener">Once.Do</a>()的逻辑：</p>
+<ol>
+<li>首先考虑到为了并发安全加mutex，<a href="http://xn--Once-4k6fn72j.Do" target="_blank" rel="noopener">但是Once.Do</a>()对性能有一定要求，所以选用原子操作，LoadUint32获取锁更快</li>
+<li>判断执行标志，若已执行过就直接返回</li>
+<li>因为是判断执行标志而不修改，就会有多个goroutine同时判断为true，之后用mutex调用函数f()</li>
+<li>获得mutex后，先检查执行标志，以免重复执行</li>
+<li>接着调用f()</li>
+<li>然后将执行标志done置为1</li>
+<li>最后解开mutex，当其他落入doSlow的goroutine在重复上述过程时就可以保证f()只被调用一次。</li>
+</ol>
+<h2 id="一种错误实现"><a class="markdownIt-Anchor" href="#一种错误实现"></a> 一种错误实现</h2>
+<p>注意在源码中，提到了一种错误实现</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Once <span class="keyword">uint32</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(o *Once)</span> <span class="title">Do</span><span class="params">(f <span class="keyword">func</span>()</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> atomic.CompareAndSwapUint32((*<span class="keyword">uint32</span>)(o), <span class="number">0</span>, <span class="number">1</span>) &#123;</span><br><span class="line">        f()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>刚才我们提到了<code>Once.Do()</code>可以保证了只有当<code>f()</code>执行完毕时，<code>Once.Do()</code>才会返回。这意味着如果多个goroutines同时调用<code>Once.Do()</code>，那么<code>f()</code>当然会执行一次，但是所有的调用都会等到<code>f()</code>完成(它们会被阻塞)。</p>
+<p>当我们使用<code>sync.Once</code>时，依赖于此行为，依赖于在调用<code>Once.Do()</code>完成<code>f()</code>之后的情况。这样我们才可以安全地使用<code>f()</code>初始化变量等操作，而不会出现竞态条件。</p>
+<p>但这种实现，并没有这样的保证，抢占到执行权的goroutine会执行<code>f()</code>，而其他goroutine会直接返回，这时<code>f()</code>并没有执行完。</p>
+<h1 id="init和synconce"><a class="markdownIt-Anchor" href="#init和synconce"></a> init()和sync.Once</h1>
+<ul>
+<li>Go语言规范保证了包的init()函数只能被调用一次，并且只能从单个线程调用所有函数（并不是说<code>init()</code>不能启动goroutine，但是除非使<code>init()</code>成为多线程，否则它们是线程安全的）</li>
+<li>使用<code>sync.Once.Do()</code>的原因是，控制是否以及何时执行某些代码。 <code>init()</code>函数将在应用程序启动时调用。 <code>sync.Once.Do()</code>允许执行延迟初始化之类的操作，例如在第一次请求资源时创建资源，而不是在应用程序启动时创建资源； 或仅在实际需要时才初始化资。</li>
+</ul>
+<p>简而言之，<code>init()</code>在包导入时执行，而<code>sync.Once.Do()</code>在你的控制之下； 你可以决定是否调用，何时调用以及它的作用。</p>
+<h2 id="程序启动时初始化"><a class="markdownIt-Anchor" href="#程序启动时初始化"></a> 程序启动时初始化</h2>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> singleton Cache = New(<span class="number">10000</span>, WithTTL(<span class="number">10000</span>*<span class="number">100</span>))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Singleton</span><span class="params">()</span> <span class="title">Cache</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> singleton</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="synconce实现单例延迟初始化"><a class="markdownIt-Anchor" href="#synconce实现单例延迟初始化"></a> Sync.Once实现单例延迟初始化</h2>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> (</span><br><span class="line">    singleton Cache</span><br><span class="line">    once      sync.Once</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Singleton</span><span class="params">()</span> <span class="title">Cache</span><span class="params">()</span></span>&#123;</span><br><span class="line">    once.Do(<span class="function"><span class="keyword">func</span><span class="params">()</span></span>&#123;</span><br><span class="line">            singleton = New(<span class="number">10000</span>, WithTTL(<span class="number">10000</span>*<span class="number">100</span>))</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="keyword">return</span> singleton</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> Reference</h1>
+<ul>
+<li><a href="https://golang.google.cn/src/sync/once.go" target="_blank" rel="noopener">sync.Once</a></li>
+<li><a href="https://stackoverflow.com/questions/59174176/what-does-hot-path-mean-in-the-context-of-sync-once" target="_blank" rel="noopener">What does “hot path” mean in the context of sync.Once?</a></li>
+<li><a href="https://www.cnblogs.com/apocelipes/p/11143899.html" target="_blank" rel="noopener">一个commit引发的思考</a></li>
+<li><a href="https://stackoverflow.com/questions/51953191/difference-between-init-and-sync-once-in-golang" target="_blank" rel="noopener">Difference between init() and sync.Once in golang</a></li>
+<li><a href="https://stackoverflow.com/questions/49039707/singleton-implementation-in-go" target="_blank" rel="noopener">Singleton implementation in Go</a></li>
+</ul>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2020/01/18/syncOnce/">http://sikasjc.github.io/2020/01/18/syncOnce/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/Go/">Go</a>
+            
+              <a href="/tags/并发/">并发</a>
+            
+              <a href="/tags/源码/">源码</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2020/01/12/http-MiddleWare-Server-Handler/">
+        <span class="next-text nav-default">Go HTTP Middleware Server Handler的一些笔记</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="vcomments"></div>
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2020
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+    
+<!-- valine Comments -->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//cdn.jsdelivr.net/gh/xcss/valine@v1.1.7/dist/Valine.min.js"></script>
+<script type="text/javascript">
+    new Valine({
+        el: '#vcomments',
+        notify: false,
+        verify: false,
+        app_id: "x8lD1gvsE8QmIPccHVLe6RmR-gzGzoHsz",
+        app_key: "Fgn21BcUswUD2zT3xMg4bRmX",
+        placeholder: "欢迎~",
+        avatar: 'hide'
+    });
+</script>
+
+  
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>
