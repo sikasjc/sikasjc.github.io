@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="使用dig确定local DNS使用哪个IP进行DNS查询，防止客户端使用的local DNS的IP是正确的，但是local DNS使用的IP是错误的；这在排查与不同运行商、地区相关的网络问题时很有用。"/>
+
+
+
+
+  <meta name="keywords" content="DNS,dig," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2020/09/12/dig-ip/"/>
+
+
+<meta name="description" content="使用dig确定local DNS使用哪个IP进行DNS查询，防止客户端使用的local DNS的IP是正确的，但是local DNS使用的IP是错误的；这在排查与不同运行商、地区相关的网络问题时很有用。">
+<meta name="keywords" content="DNS,dig">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用dig确定local DNS使用哪个IP进行DNS查询">
+<meta property="og:url" content="http://sikasjc.github.io/2020/09/12/dig-ip/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="使用dig确定local DNS使用哪个IP进行DNS查询，防止客户端使用的local DNS的IP是正确的，但是local DNS使用的IP是错误的；这在排查与不同运行商、地区相关的网络问题时很有用。">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="https://i.postimg.cc/wvZTGxSD/dns.png">
+<meta property="og:updated_time" content="2020-09-12T02:47:24.322Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用dig确定local DNS使用哪个IP进行DNS查询">
+<meta name="twitter:description" content="使用dig确定local DNS使用哪个IP进行DNS查询，防止客户端使用的local DNS的IP是正确的，但是local DNS使用的IP是错误的；这在排查与不同运行商、地区相关的网络问题时很有用。">
+<meta name="twitter:image" content="https://i.postimg.cc/wvZTGxSD/dns.png">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> 使用dig确定local DNS使用哪个IP进行DNS查询 · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          使用dig确定local DNS使用哪个IP进行DNS查询
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2020年9月12日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/DNS/">DNS</a>
+            
+              <a href="/tags/dig/">dig</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#问题"><span class="toc-number">1.</span> <span class="toc-text"> 问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#akahelpnet"><span class="toc-number">2.</span> <span class="toc-text"> akahelp.net</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用"><span class="toc-number">3.</span> <span class="toc-text"> 使用</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#reference"><span class="toc-number"></span> <span class="toc-text"> Reference</span></a>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h2 id="问题"><a class="markdownIt-Anchor" href="#问题"></a> 问题</h2>
+<p><img src="https://i.postimg.cc/wvZTGxSD/dns.png" alt="dns"></p>
+<blockquote>
+<p>这里的local DNS实际是指进行递归查询的DNS，recursive resolver</p>
+</blockquote>
+<ul>
+<li>
+<p>虽然客户端知道它正在与哪个local DNS交流，但它不知道local DNS正在使用哪个 IP 地址与权威DNS交流，也不知道local DNS可能传递的 EDNS0 Client Subnet Extension(ECS)信息。</p>
+</li>
+<li>
+<p>也就是说，我们只知道<strong>图中蓝色部分客户端进行查询时的 local DNS 的IP，但是很难知道，在红色部分中 local DNS 使用哪个IP</strong>，这可能导致local DNS返回错误的结果（例如，返回对应域名的错误运营商的IP，电信的用户返回了移动的IP）</p>
+</li>
+<li>
+<p>local DNS 还经常通过不同于客户端使用的IP版本（IPv4与IPv6）与权威DNS进行对话</p>
+</li>
+<li>
+<p>对于许多Local DNS，客户端通过anycast向其发出查询，但是local DNS将使用本地单播地址来发出查询。</p>
+</li>
+<li>
+<p>而许多CDN的权威DNS（或其他全局流量管理系统和请求裸路由）经常会使用local DNS的请求地址和传递的可能提供更好客户端位置信息ECS数据，来确定如何引导流量</p>
+</li>
+</ul>
+<p><em><strong>因此我们需要确认local DNS查询时使用的IP是符合预期的</strong></em></p>
+<h2 id="akahelpnet"><a class="markdownIt-Anchor" href="#akahelpnet"></a> <a href="http://akahelp.net" target="_blank" rel="noopener">akahelp.net</a></h2>
+<ul>
+<li>Akamai提供了一个DNS tools 用于解决这样的问题
+<ul>
+<li>提供了local DNS进行dns查询时，使用的单播IP地址</li>
+</ul>
+</li>
+<li>Dual Stack (recursive resolver chooses the protocol):</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">whoami.ds.akahelp.net</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Force recursion over IPv6 (when available):</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">whoami.ipv6.akahelp.net</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Force recursion over IPv4:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">whoami.ipv4.akahelp.net</span><br></pre></td></tr></table></figure>
+<ul>
+<li>还包括了权威DNS看到的ENS0 End User Client Subnet (ECS, RFC7871) 信息，只会响应TXT 记录查询</li>
+</ul>
+<h2 id="使用"><a class="markdownIt-Anchor" href="#使用"></a> 使用</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ dig +short TXT whoami.ds.akahelp.net                                                                                                                                                           ok  at 11:20:47</span><br><span class="line">&quot;ns&quot; &quot;123.126.126.12&quot;</span><br><span class="line">&quot;ecs&quot; &quot;120.52.147.1/32/24&quot;</span><br><span class="line">&quot;ip&quot; &quot;123.126.126.12&quot;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>ns</code>是local DNS进行单播的IP地址，可能是ipv4和ipv6。并且一些local DNS是服务器集群，所以会有选择的使用不同版本的不同IP地址，因此在 ‘.ds’， ‘.ipv4’， '.ipv6’进行不同的查询。</li>
+<li>如果Local DNS 将ECS信息与查询一起发送，则可能还会出现两个其他记录。</li>
+<li><code>ecs</code>记录是查询中包含的ECS客户端子网。</li>
+<li><code>ip</code>记录是由Akamai的权威名称服务器从ECS client subnet中随机选择的代表IP地址。 （local DNS 不会发送与local DNS进行通信的实际客户端IP，以减少对ECS的隐私影响。）</li>
+</ul>
+<h1 id="reference"><a class="markdownIt-Anchor" href="#reference"></a> Reference</h1>
+<ul>
+<li>
+<p><a href="https://developer.akamai.com/blog/2018/05/10/introducing-new-whoami-tool-dns-resolver-information" target="_blank" rel="noopener">Introducing a New whoami Tool for DNS Resolver Information</a> - akamai</p>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2020/09/12/dig-ip/">http://sikasjc.github.io/2020/09/12/dig-ip/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/DNS/">DNS</a>
+            
+              <a href="/tags/dig/">dig</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2020/01/18/syncOnce/">
+        <span class="next-text nav-default">学习sync.Once</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="vcomments"></div>
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2020
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+    
+<!-- valine Comments -->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script type="text/javascript">
+var valine = new Valine();
+    valine.init({
+        el: '#vcomments',
+        notify: false,
+        verify: false,
+        app_id: "x8lD1gvsE8QmIPccHVLe6RmR-gzGzoHsz",
+        app_key: "Fgn21BcUswUD2zT3xMg4bRmX",
+        placeholder: "欢迎评论，给我发邮件看得更快~",
+        avatar: 'hide',
+        meta: ['nick', 'mail']
+    });
+</script>
+
+  
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>
