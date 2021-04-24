@@ -42,7 +42,7 @@
 <meta property="og:site_name" content="Sika">
 <meta property="og:description" content="看到阮一峰的科技爱好者周刊已经突破了150期，已经到了155期，到这155期已经进行了3年了，让我感到强大与不可思议，我也从中了解、学习到了很多。 阮一峰还有其他互联网中的许多人，让我相信互联网的精神就是分享。 于是我也想试试开始自己的周刊，记录我在这一周内的阅读与收获，先定个小目标吧，写下5期这样的分享，每期包括大概10项内容。 目前主要会偏向音视频、网络传输等方面，毕竟现在主要在做这方面。">
 <meta property="og:locale" content="zh-cn">
-<meta property="og:updated_time" content="2021-04-24T10:46:38.882Z">
+<meta property="og:updated_time" content="2021-04-24T11:02:26.511Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="第1期 成为专业的人 (一周阅读与记录)">
 <meta name="twitter:description" content="看到阮一峰的科技爱好者周刊已经突破了150期，已经到了155期，到这155期已经进行了3年了，让我感到强大与不可思议，我也从中了解、学习到了很多。 阮一峰还有其他互联网中的许多人，让我相信互联网的精神就是分享。 于是我也想试试开始自己的周刊，记录我在这一周内的阅读与收获，先定个小目标吧，写下5期这样的分享，每期包括大概10项内容。 目前主要会偏向音视频、网络传输等方面，毕竟现在主要在做这方面。">
@@ -291,7 +291,7 @@
 <p><strong>不要不加思考的提问</strong></p>
 <h2 id="文章"><a class="markdownIt-Anchor" href="#文章"></a> 文章</h2>
 <p><a href="https://blog.51cto.com/ticktick/1915024" target="_blank" rel="noopener">直播疑难杂症排查</a> 系列</p>
-<p>非常细致地从客户端（播放器）的角度开始，介绍、说明了形形色色的问题，如直播卡顿、马赛克、花屏、黑屏、杂音、音画不同步等问题。这些对我理解音视频基础有空了很大帮助，帮助我串起来了之前学习到的零散的知识点。</p>
+<p>非常细致地从客户端（播放器）的角度开始，介绍、说明了形形色色的问题，如直播卡顿、马赛克、花屏、黑屏、杂音、音画不同步等问题。这些对我理解音视频基础有了很大帮助，帮助我串起来了之前学习到的零散的知识点。</p>
 <p><a href="https://mp.weixin.qq.com/s?src=11&amp;timestamp=1619257847&amp;ver=3028&amp;signature=pdKp4ON2DqwkHHHJjfKz2TN6ceIH*-ppWLhDsvgAYFOX90VqKdZACeX1tQ5AdcqKLXVDfBlEQLfjO7hziiGnccA*Fqg5RHmvAFseT-E1CeGkY4E4ZifsIgi0hWQeefIB&amp;new=1" target="_blank" rel="noopener">超低延迟实时流媒体传输技术</a></p>
 <p>这是腾讯提出的对超低延迟直播的思考与解决思路，如何设计这样场景的协议，依赖buffer抗抖动 vs 不抖动，类FEC vs 重传，NACK vs SACK等。这是我的一点总结<a href="https://sikasjc.github.io/2021/04/24/low-delay/">低延迟直播思考 (笔记)</a></p>
 <p><a href="https://draveness.me/whys-the-design-live-streaming-latency/" target="_blank" rel="noopener">为什么流媒体直播的延迟很高</a></p>
@@ -308,19 +308,12 @@
 <p><a href="https://github.com/dgryski/go-perfbook" target="_blank" rel="noopener">go-perfbook</a></p>
 <p>如何编写高性能的Go代码</p>
 <h2 id="工具"><a class="markdownIt-Anchor" href="#工具"></a> 工具</h2>
-<ul>
-<li><a href="https://github.com/epiclabs-io/hls-analyzer" target="_blank" rel="noopener">hls analyzer</a></li>
-</ul>
+<p><a href="https://github.com/epiclabs-io/hls-analyzer" target="_blank" rel="noopener">hls analyzer</a></p>
 <p>分析hls拉流挺好用的</p>
-<ul>
-<li><a href="https://mediaarea.net/en/MediaInfo" target="_blank" rel="noopener">mediainfo</a></li>
-</ul>
+<p><a href="https://mediaarea.net/en/MediaInfo" target="_blank" rel="noopener">mediainfo</a></p>
 <p>分析流的码流信息</p>
-<ul>
-<li><a href="https://github.com/felixge/fgprof" target="_blank" rel="noopener">fgprof - The Full Go Profiler</a></li>
-</ul>
-<p>Go的内置采样CPU profiler只能显示On-CPU时间。Go的trace profiler可以分析I/O，但是不能与CPU profiler结合使用。因此fgprof被设计用于</p>
-<p>fgprof分析具有I/O和CPU混合负载的应用程序，即可以分析On-CPU也可以分析Off_CPU时间消耗在了哪里。</p>
+<p><a href="https://github.com/felixge/fgprof" target="_blank" rel="noopener">fgprof - The Full Go Profiler</a></p>
+<p>Go的内置采样CPU profiler只能显示On-CPU时间。Go的trace profiler可以分析I/O，但是不能与CPU profiler结合使用。因此fgprof被设计用于具有I/O和CPU混合负载的应用程序，即可以分析On-CPU也可以分析Off_CPU时间消耗在了哪里。</p>
 <h2 id="好东西"><a class="markdownIt-Anchor" href="#好东西"></a> 好东西</h2>
 <ul>
 <li><a href="https://colors.ichuantong.cn/" target="_blank" rel="noopener">中国传统颜色手册 | Chinese Color Cheatsheet</a></li>
