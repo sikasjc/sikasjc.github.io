@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="这是腾讯提出的对超低延迟直播的思考与解决思路，如何设计这样场景的协议，依赖buffer抗抖动 vs 不抖动，类FEC vs 重传，NACK vs SACK等。这是我的一点总结。"/>
+
+
+
+
+  <meta name="keywords" content="直播,总结,阅读," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2021/04/24/low-delay/"/>
+
+
+<meta name="description" content="这是腾讯提出的对超低延迟直播的思考与解决思路，如何设计这样场景的协议，依赖buffer抗抖动 vs 不抖动，类FEC vs 重传，NACK vs SACK等。这是我的一点总结。">
+<meta name="keywords" content="直播,总结,阅读">
+<meta property="og:type" content="article">
+<meta property="og:title" content="低延迟直播思考 (笔记)">
+<meta property="og:url" content="http://sikasjc.github.io/2021/04/24/low-delay/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="这是腾讯提出的对超低延迟直播的思考与解决思路，如何设计这样场景的协议，依赖buffer抗抖动 vs 不抖动，类FEC vs 重传，NACK vs SACK等。这是我的一点总结。">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2021-04-24T10:46:37.624Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="低延迟直播思考 (笔记)">
+<meta name="twitter:description" content="这是腾讯提出的对超低延迟直播的思考与解决思路，如何设计这样场景的协议，依赖buffer抗抖动 vs 不抖动，类FEC vs 重传，NACK vs SACK等。这是我的一点总结。">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> 低延迟直播思考 (笔记) · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          低延迟直播思考 (笔记)
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2021年4月24日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/直播/">直播</a>
+            
+              <a href="/tags/总结/">总结</a>
+            
+              <a href="/tags/阅读/">阅读</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#协议设计"><span class="toc-number">1.</span> <span class="toc-text"> 协议设计</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#可靠性"><span class="toc-number">1.1.</span> <span class="toc-text"> 可靠性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#应用层丢包应是主动丢弃而不是被动丢弃"><span class="toc-number">1.1.1.</span> <span class="toc-text"> 应用层丢包应是主动丢弃，而不是被动丢弃</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#类fec-vs-重传"><span class="toc-number">1.1.2.</span> <span class="toc-text"> 类FEC vs 重传</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sack-vs-nack"><span class="toc-number">1.1.3.</span> <span class="toc-text"> SACK vs NACK</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#流控算法"><span class="toc-number">1.2.</span> <span class="toc-text"> 流控算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#新的目标模型"><span class="toc-number">1.2.1.</span> <span class="toc-text"> 新的目标模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#采集周期和精度很重要"><span class="toc-number">1.2.2.</span> <span class="toc-text"> 采集周期和精度很重要</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#核心是吞吐"><span class="toc-number">1.2.3.</span> <span class="toc-text"> 核心是吞吐</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#传输协议"><span class="toc-number">1.3.</span> <span class="toc-text"> 传输协议</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#使用原则"><span class="toc-number">1.3.1.</span> <span class="toc-text"> 使用原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#多链路实现可靠"><span class="toc-number">1.3.2.</span> <span class="toc-text"> 多链路实现可靠</span></a></li></ol></li></ol></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p>link: <a href="https://mp.weixin.qq.com/s?src=11&amp;timestamp=1619257847&amp;ver=3028&amp;signature=pdKp4ON2DqwkHHHJjfKz2TN6ceIH*-ppWLhDsvgAYFOX90VqKdZACeX1tQ5AdcqKLXVDfBlEQLfjO7hziiGnccA*Fqg5RHmvAFseT-E1CeGkY4E4ZifsIgi0hWQeefIB&amp;new=1" target="_blank" rel="noopener">超低延迟实时流媒体传输技术</a></p>
+<ul>
+<li><strong>需要网络基础设施</strong></li>
+<li>目标——零缓冲、低延迟、大带宽
+<ul>
+<li>让软件的传输延迟无线接近于物理延迟</li>
+<li>充分利用带宽，从利用buffer抗网络抖动到网络不抖动</li>
+</ul>
+</li>
+<li>结合应用的QoS来设计协议与算法</li>
+</ul>
+<h1 id="协议设计"><a class="markdownIt-Anchor" href="#协议设计"></a> 协议设计</h1>
+<h2 id="可靠性"><a class="markdownIt-Anchor" href="#可靠性"></a> 可靠性</h2>
+<ul>
+<li>大码率场景下，单位吞吐大幅度增长，单帧大小大幅增加，导致丢包数大幅增加
+<ul>
+<li>对<strong>丢包处理</strong>有了更高的要求、</li>
+</ul>
+</li>
+<li>低延迟要求需要更好的<strong>重传实时性</strong></li>
+</ul>
+<h3 id="应用层丢包应是主动丢弃而不是被动丢弃"><a class="markdownIt-Anchor" href="#应用层丢包应是主动丢弃而不是被动丢弃"></a> 应用层丢包应是主动丢弃，而不是被动丢弃</h3>
+<ul>
+<li>能力不足丢弃可能会导致产生数倍的重传数据</li>
+<li>尽可能主动丢，而不是能力不足丢</li>
+</ul>
+<h3 id="类fec-vs-重传"><a class="markdownIt-Anchor" href="#类fec-vs-重传"></a> 类FEC vs 重传</h3>
+<ul>
+<li>类FEC
+<ul>
+<li>降低丢包造成的delay等影响</li>
+<li>浪费带宽，实际导致码率降低</li>
+<li>CPU利用率高</li>
+<li>冗余不足怎么办？</li>
+</ul>
+</li>
+<li>重传
+<ul>
+<li>带宽利用率高</li>
+<li>丢包场景下，会增加delay</li>
+</ul>
+</li>
+<li>融合FEC和重传
+<ul>
+<li>FEC需要与重传结合</li>
+<li>低rtt下，带宽优先</li>
+<li>高rtt下，冗余优先</li>
+<li>先验重传冗余是有可能的
+<ul>
+<li>预测丢包，来降低使用FEC</li>
+<li>使用FEC可以做先验冗余，尤其是网络不好的情况下</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="sack-vs-nack"><a class="markdownIt-Anchor" href="#sack-vs-nack"></a> SACK vs NACK</h3>
+<ul>
+<li>NACK
+<ul>
+<li>判断丢包，逻辑简单。只要接受端发现了hole，就知道丢包了</li>
+<li>问题
+<ul>
+<li>NACK包丢了</li>
+<li>发送方收到了NACK包，但是重传包丢了</li>
+</ul>
+</li>
+<li>以上情况，接受端都不知道，只能依赖超时（<strong>对低延迟不友好</strong>）
+<ul>
+<li>超时太大，会导致帧延迟和抖动增大</li>
+<li>超时太小，会产生很多重复包，浪费带宽，拥塞恶化</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>SACK
+<ul>
+<li>抗ACK丢包好
+<ul>
+<li>一个ACK包丢了，后面的ACK包可以补上，所有丢任一个ACK不会影响整体判断逻辑</li>
+<li>SACK有状态，可以做到判断丢包更准备、更实时</li>
+</ul>
+</li>
+<li>判断丢包逻辑复杂</li>
+</ul>
+</li>
+<li>SACK好于NACK</li>
+</ul>
+<h2 id="流控算法"><a class="markdownIt-Anchor" href="#流控算法"></a> 流控算法</h2>
+<ul>
+<li>快速收敛</li>
+<li>高利用率</li>
+</ul>
+<h3 id="新的目标模型"><a class="markdownIt-Anchor" href="#新的目标模型"></a> 新的目标模型</h3>
+<ul>
+<li>场景不一样了</li>
+<li>利用率可以不高，例如TCP目标是100，现在90就OK了</li>
+<li>需要快速收敛
+<ul>
+<li>因为没有buffer，当网络较差时，需要快速收敛，否则会卡顿</li>
+</ul>
+</li>
+</ul>
+<h3 id="采集周期和精度很重要"><a class="markdownIt-Anchor" href="#采集周期和精度很重要"></a> 采集周期和精度很重要</h3>
+<ul>
+<li>超低延迟，需要更细粒度的采集
+<ul>
+<li>延迟在100毫秒，采集1秒，即1秒才知道网络卡顿了，那么体验会很差</li>
+<li>采集粒度变小。如何保证准确性</li>
+</ul>
+</li>
+<li>帧粒度
+<ul>
+<li>有逻辑、有状态，易于建模</li>
+</ul>
+</li>
+<li>发送端为主，接收端为辅
+<ul>
+<li>接收端采集，需要上报，这太慢了</li>
+</ul>
+</li>
+<li>没有数据，也有意义</li>
+</ul>
+<h3 id="核心是吞吐"><a class="markdownIt-Anchor" href="#核心是吞吐"></a> 核心是吞吐</h3>
+<ul>
+<li>不基于delay、buffer等，基于吞吐（速率）有更好的收敛性</li>
+<li>基于buffer
+<ul>
+<li>buffer易受应用的影响，容易产生扰动
+<ul>
+<li>有些应用buffer小</li>
+</ul>
+</li>
+<li>buffer达到阈值已经晚了</li>
+</ul>
+</li>
+<li>基于丢包
+<ul>
+<li>90%的网络卡顿首先时产生延迟抖动，然后丢包</li>
+<li>这也晚了</li>
+</ul>
+</li>
+<li>TCP算法的不公平
+<ul>
+<li>RTT越大，速率越低？</li>
+<li>非瓶颈链路产生的丢包会导致连接速率上不去（丢包不是一个特别好的判断依据）</li>
+</ul>
+</li>
+<li>基于速率
+<ul>
+<li>速率模型？</li>
+</ul>
+</li>
+</ul>
+<h2 id="传输协议"><a class="markdownIt-Anchor" href="#传输协议"></a> 传输协议</h2>
+<ul>
+<li>TCP与UDP</li>
+<li>UDP更灵活，可以使用FEC，可以实现非可靠传输，主动丢数据</li>
+<li>客户端无法改内核代码</li>
+<li>内核代码很难改</li>
+<li><strong>但是，高码率场景下UDP丢包率高于TCP</strong></li>
+<li><strong>UDP需要SDK支持</strong></li>
+</ul>
+<h3 id="使用原则"><a class="markdownIt-Anchor" href="#使用原则"></a> 使用原则</h3>
+<ul>
+<li>
+<p><strong>多协议融合</strong></p>
+</li>
+<li>
+<p>低延迟使用TCP</p>
+</li>
+<li>
+<p>高延迟使用UDP</p>
+</li>
+<li>
+<p>高码率使用TCP</p>
+</li>
+<li>
+<p>低码率使用UDP</p>
+</li>
+<li>
+<p>TCP做视频传输的劣势，应用层流控和内核拥塞控制会产生冲突</p>
+</li>
+<li>
+<p>一个会话两个连接，一个TCP，一个UDP</p>
+</li>
+</ul>
+<h3 id="多链路实现可靠"><a class="markdownIt-Anchor" href="#多链路实现可靠"></a> 多链路实现可靠</h3>
+<ul>
+<li>在不可靠的无线链路上，用多链路实现高可靠</li>
+</ul>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2021/04/24/low-delay/">http://sikasjc.github.io/2021/04/24/low-delay/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/直播/">直播</a>
+            
+              <a href="/tags/总结/">总结</a>
+            
+              <a href="/tags/阅读/">阅读</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2021/04/24/001/">
+        <span class="next-text nav-default">第1期 成为专业的人 (一周阅读与记录)</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="vcomments"></div>
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2021
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+    
+<!-- valine Comments -->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script type="text/javascript">
+var valine = new Valine();
+    valine.init({
+        el: '#vcomments',
+        notify: false,
+        verify: false,
+        app_id: "x8lD1gvsE8QmIPccHVLe6RmR-gzGzoHsz",
+        app_key: "Fgn21BcUswUD2zT3xMg4bRmX",
+        placeholder: "欢迎评论，给我发邮件看得更快~",
+        avatar: 'hide',
+        meta: ['nick', 'mail']
+    });
+</script>
+
+  
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>
