@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="第2期 康威定律 (一周阅读与记录)"/>
+
+
+
+
+  <meta name="keywords" content="直播,总结,阅读," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2021/05/04/002/"/>
+
+
+<meta name="description" content="阮一峰还有其他互联网中的许多人，让我相信互联网的精神就是分享。 于是我也想试试开始自己的周刊，记录我在这一周内的阅读与收获，先定个小目标吧，写下5期这样的分享，每期包括大概10项内容。 目前主要会偏向音视频、网络传输等方面，毕竟现在主要在做这方面。">
+<meta name="keywords" content="直播,总结,阅读">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第2期 康威定律 (一周阅读与记录)">
+<meta property="og:url" content="http://sikasjc.github.io/2021/05/04/002/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="阮一峰还有其他互联网中的许多人，让我相信互联网的精神就是分享。 于是我也想试试开始自己的周刊，记录我在这一周内的阅读与收获，先定个小目标吧，写下5期这样的分享，每期包括大概10项内容。 目前主要会偏向音视频、网络传输等方面，毕竟现在主要在做这方面。">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="https://ftp.bmp.ovh/imgs/2021/05/1d717c14ffeaf541.png">
+<meta property="og:image" content="https://ftp.bmp.ovh/imgs/2021/05/8797112dba5147df.png">
+<meta property="og:updated_time" content="2021-05-04T07:58:38.234Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第2期 康威定律 (一周阅读与记录)">
+<meta name="twitter:description" content="阮一峰还有其他互联网中的许多人，让我相信互联网的精神就是分享。 于是我也想试试开始自己的周刊，记录我在这一周内的阅读与收获，先定个小目标吧，写下5期这样的分享，每期包括大概10项内容。 目前主要会偏向音视频、网络传输等方面，毕竟现在主要在做这方面。">
+<meta name="twitter:image" content="https://ftp.bmp.ovh/imgs/2021/05/1d717c14ffeaf541.png">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> 第2期 康威定律 (一周阅读与记录) · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          第2期 康威定律 (一周阅读与记录)
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2021年5月4日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/直播/">直播</a>
+            
+              <a href="/tags/总结/">总结</a>
+            
+              <a href="/tags/阅读/">阅读</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#康威定律"><span class="toc-number">1.</span> <span class="toc-text"> 康威定律</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文章"><span class="toc-number">2.</span> <span class="toc-text"> 文章</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#工具"><span class="toc-number">3.</span> <span class="toc-text"> 工具</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p>阮一峰还有其他互联网中的许多人，让我相信互联网的精神就是分享。</p>
+<p>于是我也想试试开始自己的周刊，记录我在这一周内的阅读与收获，先定个小目标吧，写下5期这样的分享，每期包括大概10项内容。</p>
+<p>目前主要会偏向音视频、网络传输等方面，毕竟现在主要在做这方面。</p>
+<a id="more"></a> 
+<h2 id="康威定律"><a class="markdownIt-Anchor" href="#康威定律"></a> 康威定律</h2>
+<p><a href="https://mp.weixin.qq.com/s/UVIDZ1_hmufR8yiFj57fNQ" target="_blank" rel="noopener">为什么每个程序员都应该了解康威定律</a></p>
+<blockquote>
+<p><em>Any organization that designs a system (defined broadly) will produce a design whose structure is a copy of the organization’s communication structure.</em><br>
+<em>— Melvin E. Conway</em></p>
+</blockquote>
+<blockquote>
+<p><em><strong>设计系统的架构受制于产生这些设计的组织的沟通结构</strong></em></p>
+</blockquote>
+<p>即<strong>系统设计本质上反映了企业的组织机构。系统各个模块间的接口也反映了企业各个部门之间的信息流动和合作方式。</strong></p>
+<p><img src="https://ftp.bmp.ovh/imgs/2021/05/1d717c14ffeaf541.png" alt="conway's law"></p>
+<p><strong>业务-组织-架构三位一体：</strong></p>
+<blockquote>
+<p><em>所以根据康威定律，<strong>系统设计应当与组织沟通方式贴合</strong>。这个世上没有完美的系统设计，只有最为合适的系统设计。什么时候最为合适的系统设计，那就是<strong>业务-组织-系统都完美贴合</strong>。如果是业务导向的，那么就要去调整组织结构。如果是组织导向的，那么就要去调整业务目标。而现实中很多时候，都是三者不相贴合，这样就会在实现的时候互相掣肘，严重影响最终的效果。</em></p>
+</blockquote>
+<p><strong>康威的原文中提出的各定律：</strong></p>
+<ul>
+<li>第一定律 组织沟通方式会通过系统设计表达出来</li>
+<li>第二定律 时间再多一件事情也不可能做的完美，但总有时间做完一件事情</li>
+</ul>
+<p><img src="https://ftp.bmp.ovh/imgs/2021/05/8797112dba5147df.png" alt="build viable product"></p>
+<ul>
+<li>第三定律 线型系统和线型组织架构间有潜在的异质同态特性</li>
+<li>第四定律 大的系统组织总是比小系统更倾向于分解</li>
+</ul>
+<h2 id="文章"><a class="markdownIt-Anchor" href="#文章"></a> 文章</h2>
+<p><a href="https://github.com/leandromoreira/digital_video_introduction" target="_blank" rel="noopener">digital video introduction</a></p>
+<ul>
+<li>非常适合用来视频编码技术入门，通过docker提供了体验很好的练习项目</li>
+<li>强烈推荐，也提供了中文版 <a href="https://github.com/leandromoreira/digital_video_introduction/blob/master/README-cn.md" target="_blank" rel="noopener">点击此处</a></li>
+</ul>
+<p><a href="https://www.philipotoole.com/7-years-of-open-source-database-development-lessons-learned/" target="_blank" rel="noopener">7 YEARS OF OPEN-SOURCE DATABASE DEVELOPMENT: LESSONS LEARNED</a></p>
+<ul>
+<li>作者谈到在维护<a href="https://github.com/rqlite/rqlite" target="_blank" rel="noopener">rqlite</a>的7年间学到的
+<ul>
+<li>尽量进行小的更改，一次只实现一个feature</li>
+<li>创造力不稳定且无法预测，保持长期高强度、高精力的提交commit是很难的</li>
+<li>测试的重要性——“正是高的测试覆盖率才能保持高质量的代码”，“测试不会因为神奇的原因而失败，这代表你不完全了解自己写的代码”</li>
+<li>作为一个团队来构建软件需要大量的非编码活动，需要在编码风格，错误解决策略，代码审查和功能优先级上达成一致。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://utcc.utoronto.ca/~cks/space/blog/programming/GoConvertSliceToArray" target="_blank" rel="noopener">Go 1.17 will allow converting a slice to an array pointer (some of the time)</a></p>
+<ul>
+<li>我们知道在golang中，[]byte 可变，string 不可变，因此正常情况下[]byte 到string，string到[]byte会拷贝数据。但是通过unsafe包与指针转换操作，string和[]byte是可以快速转换的，而无需产生额外分配（应该尽量避免）</li>
+<li>同样对与类似的slice与array，通过unsafe和reflect同样也能实现转换</li>
+<li>在Go 1.17中将允许直接转换slice到底层的array pointer，而没有额外分配（<a href="https://github.com/golang/go/commit/1c268431f49ee2fc843eac52a0854aea3d02a6e0" target="_blank" rel="noopener">commit 1c268431f4</a>，同样存在一些限制）</li>
+</ul>
+<blockquote>
+<p><em>Converting a slice to an array pointer yields a pointer to the underlying array of the slice. If the length of the slice is less than the length of the array, a run-time panic occurs.</em></p>
+</blockquote>
+<ul>
+<li>遗憾的是，目前无法通过类型断言来检查是否可能panic，需要依赖 <code>if len(slice)</code></li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">s := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">2</span>, <span class="number">4</span>)</span><br><span class="line">s0 := (*[<span class="number">0</span>]<span class="keyword">byte</span>)(s)      <span class="comment">// s0 != nil</span></span><br><span class="line">s2 := (*[<span class="number">2</span>]<span class="keyword">byte</span>)(s)      <span class="comment">// &amp;s2[0] == &amp;s[0]</span></span><br><span class="line">s4 := (*[<span class="number">4</span>]<span class="keyword">byte</span>)(s)      <span class="comment">// panics: len([4]byte) &gt; len(s)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> t []<span class="keyword">string</span></span><br><span class="line">t0 := (*[<span class="number">0</span>]<span class="keyword">string</span>)(t)    <span class="comment">// t0 == nil</span></span><br><span class="line">t1 := (*[<span class="number">1</span>]<span class="keyword">string</span>)(t)    <span class="comment">// panics: len([1]string) &gt; len(s)</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>reflect包同样也支持了从slice到array的转换<a href="https://github.com/golang/go/commit/760d3b2a16544aab553ca7ec6e6ed3bf4dc9aa3f" target="_blank" rel="noopener">commit 760d3b2a16</a></li>
+</ul>
+<p><a href="https://www.jianshu.com/p/7ffaec7b3be6" target="_blank" rel="noopener">flv格式详解+实例剖析</a></p>
+<p><a href="https://www.cnblogs.com/leisure_chn/p/10662941.html" target="_blank" rel="noopener">FLV 封装格式解析</a></p>
+<ul>
+<li>FLV是一个比较简单的封装格式</li>
+<li>这两篇文章挺好的，讲述了FLV的封装格式，我也照着文章写了个<a href="https://github.com/foolishCDN/AV-spy/tree/master/container/flv" target="_blank" rel="noopener">flv的muxer、demuxer</a>以及一个简单的<a href="https://github.com/foolishCDN/AV-spy/tree/master/cmd/simpleFlvParser" target="_blank" rel="noopener">flvparser</a></li>
+</ul>
+<p><a href="https://cjting.me/2021/03/02/how-to-validate-tls-certificate/" target="_blank" rel="noopener">安全背后: 浏览器是如何校验证书的</a></p>
+<ul>
+<li>非常好的一篇文章</li>
+<li>介绍了证书相关的知识以及如何校验证书，最后还使用openssl校验了github的证书
+<ul>
+<li>证书之间的信任链</li>
+<li>根证书是自签名的，更新根证书依赖系统更新、设备更新</li>
+</ul>
+</li>
+</ul>
+<h2 id="工具"><a class="markdownIt-Anchor" href="#工具"></a> 工具</h2>
+<p><a href="https://github.com/sikasjc/enum_info" target="_blank" rel="noopener">enum_info</a></p>
+<ul>
+<li>我自己仿照<a href="https://pkg.go.dev/golang.org/x/tools/cmd/stringer" target="_blank" rel="noopener">https://pkg.go.dev/golang.org/x/tools/cmd/stringer</a>，写的一个小工具，用于给const(enum)生成对应的描述性信息的map（还在开发中，现在算是能用）</li>
+</ul>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2021/05/04/002/">http://sikasjc.github.io/2021/05/04/002/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/直播/">直播</a>
+            
+              <a href="/tags/总结/">总结</a>
+            
+              <a href="/tags/阅读/">阅读</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2021/04/24/low-delay/">
+        <span class="next-text nav-default">低延迟直播思考 (笔记)</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="vcomments"></div>
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2021
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+    
+<!-- valine Comments -->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script type="text/javascript">
+var valine = new Valine();
+    valine.init({
+        el: '#vcomments',
+        notify: false,
+        verify: false,
+        app_id: "x8lD1gvsE8QmIPccHVLe6RmR-gzGzoHsz",
+        app_key: "Fgn21BcUswUD2zT3xMg4bRmX",
+        placeholder: "欢迎评论，给我发邮件看得更快~",
+        avatar: 'hide',
+        meta: ['nick', 'mail']
+    });
+</script>
+
+  
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>
