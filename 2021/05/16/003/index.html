@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="第3期 看看别人迁移数据库 (一周阅读与记录)"/>
+
+
+
+
+  <meta name="keywords" content="总结,阅读,音频,wav," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2021/05/16/003/"/>
+
+
+<meta name="description" content="阮一峰还有其他互联网中的许多人，让我相信互联网的精神就是分享。 于是我也想试试开始自己的周刊，记录我在这一周内的阅读与收获，先定个小目标吧，写下5期这样的分享，每期包括大概10项内容。 目前主要会偏向音视频、网络传输等方面，毕竟现在主要在做这方面。">
+<meta name="keywords" content="总结,阅读,音频,wav">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第3期 看看别人迁移数据库 (一周阅读与记录)">
+<meta property="og:url" content="http://sikasjc.github.io/2021/05/16/003/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="阮一峰还有其他互联网中的许多人，让我相信互联网的精神就是分享。 于是我也想试试开始自己的周刊，记录我在这一周内的阅读与收获，先定个小目标吧，写下5期这样的分享，每期包括大概10项内容。 目前主要会偏向音视频、网络传输等方面，毕竟现在主要在做这方面。">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:image" content="https://img.itch.zone/aW1nLzU3NTc4MjAucG5n/original/OvCDA0.png">
+<meta property="og:updated_time" content="2021-05-15T17:55:10.203Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第3期 看看别人迁移数据库 (一周阅读与记录)">
+<meta name="twitter:description" content="阮一峰还有其他互联网中的许多人，让我相信互联网的精神就是分享。 于是我也想试试开始自己的周刊，记录我在这一周内的阅读与收获，先定个小目标吧，写下5期这样的分享，每期包括大概10项内容。 目前主要会偏向音视频、网络传输等方面，毕竟现在主要在做这方面。">
+<meta name="twitter:image" content="https://img.itch.zone/aW1nLzU3NTc4MjAucG5n/original/OvCDA0.png">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> 第3期 看看别人迁移数据库 (一周阅读与记录) · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          第3期 看看别人迁移数据库 (一周阅读与记录)
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2021年5月16日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/总结/">总结</a>
+            
+              <a href="/tags/阅读/">阅读</a>
+            
+              <a href="/tags/音频/">音频</a>
+            
+              <a href="/tags/wav/">wav</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#文章"><span class="toc-number">1.</span> <span class="toc-text"> 文章</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#工具"><span class="toc-number">2.</span> <span class="toc-text"> 工具</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#好东西"><span class="toc-number">3.</span> <span class="toc-text"> 好东西</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p>阮一峰还有其他互联网中的许多人，让我相信互联网的精神就是分享。</p>
+<p>于是我也想试试开始自己的周刊，记录我在这一周内的阅读与收获，先定个小目标吧，写下5期这样的分享，每期包括大概10项内容。</p>
+<p>目前主要会偏向音视频、网络传输等方面，毕竟现在主要在做这方面。</p>
+<a id="more"></a> 
+<p><a href="https://www.infoq.cn/article/Rc7urVfSMV94JcAW3z2a?utm_source=feedly&amp;utm_medium=article" target="_blank" rel="noopener">下辈子，Oracle 迁移 MySQL 再也不这么干了……</a></p>
+<p>标题起的很标题党。。不过内容还是很有干货的，文章也挺长。我对数据库了解不多，我觉得最有价值的部分就是如何开始一次迁移：</p>
+<p>1、确定迁移范围；</p>
+<p>2、迁移评估；</p>
+<p>3、选择迁移方式；</p>
+<p>4、迁移验证</p>
+<p>作者做了很多准备</p>
+<blockquote>
+<p>合适的迁移方式需要再多次测试演练中进行摸索才能在相对准确的时间内完成迁移，一定要选择较合适的迁移方法。</p>
+</blockquote>
+<blockquote>
+<p>数据库迁移完毕后，数据完整准确的检验非常重要，迁移前需要制定合理的完整性校验步骤和方法。</p>
+</blockquote>
+<p>这样也让我想起了，重构前要准备好充分的单元测试、功能测试等各种测试，这样才能开始重构，要不然谁也不知道重构的功能OK不OK。无论这个重构是从一个函数还是到一个服务。</p>
+<h2 id="文章"><a class="markdownIt-Anchor" href="#文章"></a> 文章</h2>
+<p><a href="http://soundfile.sapp.org/doc/WaveFormat/" target="_blank" rel="noopener">WAVE PCM soundfile format</a></p>
+<p>介绍了标准的WAVE (WAV, Waveform Audio File Format，即文件后缀是wav) 格式的音频文件，<a href="https://en.wikipedia.org/wiki/WAV" target="_blank" rel="noopener">WAVE</a>的格式也很简单，通过<a href="https://en.wikipedia.org/wiki/Resource_Interchange_File_Format" target="_blank" rel="noopener">RIFF</a>直接封装了<a href="https://en.wikipedia.org/wiki/Pulse-code_modulation" target="_blank" rel="noopener">PCM</a>数据。</p>
+<p>我照着这篇文章写了一个简单的<a href="https://github.com/foolishCDN/AV-spy/tree/master/container/wav" target="_blank" rel="noopener">WAVE parser</a>，实现了解析标准的WAVE文件，同时用<a href="https://github.com/hajimehoshi/oto" target="_blank" rel="noopener">oto</a>（介绍见下方）这个golang库实现了声音的播放</p>
+<p><a href="https://sites.google.com/site/musicgapi/technical-documents/wav-file-format" target="_blank" rel="noopener">Wav file format</a></p>
+<p>详细的介绍了WAVE格式中除了必需的fmt、data chunk外，许多其他的chunk类型。</p>
+<p><a href="https://devopsdirective.com/posts/2021/04/tiny-container-image/" target="_blank" rel="noopener">Tiny Container Challenge: Building a 6kB Containerized HTTP Server!</a></p>
+<blockquote>
+<p>TL;DR I set out to build the smallest container image that I could that was still able to do something useful. By taking advantage of multistage builds, the scratch base image, and a tiny assembly based http server, I was able to get it down to 6.32kB!</p>
+</blockquote>
+<p>通过利用docker的多阶段构建、scratch 的base image以及基于汇编的http服务器，将包含http server的docker image缩小到了 6.32kB！</p>
+<p><a href="https://www.yystv.cn/p/7905" target="_blank" rel="noopener">万千网友人力搭建的遗传算法，让一张马赛克进化成了色图</a></p>
+<blockquote>
+<p>一张毫无规则的马赛克图片，在无数次的动态进化后会变成什么样？一位日本网友找到了答案——它可能是张色图。</p>
+</blockquote>
+<p><a href="https://www.yystv.cn/p/7902" target="_blank" rel="noopener">有玩家用20万页的PDF做了一个冒险游戏</a></p>
+<blockquote>
+<p>这款游戏名叫《Undying Dusk》（中文大意是《不朽的黄昏》），游戏内容的灵感来源于《地牢爬行者》，依附在一份接近20万页的PDF上，需要玩家通过鼠标点击来推进游戏进程。</p>
+</blockquote>
+<p><img src="https://img.itch.zone/aW1nLzU3NTc4MjAucG5n/original/OvCDA0.png" alt="undying dusk"></p>
+<p>使用20万页的pdf实现冒险游戏，<a href="http://itch.io/" target="_blank" rel="noopener">itch.io</a> 下载速度很快，windows上基于作者提供的sumatra pdf阅读器，丝滑流畅体验很棒，支持了下作者，强烈推荐。<a href="https://lucas-c.itch.io/undying-dusk" target="_blank" rel="noopener">游戏主页与下载地址</a></p>
+<h2 id="工具"><a class="markdownIt-Anchor" href="#工具"></a> 工具</h2>
+<p><a href="https://github.com/nemasu/asmttpd" target="_blank" rel="noopener">asmttpd</a></p>
+<p>使用amd64汇编实现的http服务器，可运行于64位的Linux，功能强大，感觉不可思议。。</p>
+<ul>
+<li>支持多线程</li>
+<li>无需依赖库</li>
+<li>生成的二进制文件大约6KB</li>
+<li>…</li>
+</ul>
+<p><a href="https://github.com/hajimehoshi/oto" target="_blank" rel="noopener">oto</a></p>
+<p>支持多平台（windows，macOS，Linux，Android, iOS …）的golang 音频播放库。<a href="https://github.com/hajimehoshi/ebiten" target="_blank" rel="noopener">Ebiten</a>的作者出品，接口的设计很棒，写起来很舒服！</p>
+<p>目前播放支持单声道/双声道、8位/16位的<a href="https://en.wikipedia.org/wiki/Pulse-code_modulation" target="_blank" rel="noopener">PCM</a>。</p>
+<p><a href="https://www.sumatrapdfreader.org/free-pdf-reader" target="_blank" rel="noopener">sumatra reader</a></p>
+<p>sumatra（苏门答腊？）一款用于windows的pdf、epub、mobi、chm、Djvu的阅读器，还支持支持CBZ，CBR漫画书格式，小巧，性能强大。</p>
+<h2 id="好东西"><a class="markdownIt-Anchor" href="#好东西"></a> 好东西</h2>
+<p><a href="http://www-mmsp.ece.mcgill.ca/Documents/AudioFormats/" target="_blank" rel="noopener">Audio File Format Specifications</a></p>
+<p>麦吉尔大学通信与信号处理实验室提供的音频文件格式规范，页面看起来比较古老，但是内容还在更新中。</p>
+<p>介绍了不少音频文件格式，不过我认识的只有AIFF、WAVE这两个音频文件格式😂。</p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2021/05/16/003/">http://sikasjc.github.io/2021/05/16/003/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/总结/">总结</a>
+            
+              <a href="/tags/阅读/">阅读</a>
+            
+              <a href="/tags/音频/">音频</a>
+            
+              <a href="/tags/wav/">wav</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2021/05/04/002/">
+        <span class="next-text nav-default">第2期 康威定律 (一周阅读与记录)</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="vcomments"></div>
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2021
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+    
+<!-- valine Comments -->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script type="text/javascript">
+var valine = new Valine();
+    valine.init({
+        el: '#vcomments',
+        notify: false,
+        verify: false,
+        app_id: "x8lD1gvsE8QmIPccHVLe6RmR-gzGzoHsz",
+        app_key: "Fgn21BcUswUD2zT3xMg4bRmX",
+        placeholder: "欢迎评论，给我发邮件看得更快~",
+        avatar: 'hide',
+        meta: ['nick', 'mail']
+    });
+</script>
+
+  
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>
