@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="description" content="快速转换string到int"/>
+
+
+
+
+  <meta name="keywords" content="位运算,Go," />
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Sika">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://sikasjc.github.io/2021/08/07/string2int/"/>
+
+
+<meta name="description" content="原文见此：https://johnnylee-sde.github.io/Fast-numeric-string-to-int/ 利用位运算和64位CPU的优势，实现快速的转换string到int，并使用Go来验证。">
+<meta name="keywords" content="位运算,Go">
+<meta property="og:type" content="article">
+<meta property="og:title" content="快速转换string到int">
+<meta property="og:url" content="http://sikasjc.github.io/2021/08/07/string2int/index.html">
+<meta property="og:site_name" content="Sika">
+<meta property="og:description" content="原文见此：https://johnnylee-sde.github.io/Fast-numeric-string-to-int/ 利用位运算和64位CPU的优势，实现快速的转换string到int，并使用Go来验证。">
+<meta property="og:locale" content="zh-cn">
+<meta property="og:updated_time" content="2021-08-07T15:32:48.981Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="快速转换string到int">
+<meta name="twitter:description" content="原文见此：https://johnnylee-sde.github.io/Fast-numeric-string-to-int/ 利用位运算和64位CPU的优势，实现快速的转换string到int，并使用Go来验证。">
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+
+<script>
+  var CONFIG = {
+    search: ,
+    searchPath: "/search.xml",
+    fancybox: false,
+    toc: true,
+  }
+</script>
+
+
+
+
+  
+
+
+
+    <title> 快速转换string到int · Sika </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Sika</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            Home
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            Archives
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            Tags
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            Categories
+          
+        </li>
+      </a>
+    
+      <a href="/about">
+        <li class="mobile-menu-item">
+          
+          
+            About
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Sika</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/about">
+            
+            
+              关于
+            
+          </a>
+        </li>
+      
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          快速转换string到int
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2021年8月7日
+        </span>
+      </div>
+        
+          <div class="post-tags">
+            
+              <a href="/tags/位运算/">位运算</a>
+            
+              <a href="/tags/Go/">Go</a>
+            
+          </div>
+        
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#最简单的版本"><span class="toc-number">1.</span> <span class="toc-text"> 最简单的版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#更快的转换"><span class="toc-number">2.</span> <span class="toc-text"> 更快的转换</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#概念1"><span class="toc-number">2.1.</span> <span class="toc-text"> 概念1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#概念2"><span class="toc-number">2.2.</span> <span class="toc-text"> 概念2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#最终的算法"><span class="toc-number">2.3.</span> <span class="toc-text"> 最终的算法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#再快一点"><span class="toc-number">3.</span> <span class="toc-text"> 再快一点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#魔法数字"><span class="toc-number">3.1.</span> <span class="toc-text"> 魔法数字</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#用golang模拟"><span class="toc-number">4.</span> <span class="toc-text"> 用Golang模拟</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <p>原文见此：<a href="https://johnnylee-sde.github.io/Fast-numeric-string-to-int/" target="_blank" rel="noopener">https://johnnylee-sde.github.io/Fast-numeric-string-to-int/</a></p>
+<p>利用位运算和64位CPU的优势，实现快速的转换string到int，并使用Go来验证。</p>
+<a id="more"></a> 
+<h2 id="最简单的版本"><a class="markdownIt-Anchor" href="#最简单的版本"></a> 最简单的版本</h2>
+<ul>
+<li>常见的字符串转数字的代码如下所示：</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// given num[] - ASCII chars containing decimal digits 0-9</span></span><br><span class="line"><span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= <span class="number">7</span>; i++)</span><br><span class="line">&#123;</span><br><span class="line">	sum = (sum * <span class="number">10</span>) + (num[i] - <span class="string">'0'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>一种非常直接优化的方式是将循环展开</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> sum;</span><br><span class="line">sum = (num[<span class="number">0</span>] - <span class="string">'0'</span>) * <span class="number">10000000</span> +</span><br><span class="line">      (num[<span class="number">1</span>] - <span class="string">'0'</span>) * <span class="number">1000000</span> +</span><br><span class="line">      (num[<span class="number">2</span>] - <span class="string">'0'</span>) * <span class="number">100000</span> +</span><br><span class="line">      (num[<span class="number">3</span>] - <span class="string">'0'</span>) * <span class="number">10000</span> +</span><br><span class="line">      (num[<span class="number">4</span>] - <span class="string">'0'</span>) * <span class="number">1000</span> +</span><br><span class="line">      (num[<span class="number">5</span>] - <span class="string">'0'</span>) * <span class="number">100</span> +</span><br><span class="line">      (num[<span class="number">6</span>] - <span class="string">'0'</span>) * <span class="number">10</span> +</span><br><span class="line">      (num[<span class="number">7</span>] - <span class="string">'0'</span>);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>用Golang测试下，循环展开的版本是否有优化</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> string2int</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"strconv"</span></span><br><span class="line">	<span class="string">"testing"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">loop</span><span class="params">(str <span class="keyword">string</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	num := <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">8</span>; i++ &#123;</span><br><span class="line">		num = num*<span class="number">10</span> + <span class="keyword">int</span>(str[i]-<span class="string">'0'</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> num</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">loop2</span><span class="params">(str <span class="keyword">string</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	num := <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span>(str); i++ &#123;</span><br><span class="line">		num = num*<span class="number">10</span> + <span class="keyword">int</span>(str[i]-<span class="string">'0'</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> num</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">unrollLoop</span><span class="params">(str <span class="keyword">string</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	num := <span class="keyword">int</span>(str[<span class="number">0</span>]-<span class="string">'0'</span>)*<span class="number">10000000</span> +</span><br><span class="line">		<span class="keyword">int</span>(str[<span class="number">1</span>]-<span class="string">'0'</span>)*<span class="number">1000000</span> +</span><br><span class="line">		<span class="keyword">int</span>(str[<span class="number">2</span>]-<span class="string">'0'</span>)*<span class="number">100000</span> +</span><br><span class="line">		<span class="keyword">int</span>(str[<span class="number">3</span>]-<span class="string">'0'</span>)*<span class="number">10000</span> +</span><br><span class="line">		<span class="keyword">int</span>(str[<span class="number">4</span>]-<span class="string">'0'</span>)*<span class="number">1000</span> +</span><br><span class="line">		<span class="keyword">int</span>(str[<span class="number">5</span>]-<span class="string">'0'</span>)*<span class="number">100</span> +</span><br><span class="line">		<span class="keyword">int</span>(str[<span class="number">6</span>]-<span class="string">'0'</span>)*<span class="number">10</span> +</span><br><span class="line">		<span class="keyword">int</span>(str[<span class="number">7</span>]-<span class="string">'0'</span>)</span><br><span class="line">	<span class="keyword">return</span> num</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Test_String2Int</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">	str := <span class="string">"12345678"</span></span><br><span class="line">	n, _ := strconv.Atoi(str)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> loop(str) != n &#123;</span><br><span class="line">		t.Errorf(<span class="string">"loop error, %v != %v\n"</span>, loop(str), n)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> loop2(str) != n &#123;</span><br><span class="line">		t.Errorf(<span class="string">"loop2 error, %v != %v\n"</span>, loop2(str), n)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> unrollLoop(str) != n &#123;</span><br><span class="line">		t.Errorf(<span class="string">"unroll loop error, %v != %v\n"</span>, unrollLoop(str), n)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Benchmark_String2Int</span><span class="params">(b *testing.B)</span></span> &#123;</span><br><span class="line">	str := <span class="string">"12345678"</span></span><br><span class="line">	b.Run(<span class="string">"strconv.Atoi"</span>, <span class="function"><span class="keyword">func</span><span class="params">(b *testing.B)</span></span> &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; b.N; i++ &#123;</span><br><span class="line">			strconv.Atoi(str)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;)</span><br><span class="line">	b.Run(<span class="string">"loop"</span>, <span class="function"><span class="keyword">func</span><span class="params">(b *testing.B)</span></span> &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; b.N; i++ &#123;</span><br><span class="line">			loop(str)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;)</span><br><span class="line">	b.Run(<span class="string">"loop2"</span>, <span class="function"><span class="keyword">func</span><span class="params">(b *testing.B)</span></span> &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; b.N; i++ &#123;</span><br><span class="line">			loop2(str)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;)</span><br><span class="line">	b.Run(<span class="string">"unroll loop"</span>, <span class="function"><span class="keyword">func</span><span class="params">(b *testing.B)</span></span> &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; b.N; i++ &#123;</span><br><span class="line">			unrollLoop(str)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">--------------------------------------------------------------------</span><br><span class="line">goos: darwin</span><br><span class="line">goarch: amd64</span><br><span class="line">pkg: mine/mock/benchmark/string2int</span><br><span class="line">cpu: Intel(R) Core(TM) i7<span class="number">-8750</span>H CPU @ <span class="number">2.20</span>GHz</span><br><span class="line">Benchmark_String2Int</span><br><span class="line">Benchmark_String2Int/strconv.Atoi</span><br><span class="line">Benchmark_String2Int/strconv.Atoi<span class="number">-12</span>         	<span class="number">138586400</span>	         <span class="number">8.996</span> ns/op</span><br><span class="line">Benchmark_String2Int/loop</span><br><span class="line">Benchmark_String2Int/loop<span class="number">-12</span>                 	<span class="number">338002887</span>	         <span class="number">3.550</span> ns/op</span><br><span class="line">Benchmark_String2Int/loop2</span><br><span class="line">Benchmark_String2Int/loop2<span class="number">-12</span>                	<span class="number">410646234</span>	         <span class="number">3.205</span> ns/op</span><br><span class="line">Benchmark_String2Int/unroll_loop</span><br><span class="line">Benchmark_String2Int/unroll_loop<span class="number">-12</span>          	<span class="number">724936510</span>	         <span class="number">1.436</span> ns/op</span><br><span class="line">PASS</span><br><span class="line"></span><br><span class="line"><span class="comment">// 循环展开的版本优势是明显的，并且比strconv要快很多，因为strconv要做一些检查。</span></span><br><span class="line"><span class="comment">// 有意思的地方：loop2要比loop快，还不太清楚为什么</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>两种方法实际上都是<code>O(n)</code>的，<code>n</code>为字符串长度</li>
+<li>可以通过计算loads、adds/subtracts、shifts和的multiplies来估计代码的开销：
+<ul>
+<li>
+<p>对于展开循环的版本：</p>
+<ul>
+<li>8 loads</li>
+<li>8 subtracts, 7 adds, 8 adds to index into num array</li>
+<li>7 multiplies</li>
+</ul>
+</li>
+<li>
+<p>这里假设除了multiplies外每个操作的开销一致，一般multiplies开销会更大一些。</p>
+</li>
+<li>
+<p>因此是，31次操作 + 7 multiplies</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="更快的转换"><a class="markdownIt-Anchor" href="#更快的转换"></a> 更快的转换</h2>
+<p><strong>现在 64 位 CPU 和操作系统很常见，我们可以在这个问题上释放 64 位 CPU 寄存器的全部力量。</strong></p>
+<h3 id="概念1"><a class="markdownIt-Anchor" href="#概念1"></a> 概念1</h3>
+<ul>
+<li>在 ASCII 字符集中，数字字符<code>('0' ~ '9')</code>的范围是 <code>0x30 ~ 0x39 (48-57)</code>。</li>
+<li>如果将每个数字 ASCII 字符与 <code>0x0F</code> 按位与，会将数字 ASCII 字符转换为该数字字符对应的十进制数。</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'0'</span> ~ <span class="string">'9'</span>             =&gt;   <span class="number">0x30</span> ~ <span class="number">0x39</span></span><br><span class="line">(<span class="number">0x30</span> ~ <span class="number">0x39</span>) &amp; <span class="number">0x0F</span>   =&gt;   <span class="number">0x0</span> ~ <span class="number">0x9</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>将 8 位数字字符串加载到 64 位 CPU 寄存器中，在 Intel CPU（little-endian）上表现如下</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// given the string "12345678", </span></span><br><span class="line"><span class="comment">// on little-endian Intel CPUs we see the reversed:</span></span><br><span class="line">sum = <span class="number">0x3837363534333231</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>与 <code>0x0F0F0F0F0F0F0F0F</code> 按位与后</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// given the string "12345678",</span></span><br><span class="line"><span class="comment">// bitwise-AND with 0x0F0F0F0F0F0F0F0F</span></span><br><span class="line">sum = *((long long *)num) &amp; <span class="number">0x0F0F0F0F0F0F0F0F</span>;</span><br><span class="line">sum == <span class="number">0x0807060504030201</span></span><br></pre></td></tr></table></figure>
+<h3 id="概念2"><a class="markdownIt-Anchor" href="#概念2"></a> 概念2</h3>
+<ul>
+<li>由于Intel CPU为little-endian，加载进来的数字实际上低位在前，高位在后。</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// given the string "12345678", </span></span><br><span class="line"><span class="comment">// on little-endian Intel CPUs we see the reversed:</span></span><br><span class="line">sum = <span class="number">0x3837363534333231</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>因此我们需要做一些调整，将个位的低位和十位的高位合并为一个数
+<ul>
+<li>按位与所有高位数字并将乘以10</li>
+<li>右移低位数字到与高位数字相同的位置</li>
+<li>取上面两个数的和</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// isolate the high digit, multiply by 10,</span></span><br><span class="line"><span class="comment">// shift over the low digit and add in</span></span><br><span class="line">sum = ((sum &amp; <span class="number">0x000F000F000F000F</span>) * <span class="number">10</span>) + </span><br><span class="line">        ((sum &gt;&gt; <span class="number">8</span>) &amp; <span class="number">0x000F000F000F000F</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// sum = 0x0807060504030201</span></span><br><span class="line"><span class="comment">// (sum &amp; 0x000F000F000F000F) * 10 = 0x0007000500030001 * 10</span></span><br><span class="line"><span class="comment">// (sum &gt;&gt; 8) &amp; 0x000F000F000F000F = 0x0008000600040002</span></span><br><span class="line"><span class="comment">// 取两数之和后: [78]代表10进制数字对应的16进制数字</span></span><br><span class="line"><span class="comment">// sum = 0x00[78]00[56]00[34]00[12]</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>扩展到更大的范围</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// numbers are in range 0-99 (0x0-0x63) now</span></span><br><span class="line"><span class="comment">// - isolate high number (use 0x7F which encompasses number range)</span></span><br><span class="line"><span class="comment">// - multiply by 100 to move high number into</span></span><br><span class="line"><span class="comment">//   thousands &amp; hundreds position</span></span><br><span class="line"><span class="comment">// - shift low number over to tens and ones position</span></span><br><span class="line"><span class="comment">// - add the two numbers together</span></span><br><span class="line">sum = ((sum &amp; <span class="number">0x0000007F0000007F</span>) * <span class="number">100</span>) + ((sum &gt;&gt; <span class="number">16</span>) &amp; <span class="number">0x0000007F0000007F</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// sum = 0x00[78]00[56]00[34]00[12]</span></span><br><span class="line"><span class="comment">// (sum &amp; 0x0000007F0000007F) * 100 = 0x00000000[56]000000[12] * 100</span></span><br><span class="line"><span class="comment">// (sum &gt;&gt; 16) &amp; 0x0000007F0000007F) = 0x000000[78]000000[34]</span></span><br><span class="line"><span class="comment">// 取两数之和后:</span></span><br><span class="line"><span class="comment">// sum = 0x0000[5678]0000[1234]</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>继续扩展</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// numbers are in range 0-9,999 (0x0-0x270F) now</span></span><br><span class="line"><span class="comment">// isolate high number (use 0x3FFF which covers number range)</span></span><br><span class="line"><span class="comment">//   then multiply by 10000 to move high number into position</span></span><br><span class="line"><span class="comment">// shift low number over and isolate</span></span><br><span class="line"><span class="comment">// add the two numbers together</span></span><br><span class="line">sum = ((sum &amp; <span class="number">0x3FFF</span>) * <span class="number">10000</span>) + ((sum &gt;&gt; <span class="number">32</span>) &amp; <span class="number">0x3FFF</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// sum = 0x0000[5678]0000[1234]</span></span><br><span class="line"><span class="comment">// (sum &amp; 0x3FFF) * 10000 = 0x000000000000[1234] * 10000</span></span><br><span class="line"><span class="comment">// (sum &gt;&gt; 32) &amp; 0x3FFF = 0x000000000000[5678]</span></span><br><span class="line"><span class="comment">// 取两数之和后:</span></span><br><span class="line"><span class="comment">// sum = 0x00000000[12345678]</span></span><br></pre></td></tr></table></figure>
+<h3 id="最终的算法"><a class="markdownIt-Anchor" href="#最终的算法"></a> 最终的算法</h3>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// given num[] - ASCII chars containing decimal digits 0-9</span></span><br><span class="line">long long sum;</span><br><span class="line">sum = *((long long*)num) &amp; <span class="number">0xFFFFFFFF</span>;</span><br><span class="line">sum = ((sum &amp; <span class="number">0x0F0F0F0F</span>)   * <span class="number">10</span> )   +    ((sum &gt;&gt;  <span class="number">8</span>) &amp; <span class="number">0x0F0F0F0F</span>);</span><br><span class="line">sum = ((sum &amp; <span class="number">0x0007F0007F</span>) * <span class="number">100</span>)   +    ((sum &gt;&gt; <span class="number">16</span>) &amp; <span class="number">0x0007F0007F</span>);</span><br><span class="line">sum = ((sum &amp; <span class="number">0x3FFF</span>)       * <span class="number">10000</span>) +    ((sum &gt;&gt; <span class="number">32</span>) &amp; <span class="number">0x3FFF</span>);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>现在的时间复杂度为<code>O(lg n)</code>, 会执行
+<ul>
+<li>1 load</li>
+<li>7 bitwise ANDs</li>
+<li>3 right shifts</li>
+<li>3 adds</li>
+<li>3 multiplies</li>
+</ul>
+</li>
+<li>和循环展开的版本的比较一下</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Algorithm       |  Ops   | Multiplies</span><br><span class="line">Unrolled loop   |  <span class="number">31</span>    |     <span class="number">7</span></span><br><span class="line">SIMD            |  <span class="number">14</span>    |     <span class="number">3</span></span><br></pre></td></tr></table></figure>
+<h2 id="再快一点"><a class="markdownIt-Anchor" href="#再快一点"></a> 再快一点</h2>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sum = *(long long *)num;</span><br><span class="line">sum = (sum &amp; <span class="number">0x0F0F0F0F0F0F0F0F</span>) * <span class="number">2561</span> &gt;&gt; <span class="number">8</span>;</span><br><span class="line">sum = (sum &amp; <span class="number">0x00FF00FF00FF00FF</span>) * <span class="number">6553601</span> &gt;&gt; <span class="number">16</span>;</span><br><span class="line">sum = (sum &amp; <span class="number">0x0000FFFF0000FFFF</span>) * <span class="number">42949672960001</span> &gt;&gt; <span class="number">32</span>;</span><br></pre></td></tr></table></figure>
+<p><strong>这些魔法数字是哪来的？</strong></p>
+<h3 id="魔法数字"><a class="markdownIt-Anchor" href="#魔法数字"></a> 魔法数字</h3>
+<ul>
+<li>上面的方法是通过右移不断的累加高位数字</li>
+<li>这里其实也是类似的，只是通过左移来处理高位数字的</li>
+<li>最后右移，去掉引入的部分</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 2561</span></span><br><span class="line"></span><br><span class="line">sum = (((<span class="number">256</span> * <span class="number">10</span>) * sum) + <span class="number">1</span> * sum);</span><br><span class="line">     <span class="comment">// multiply by 256 is the same as left shift by 8</span></span><br><span class="line">     == ((<span class="number">10</span> * sum) &lt;&lt; <span class="number">8</span>) + (<span class="number">1</span> * sum);</span><br><span class="line">sum = sum &gt;&gt; <span class="number">8</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// sum = 0x0807060504030201</span></span><br><span class="line"><span class="comment">// (256 * 10) * sum = (sum &lt;&lt; 8) * 10 = 0x0706050403020100 * 10</span></span><br><span class="line"><span class="comment">// (256 * 10) * sum + 1 * sum = 0x0706050403020100 * 10 + 0x0807060504030201</span></span><br><span class="line"><span class="comment">//                            = 0x[78][67][56][45][34][23][12][01]</span></span><br><span class="line"><span class="comment">// sum &gt;&gt; 8 = 0x00[78][67][56][45][34][23][12]</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 6553601</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// number groups are in range 0-99 now</span></span><br><span class="line">sum = (sum &amp; <span class="number">0x00FF00FF00FF00FF</span>) * <span class="number">6553601</span> &gt;&gt; <span class="number">16</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// sum = 0x00[78][67][56][45][34][23][12]</span></span><br><span class="line"><span class="comment">// sum &amp; 0x00FF00FF00FF00FF = 0x00[78]00[56]00[34]00[12]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// sum = 0x00[78]00[56]00[34]00[12]</span></span><br><span class="line"><span class="comment">// (65536 * 100) * sum = (sum &lt;&lt; 16) * 100 =  0x00[56]00[34]00[12]0000 * 100 </span></span><br><span class="line"><span class="comment">// (65536 * 100) * sum + 1 * sum = 0x00[56]00[34]00[12]0000 * 100 + 0x00[78]00[56]00[34]00[12]</span></span><br><span class="line"><span class="comment">//                               = 0x[5678][3456][1234][0012]</span></span><br><span class="line"><span class="comment">// sum &gt;&gt; 16 = 0x0000[5678][3456][1234]                                                                                                                                                                                                                                                                                              </span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 42949672960001</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// number groups are in range 0-9,999 now</span></span><br><span class="line">sum = (sum &amp; <span class="number">0x0000FFFF0000FFFF</span>) * <span class="number">42949672960001</span> &gt;&gt; <span class="number">32</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// sum = 0x0000[5678][3456][1234]</span></span><br><span class="line"><span class="comment">// sum &amp; 0x0000FFFF0000FFFF =  0x0000[5678]0000[1234]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// sum = 0x0000[5678]0000[1234]</span></span><br><span class="line"><span class="comment">// (4294967296 * 10000) * sum) = (sum &lt;&lt; 32) * 10000 = 0x0000[1234]00000000 * 10000</span></span><br><span class="line"><span class="comment">// (4294967296 * 10000) * sum) + 1 * sum = 0x0000[1234]00000000 * 10000 + 0x0000[5678]0000[1234]</span></span><br><span class="line"><span class="comment">//                                       = 0x[12345678][00001234]</span></span><br><span class="line"><span class="comment">// sum &gt;&gt; 32 = 0x00000000[12345678]</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>这样进一步减少了操作的步骤
+<ul>
+<li>1 load</li>
+<li>3 bitwise ANDs</li>
+<li>3 right shifts</li>
+<li>3 multiplies</li>
+</ul>
+</li>
+<li>和之前的版本比较一下</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Algorithm       |  Ops  | Multiplies</span><br><span class="line">Unrolled loop   |  <span class="number">31</span>   |     <span class="number">7</span></span><br><span class="line">SIMD            |  <span class="number">14</span>   |     <span class="number">3</span></span><br><span class="line">SIMD <span class="number">2</span>          |   <span class="number">7</span>   |     <span class="number">3</span></span><br></pre></td></tr></table></figure>
+<h2 id="用golang模拟"><a class="markdownIt-Anchor" href="#用golang模拟"></a> 用Golang模拟</h2>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">goos: darwin</span><br><span class="line">goarch: amd64</span><br><span class="line">pkg: mine/mock/benchmark/string2int</span><br><span class="line">cpu: Intel(R) Core(TM) i7<span class="number">-8750</span>H CPU @ <span class="number">2.20</span>GHz</span><br><span class="line">Benchmark_String2Int</span><br><span class="line">Benchmark_String2Int/strconv.Aoti</span><br><span class="line">Benchmark_String2Int/strconv.Aoti<span class="number">-12</span>         	  <span class="number">127020</span>	      <span class="number">8282</span> ns/op</span><br><span class="line">Benchmark_String2Int/loop</span><br><span class="line">Benchmark_String2Int/loop<span class="number">-12</span>                 	  <span class="number">327012</span>	      <span class="number">3719</span> ns/op</span><br><span class="line">Benchmark_String2Int/loop2</span><br><span class="line">Benchmark_String2Int/loop2<span class="number">-12</span>                	  <span class="number">406800</span>	      <span class="number">2974</span> ns/op</span><br><span class="line">Benchmark_String2Int/unroll_loop</span><br><span class="line">Benchmark_String2Int/unroll_loop<span class="number">-12</span>          	  <span class="number">802428</span>	      <span class="number">1455</span> ns/op</span><br><span class="line">Benchmark_String2Int/simd</span><br><span class="line">Benchmark_String2Int/simd<span class="number">-12</span>                 	 <span class="number">4299562</span>	       <span class="number">330.2</span> ns/op</span><br><span class="line">Benchmark_String2Int/simd2</span><br><span class="line">Benchmark_String2Int/simd2<span class="number">-12</span>                	 <span class="number">3641539</span>	       <span class="number">301.2</span> ns/op</span><br><span class="line">PASS</span><br></pre></td></tr></table></figure>
+<ul>
+<li>SIMD 和 SIMD2的优势是非常明显的</li>
+<li>发现SIMD2 相比于SIMD并没有明显优势（benchmark比较的是1000次的转换开销），还不确定是什么原因
+<ul>
+<li>毕竟SIMD 2减少了常规操作，但是引入了相对大的整数乘法</li>
+<li>也有可能是常规操作确实开销太小了，不明显</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> string2int</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"strconv"</span></span><br><span class="line">	<span class="string">"testing"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">loop</span><span class="params">(str <span class="keyword">string</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	num := <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">8</span>; i++ &#123;</span><br><span class="line">		num = num*<span class="number">10</span> + <span class="keyword">int</span>(str[i]-<span class="string">'0'</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> num</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">loop2</span><span class="params">(str <span class="keyword">string</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	num := <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span>(str); i++ &#123;</span><br><span class="line">		num = num*<span class="number">10</span> + <span class="keyword">int</span>(str[i]-<span class="string">'0'</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> num</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">unrollLoop</span><span class="params">(str <span class="keyword">string</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	num := <span class="keyword">int</span>(str[<span class="number">0</span>]-<span class="string">'0'</span>)*<span class="number">10000000</span> +</span><br><span class="line">		<span class="keyword">int</span>(str[<span class="number">1</span>]-<span class="string">'0'</span>)*<span class="number">1000000</span> +</span><br><span class="line">		<span class="keyword">int</span>(str[<span class="number">2</span>]-<span class="string">'0'</span>)*<span class="number">100000</span> +</span><br><span class="line">		<span class="keyword">int</span>(str[<span class="number">3</span>]-<span class="string">'0'</span>)*<span class="number">10000</span> +</span><br><span class="line">		<span class="keyword">int</span>(str[<span class="number">4</span>]-<span class="string">'0'</span>)*<span class="number">1000</span> +</span><br><span class="line">		<span class="keyword">int</span>(str[<span class="number">5</span>]-<span class="string">'0'</span>)*<span class="number">100</span> +</span><br><span class="line">		<span class="keyword">int</span>(str[<span class="number">6</span>]-<span class="string">'0'</span>)*<span class="number">10</span> +</span><br><span class="line">		<span class="keyword">int</span>(str[<span class="number">7</span>]-<span class="string">'0'</span>)</span><br><span class="line">	<span class="keyword">return</span> num</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">simd</span><span class="params">()</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	str := <span class="number">0x3837363534333231</span></span><br><span class="line">	num := str &amp; <span class="number">0x0f0f0f0f0f0f0f0f</span></span><br><span class="line">	num = (num&amp;<span class="number">0x000f000f000f000f</span>)*<span class="number">10</span> + (num&gt;&gt;<span class="number">8</span>)&amp;<span class="number">0x000f000f000f000f</span></span><br><span class="line">	num = (num&amp;<span class="number">0x0000007f0000007f</span>)*<span class="number">100</span> + (num&gt;&gt;<span class="number">16</span>)&amp;<span class="number">0x0000007f0000007f</span></span><br><span class="line">	num = (num&amp;<span class="number">0x3fff</span>)*<span class="number">10000</span> + (num&gt;&gt;<span class="number">32</span>)&amp;<span class="number">0x3fff</span></span><br><span class="line">	<span class="keyword">return</span> num</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">simd2</span><span class="params">()</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	str := <span class="number">0x3837363534333231</span></span><br><span class="line">	num := (str &amp; <span class="number">0x0f0f0f0f0f0f0f0f</span>) * <span class="number">2561</span> &gt;&gt; <span class="number">8</span></span><br><span class="line">	num = (num &amp; <span class="number">0x00ff00ff00ff00ff</span>) * <span class="number">6553601</span> &gt;&gt; <span class="number">16</span></span><br><span class="line">	num = (num &amp; <span class="number">0x0000ffff0000ffff</span>) * <span class="number">42949672960001</span> &gt;&gt; <span class="number">32</span></span><br><span class="line">	<span class="keyword">return</span> num</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Test_String2Int</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">	str := <span class="string">"12345678"</span></span><br><span class="line">	n, _ := strconv.Atoi(str)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> loop(str) != n &#123;</span><br><span class="line">		t.Errorf(<span class="string">"loop error, %v != %v\n"</span>, loop(str), n)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> loop2(str) != n &#123;</span><br><span class="line">		t.Errorf(<span class="string">"loop2 error, %v != %v\n"</span>, loop2(str), n)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> unrollLoop(str) != n &#123;</span><br><span class="line">		t.Errorf(<span class="string">"unroll loop error, %v != %v\n"</span>, unrollLoop(str), n)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> simd() != n &#123;</span><br><span class="line">		t.Errorf(<span class="string">"simd error, %v != %v\n"</span>, simd(), n)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> simd2() != n &#123;</span><br><span class="line">		t.Errorf(<span class="string">"simd2 error, %v != %v\n"</span>, simd2(), n)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Benchmark_String2Int</span><span class="params">(b *testing.B)</span></span> &#123;</span><br><span class="line">	str := <span class="string">"12345678"</span></span><br><span class="line">	b.Run(<span class="string">"strconv.Aoti"</span>, <span class="function"><span class="keyword">func</span><span class="params">(b *testing.B)</span></span> &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; b.N; i++ &#123;</span><br><span class="line">			<span class="keyword">for</span> j := <span class="number">0</span>; j &lt; <span class="number">1000</span>; j++ &#123;</span><br><span class="line">				strconv.Atoi(str)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;)</span><br><span class="line">	b.Run(<span class="string">"loop"</span>, <span class="function"><span class="keyword">func</span><span class="params">(b *testing.B)</span></span> &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; b.N; i++ &#123;</span><br><span class="line">			<span class="keyword">for</span> j := <span class="number">0</span>; j &lt; <span class="number">1000</span>; j++ &#123;</span><br><span class="line">				loop(str)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;)</span><br><span class="line">	b.Run(<span class="string">"loop2"</span>, <span class="function"><span class="keyword">func</span><span class="params">(b *testing.B)</span></span> &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; b.N; i++ &#123;</span><br><span class="line">			<span class="keyword">for</span> j := <span class="number">0</span>; j &lt; <span class="number">1000</span>; j++ &#123;</span><br><span class="line">				loop2(str)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;)</span><br><span class="line">	b.Run(<span class="string">"unroll loop"</span>, <span class="function"><span class="keyword">func</span><span class="params">(b *testing.B)</span></span> &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; b.N; i++ &#123;</span><br><span class="line">			<span class="keyword">for</span> j := <span class="number">0</span>; j &lt; <span class="number">1000</span>; j++ &#123;</span><br><span class="line">				unrollLoop(str)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;)</span><br><span class="line">	b.Run(<span class="string">"simd"</span>, <span class="function"><span class="keyword">func</span><span class="params">(b *testing.B)</span></span> &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; b.N; i++ &#123;</span><br><span class="line">			<span class="keyword">for</span> j := <span class="number">0</span>; j &lt; <span class="number">1000</span>; j++ &#123;</span><br><span class="line">				simd()</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;)</span><br><span class="line">	b.Run(<span class="string">"simd2"</span>, <span class="function"><span class="keyword">func</span><span class="params">(b *testing.B)</span></span> &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; b.N; i++ &#123;</span><br><span class="line">			<span class="keyword">for</span> j := <span class="number">0</span>; j &lt; <span class="number">1000</span>; j++ &#123;</span><br><span class="line">				simd2()</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>作者: </span>
+      <span>Sikasjc</span>
+    </p>
+    <p class="copyright-item">
+      <span>链接: </span>
+      <a href="http://sikasjc.github.io/2021/08/07/string2int/">http://sikasjc.github.io/2021/08/07/string2int/</a>
+    </p>
+    <p class="copyright-item lincese">
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/位运算/">位运算</a>
+            
+              <a href="/tags/Go/">Go</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+    
+      <a class="next" href="/2021/07/03/004/">
+        <span class="next-text nav-default">第4期 Windows11来了 (一周阅读与记录)</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+      <div id="vcomments"></div>
+    
+  </div>
+
+        </div>  
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:sikasjc@163.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/sikasjc" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://hexo.io/">Hexo</a>
+  </span>
+  
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2017 - 
+    
+    2021
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Sikasjc</span>
+  </span>
+</div>
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+    
+<!-- valine Comments -->
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script type="text/javascript">
+var valine = new Valine();
+    valine.init({
+        el: '#vcomments',
+        notify: false,
+        verify: false,
+        app_id: "x8lD1gvsE8QmIPccHVLe6RmR-gzGzoHsz",
+        app_key: "Fgn21BcUswUD2zT3xMg4bRmX",
+        placeholder: "欢迎评论，给我发邮件看得更快~",
+        avatar: 'hide',
+        meta: ['nick', 'mail']
+    });
+</script>
+
+  
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  </body>
+</html>
